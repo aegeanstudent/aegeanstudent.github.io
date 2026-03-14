@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aegean Student — Φοιτητικές Λέσχες Ψυχολογίας</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #FFFAF4;
+      --ink: #1A1A2E;
+      --cinema:  #E63946;
+      --hiking:  #2A9D8F;
+      --books:   #E9820C;
+      --games:   #5C4BDB;
+      --theatre: #9B2335;
+      --lgbtq:   #E040FB;
+      --soft:    #F5F0E8;
+      --border:  #E0D8CC;
+      --radius:  18px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(255,250,244,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.25rem; font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--cinema); }
+    nav ul {
+      list-style: none;
+      display: flex; gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    nav ul a {
+      text-decoration: none;
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--ink); opacity: 0.6;
+      transition: opacity .2s;
+    }
+    nav ul a:hover { opacity: 1; }
+    .nav-cta {
+      background: var(--ink); color: #fff !important;
+      padding: .4rem 1rem; border-radius: 50px;
+      opacity: 1 !important;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-blobs {
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    }
+    .blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); opacity: 0.18;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 400px; height: 400px; background: var(--cinema); top: -100px; left: -100px; animation-delay: 0s; }
+    .blob-2 { width: 350px; height: 350px; background: var(--hiking); top: 30%; right: -80px; animation-delay: -3s; }
+    .blob-3 { width: 300px; height: 300px; background: var(--games); bottom: -80px; left: 30%; animation-delay: -6s; }
+    .blob-4 { width: 250px; height: 250px; background: var(--lgbtq); bottom: 10%; right: 20%; animation-delay: -2s; }
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(30px, 20px) scale(1.08); }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--soft); border: 1.5px solid var(--border);
+      border-radius: 50px; padding: .4rem 1.2rem;
+      font-size: .8rem; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: #666;
+      margin-bottom: 1.5rem; z-index: 1; position: relative;
+    }
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(3rem, 10vw, 7rem);
+      font-weight: 800; line-height: 1;
+      letter-spacing: -2px;
+      z-index: 1; position: relative;
+    }
+    h1 .accent { color: var(--cinema); }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      color: #555; max-width: 540px;
+      margin: 1.5rem auto 0;
+      z-index: 1; position: relative;
+      line-height: 1.7;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      justify-content: center; margin-top: 2.5rem;
+      z-index: 1; position: relative;
+    }
+    .btn {
+      display: inline-block; text-decoration: none;
+      padding: .85rem 2rem; border-radius: 50px;
+      font-weight: 800; font-size: 1rem;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.15); }
+    .btn-primary { background: var(--ink); color: #fff; }
+    .btn-outline { border: 2px solid var(--ink); color: var(--ink); }
+
+    .hero-clubs-preview {
+      display: flex; gap: .6rem; flex-wrap: wrap;
+      justify-content: center; margin-top: 3rem;
+      z-index: 1; position: relative;
+    }
+    .club-pill {
+      display: flex; align-items: center; gap: .4rem;
+      padding: .4rem 1rem; border-radius: 50px;
+      font-size: .85rem; font-weight: 700;
+      color: #fff;
+    }
+
+    /* ── SECTION SHARED ── */
+    section { padding: 5rem 2rem; }
+    .section-label {
+      font-size: .75rem; font-weight: 800; letter-spacing: .1em;
+      text-transform: uppercase; color: #aaa;
+      margin-bottom: .6rem;
+    }
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+    }
+    .section-intro {
+      font-size: 1.1rem; color: #555;
+      max-width: 600px; line-height: 1.8;
+      margin-bottom: 3rem;
+    }
+
+    /* ── CLUBS ── */
+    #lesxes { background: var(--soft); }
+    .clubs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .club-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #fff;
+      border: 2px solid var(--border);
+      transition: transform .25s, box-shadow .25s;
+    }
+    .club-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,.1); }
+    .club-card-top {
+      padding: 2rem 2rem 1.5rem;
+      position: relative;
+    }
+    .club-emoji { font-size: 2.8rem; display: block; margin-bottom: .8rem; }
+    .club-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      margin-bottom: .6rem;
+    }
+    .club-desc { font-size: .93rem; color: #555; line-height: 1.7; }
+    .club-card-footer {
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1.5px solid var(--border);
+    }
+    .club-status {
+      font-size: .78rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .06em;
+      padding: .3rem .8rem; border-radius: 50px;
+      color: #fff;
+    }
+    .status-active { background: #22C55E; }
+    .status-soon { background: #94A3B8; }
+    .club-tag {
+      font-size: .8rem; color: #aaa; font-weight: 700;
+    }
+    .club-stripe {
+      height: 6px;
+    }
+
+    /* ── EVENTS ── */
+    #events { max-width: 900px; margin: 0 auto; }
+    #events > * { max-width: 900px; }
+    .events-list { display: flex; flex-direction: column; gap: 1rem; }
+    .event-item {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      align-items: center; gap: 1.2rem;
+      background: #fff; border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.5rem;
+      transition: box-shadow .2s;
+    }
+    .event-item:hover { box-shadow: 0 6px 20px rgba(0,0,0,.08); }
+    .event-date {
+      text-align: center;
+      border-radius: 12px; padding: .5rem;
+      color: #fff;
+    }
+    .event-date .day {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem; font-weight: 800; line-height: 1;
+    }
+    .event-date .month {
+      font-size: .7rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .06em;
+      opacity: .85;
+    }
+    .event-info h3 { font-size: 1rem; font-weight: 800; margin-bottom: .2rem; }
+    .event-info p  { font-size: .85rem; color: #777; }
+    .event-club-tag {
+      font-size: .75rem; font-weight: 800;
+      padding: .3rem .8rem; border-radius: 50px;
+      color: #fff; white-space: nowrap;
+    }
+
+    /* ── FORM ── */
+    #eggrafi { background: var(--soft); }
+    .form-wrap {
+      max-width: 680px;
+      background: #fff; border: 2px solid var(--border);
+      border-radius: calc(var(--radius) * 1.5);
+      padding: 2.5rem; margin: 0 auto;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.2rem; }
+    .form-group label { font-size: .85rem; font-weight: 800; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: .8rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: .95rem;
+      background: var(--bg);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--ink);
+    }
+    .clubs-checkboxes {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: .6rem;
+    }
+    @media (max-width: 480px) { .clubs-checkboxes { grid-template-columns: 1fr; } }
+    .club-check {
+      display: flex; align-items: center; gap: .5rem;
+      cursor: pointer;
+    }
+    .club-check input[type="checkbox"] {
+      width: 18px; height: 18px; cursor: pointer;
+      accent-color: var(--ink);
+    }
+    .club-check span { font-size: .9rem; font-weight: 700; }
+    .btn-submit {
+      width: 100%; background: var(--ink); color: #fff;
+      border: none; cursor: pointer; font-family: 'Nunito', sans-serif;
+    }
+    .form-note { font-size: .8rem; color: #aaa; text-align: center; margin-top: .8rem; }
+
+    /* ── CONTACT ── */
+    #contact {
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3rem; align-items: start;
+    }
+    @media (max-width: 700px) { #contact { grid-template-columns: 1fr; } }
+    #contact .section-label, #contact h2, #contact p { grid-column: span 1; }
+    .contact-info p { color: #555; line-height: 1.8; font-size: 1rem; margin-bottom: 1.5rem; }
+    .contact-links { display: flex; flex-direction: column; gap: .8rem; }
+    .contact-link {
+      display: flex; align-items: center; gap: .8rem;
+      text-decoration: none; color: var(--ink);
+      font-weight: 700; font-size: .95rem;
+      padding: .8rem 1.2rem;
+      background: var(--soft); border: 1.5px solid var(--border);
+      border-radius: 12px;
+      transition: background .2s, transform .2s;
+    }
+    .contact-link:hover { background: var(--ink); color: #fff; transform: translateX(4px); }
+    .contact-link .icon { font-size: 1.3rem; }
+    .contact-right {
+      background: var(--ink); color: #fff;
+      border-radius: calc(var(--radius) * 1.5);
+      padding: 2.5rem;
+    }
+    .contact-right h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem; font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    .contact-right p { color: rgba(255,255,255,.7); line-height: 1.8; font-size: .95rem; }
+    .contact-right .email-big {
+      display: block; margin-top: 1.5rem;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem; font-weight: 800;
+      color: #fff; text-decoration: none;
+      word-break: break-all;
+    }
+    .contact-right .email-big:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 2rem;
+      font-size: .82rem; color: #aaa;
+      border-top: 1px solid var(--border);
+    }
+    footer strong { color: var(--ink); }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── RESPONSIVE NAV ── */
+    @media (max-width: 640px) {
+      nav ul { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Aegean<span>Student</span></div>
+  <ul>
+    <li><a href="#lesxes">Λέσχες</a></li>
+    <li><a href="#events">Εκδηλώσεις</a></li>
+    <li><a href="#eggrafi">Εγγραφή</a></li>
+    <li><a href="#contact" class="nav-cta">Επικοινωνία</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+  </div>
+  <div class="hero-badge">Τμήμα Ψυχολογίας · Aegean College · Θεσσαλονίκη</div>
+  <h1>Aegean<br><span class="accent">Student</span></h1>
+  <p class="hero-sub">Έξι λέσχες για φοιτητές Ψυχολογίας. Κινηματογράφος, βιβλία, επιτραπέζια, θέατρο, πεζοπορία, κοινότητα — μαζί κάνουμε κάτι αξιόλογο.</p>
+  <div class="hero-actions">
+    <a href="#eggrafi" class="btn btn-primary">Δήλωσε συμμετοχή</a>
+    <a href="#lesxes" class="btn btn-outline">Δες τις λέσχες</a>
+  </div>
+  <div class="hero-clubs-preview">
+    <span class="club-pill" style="background:var(--cinema)">🎬 Κινηματογράφου</span>
+    <span class="club-pill" style="background:var(--hiking)">🥾 Πεζοπορίας</span>
+    <span class="club-pill" style="background:var(--books)">📚 Βιβλίου</span>
+    <span class="club-pill" style="background:var(--games)">🎲 Επιτραπέζιων</span>
+    <span class="club-pill" style="background:var(--theatre)">🎭 Θεατρική</span>
+    <span class="club-pill" style="background:var(--lgbtq)">🏳️‍🌈 ΛΟΑΤΚΙ+</span>
+  </div>
+</section>
+
+<!-- CLUBS -->
+<section id="lesxes">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-label reveal">Οι Λέσχες μας</div>
+    <h2 class="reveal">Βρες την ομάδα σου</h2>
+    <p class="section-intro reveal">Έξι λέσχες, κάθε μία με τη δική της ταυτότητα και ατμόσφαιρα. Μπορείς να συμμετέχεις σε όσες θέλεις.</p>
+    <div class="clubs-grid">
+
+      <div class="club-card reveal">
+        <div class="club-stripe" style="background:var(--cinema)"></div>
+        <div class="club-card-top">
+          <span class="club-emoji">🎬</span>
+          <div class="club-name">Λέσχη Κινηματογράφου</div>
+          <p class="club-desc">Προβολές ταινιών με ψυχολογικό βάθος, ανάλυση χαρακτήρων και συζητήσεις που συνδέουν κινηματογραφικά αφηγήματα με έννοιες της ψυχολογίας.</p>
+        </div>
+        <div class="club-card-footer">
+          <span class="club-status status-active">✦ Ενεργή</span>
+          <span class="club-tag">Cinema & Psychology</span>
+        </div>
+      </div>
+
+      <div class="club-card reveal">
+        <div class="club-stripe" style="background:var(--hiking)"></div>
+        <div class="club-card-top">
+          <span class="club-emoji">🥾</span>
+          <div class="club-name">Λέσχη Πεζοπορίας</div>
+          <p class="club-desc">Εξορμήσεις στον Χορτιάτη, τον Βέρμιο και πέρα — γιατί οι καλύτερες συζητήσεις γίνονται στο μονοπάτι. Φύση, κίνηση, ψυχική υγεία.</p>
+        </div>
+        <div class="club-card-footer">
+          <span class="club-status status-active">✦ Ενεργή</span>
+          <span class="club-tag">Outdoor & Wellbeing</span>
+        </div>
+      </div>
+
+      <div class="club-card reveal">
+        <div class="club-stripe" style="background:var(--books)"></div>
+        <div class="club-card-top">
+          <span class="club-emoji">📚</span>
+          <div class="club-name">Λέσχη Βιβλίου</div>
+          <p class="club-desc">Book club με έμφαση στη λογοτεχνία που αγγίζει την ανθρώπινη εμπειρία. Blind date with a book, κριτικές, ανταλλαγή — διαβάζουμε και συζητάμε μαζί.</p>
+        </div>
+        <div class="club-card-footer">
+          <span class="club-status status-active">✦ Ενεργή</span>
+          <span class="club-tag">Reading & Discussion</span>
+        </div>
+      </div>
+
+      <div class="club-card reveal">
+        <div class="club-stripe" style="background:var(--games)"></div>
+        <div class="club-card-top">
+          <span class="club-emoji">🎲</span>
+          <div class="club-name">Λέσχη Επιτραπέζιων</div>
+          <p class="club-desc">Από Codenames μέχρι Catan. Τακτικές game nights, cooperative και competitive παιχνίδια σε ζεστή ατμόσφαιρα — για όσους η διασκέδαση είναι σοβαρή υπόθεση.</p>
+        </div>
+        <div class="club-card-footer">
+          <span class="club-status status-active">✦ Ενεργή</span>
+          <span class="club-tag">Play & Community</span>
+        </div>
+      </div>
+
+      <div class="club-card reveal">
+        <div class="club-stripe" style="background:var(--theatre)"></div>
+        <div class="club-card-top">
+          <span class="club-emoji">🎭</span>
+          <div class="club-name">Θεατρική Λέσχη</div>
+          <p class="club-desc">Improv, αυτοσχεδιασμός, θέαση παραστάσεων και δημιουργία. Δεν χρειάζεται εμπειρία — μόνο διάθεση να σπάσεις τον πάγο και να παίξεις.</p>
+        </div>
+        <div class="club-card-footer">
+          <span class="club-status status-soon">⏳ Σύντομα</span>
+          <span class="club-tag">Drama & Improv</span>
+        </div>
+      </div>
+
+      <div class="club-card reveal">
+        <div class="club-stripe" style="background:var(--lgbtq)"></div>
+        <div class="club-card-top">
+          <span class="club-emoji">🏳️‍🌈</span>
+          <div class="club-name">Λέσχη ΛΟΑΤΚΙ+</div>
+          <p class="club-desc">Ένας ασφαλής, χαρούμενος χώρος για μέλη της ΛΟΑΤΚΙ+ κοινότητας και συμμάχους. Ταινίες, συζητήσεις, εκδηλώσεις και αλληλεγγύη.</p>
+        </div>
+        <div class="club-card-footer">
+          <span class="club-status status-soon">⏳ Σύντομα</span>
+          <span class="club-tag">Community & Pride</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section>
+  <div id="events">
+    <div class="section-label reveal">Ημερολόγιο</div>
+    <h2 class="reveal">Επερχόμενες Δράσεις</h2>
+    <p class="section-intro reveal">Κράτα τις ημερομηνίες — όλες οι δράσεις είναι ανοιχτές και σε μη μέλη. Έλα να το δεις πρώτα.</p>
+    <div class="events-list">
+
+      <div class="event-item reveal">
+        <div class="event-date" style="background:var(--cinema)">
+          <div class="day">22</div>
+          <div class="month">Μαρ</div>
+        </div>
+        <div class="event-info">
+          <h3>Προβολή & Συζήτηση: Θέμα TBA</h3>
+          <p>Κινηματογραφική βραδιά με ψυχολογική ανάλυση · Microsoft Teams</p>
+        </div>
+        <span class="event-club-tag" style="background:var(--cinema)">🎬 Cinema</span>
+      </div>
+
+      <div class="event-item reveal">
+        <div class="event-date" style="background:var(--games)">
+          <div class="day">28</div>
+          <div class="month">Μαρ</div>
+        </div>
+        <div class="event-info">
+          <h3>Game Night — Ανοιχτή στη Σχολή</h3>
+          <p>Codenames, Catan και άλλα · Αίθουσα Aegean College</p>
+        </div>
+        <span class="event-club-tag" style="background:var(--games)">🎲 Games</span>
+      </div>
+
+      <div class="event-item reveal">
+        <div class="event-date" style="background:var(--books)">
+          <div class="day">4</div>
+          <div class="month">Απρ</div>
+        </div>
+        <div class="event-info">
+          <h3>Blind Date with a Book</h3>
+          <p>Πρώτη συνάντηση λέσχης βιβλίου · Λεπτομέρειες σύντομα</p>
+        </div>
+        <span class="event-club-tag" style="background:var(--books)">📚 Βιβλίο</span>
+      </div>
+
+      <div class="event-item reveal">
+        <div class="event-date" style="background:var(--hiking)">
+          <div class="day">12</div>
+          <div class="month">Απρ</div>
+        </div>
+        <div class="event-info">
+          <h3>Πρώτη Εξόρμηση — Χορτιάτης</h3>
+          <p>Μονοπάτι για όλα τα επίπεδα · Αναχώρηση από Θεσσαλονίκη</p>
+        </div>
+        <span class="event-club-tag" style="background:var(--hiking)">🥾 Hiking</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section id="eggrafi">
+  <div style="max-width:680px;margin:0 auto;">
+    <div class="section-label reveal">Εγγραφή</div>
+    <h2 class="reveal">Θέλεις να συμμετέχεις;</h2>
+    <p class="section-intro reveal">Συμπλήρωσε τη φόρμα και θα σε προσθέσουμε στη λέσχη που σε ενδιαφέρει. Δεν δεσμεύεσαι με τίποτα — απλώς ενδιαφέρον.</p>
+    <div class="form-wrap reveal">
+      <!--
+        ΟΔΗΓΙΑ SETUP:
+        1. Πήγαινε στο https://formspree.io και δημιούργησε δωρεάν λογαριασμό
+        2. Δημιούργησε νέο form και αντέγραψε το endpoint (π.χ. https://formspree.io/f/xxxxxxxx)
+        3. Άλλαξε το action παρακάτω με το δικό σου endpoint
+        ΄Η χρησιμοποίησε ένα Google Form embed αντί για αυτή τη φόρμα.
+      -->
+      <form action="https://formspree.io/f/ΑΛΛΑΞΕ_ΜΕ_ΤΟ_ΔΙΚΟ_ΣΟΥ" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">Όνομα</label>
+            <input type="text" id="fname" name="fname" placeholder="Π.χ. Μαρία" required />
+          </div>
+          <div class="form-group">
+            <label for="lname">Επώνυμο</label>
+            <input type="text" id="lname" name="lname" placeholder="Π.χ. Παπαδοπούλου" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="email@aegean.ac.uk" required />
+        </div>
+        <div class="form-group">
+          <label for="year">Έτος σπουδών</label>
+          <select id="year" name="year" required>
+            <option value="" disabled selected>Επίλεξε...</option>
+            <option>1ο Έτος</option>
+            <option>2ο Έτος</option>
+            <option>3ο Έτος</option>
+            <option>Άλλο</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Λέσχες που σε ενδιαφέρουν</label>
+          <div class="clubs-checkboxes">
+            <label class="club-check"><input type="checkbox" name="clubs" value="Cinema" /> <span>🎬 Κινηματογράφου</span></label>
+            <label class="club-check"><input type="checkbox" name="clubs" value="Hiking" /> <span>🥾 Πεζοπορίας</span></label>
+            <label class="club-check"><input type="checkbox" name="clubs" value="Books"  /> <span>📚 Βιβλίου</span></label>
+            <label class="club-check"><input type="checkbox" name="clubs" value="Games"  /> <span>🎲 Επιτραπέζιων</span></label>
+            <label class="club-check"><input type="checkbox" name="clubs" value="Theatre"/> <span>🎭 Θεατρική</span></label>
+            <label class="club-check"><input type="checkbox" name="clubs" value="LGBTQ"  /> <span>🏳️‍🌈 ΛΟΑΤΚΙ+</span></label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-submit btn">Στείλε τη δήλωση ενδιαφέροντος →</button>
+        <p class="form-note">Τα στοιχεία σου χρησιμοποιούνται αποκλειστικά για την επικοινωνία σχετικά με τις λέσχες.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section>
+  <div id="contact">
+    <div class="contact-info">
+      <div class="section-label reveal">Επικοινωνία</div>
+      <h2 class="reveal">Βρες μας</h2>
+      <p class="reveal">Φοιτητικές Λέσχες Ψυχολογίας του Aegean College Θεσσαλονίκης. Φτιάχτηκαν από φοιτητές, για φοιτητές.</p>
+      <div class="contact-links reveal">
+        <a href="mailto:aegeanstudent@example.com" class="contact-link">
+          <span class="icon">✉️</span> aegeanstudent@example.com
+        </a>
+        <a href="https://instagram.com/" target="_blank" class="contact-link">
+          <span class="icon">📸</span> @aegean.student
+        </a>
+        <a href="https://facebook.com/" target="_blank" class="contact-link">
+          <span class="icon">📘</span> Aegean Student Clubs
+        </a>
+      </div>
+    </div>
+    <div class="contact-right reveal">
+      <h3>Ανήκεις εδώ.</h3>
+      <p>Δεν χρειάζεσαι εμπειρία, εξειδίκευση ή τέλειο βιογραφικό. Αρκεί να θες να γνωρίσεις ανθρώπους που μοιράζονται κάτι μαζί σου.</p>
+      <p style="margin-top:1rem">Έλα σε μια πρώτη συνάντηση, δες πώς σου φαίνεται — και αποφάσισε μόνος/η σου.</p>
+      <a href="#eggrafi" class="email-big">→ Δήλωσε συμμετοχή</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <strong>Aegean Student</strong> · Φοιτητικές Λέσχες Τμήματος Ψυχολογίας · Aegean College Θεσσαλονίκης</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
