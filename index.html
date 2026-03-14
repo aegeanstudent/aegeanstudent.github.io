@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aegean Student — Φοιτητικές Λέσχες Ψυχολογίας</title>
+  <title>Aegean Student - Φοιτητικές Λέσχες του τμήματος Ψυχολογίας</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800;900&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -14,7 +15,7 @@
       --bg: #FFFAF4;
       --ink: #1A1A2E;
       --cinema:  #E63946;
-      --hiking:  #2A9D8F;
+      --walking:  #2A9D8F;
       --books:   #E9820C;
       --games:   #5C4BDB;
       --theatre: #9B2335;
@@ -43,8 +44,8 @@
       border-bottom: 1px solid var(--border);
     }
     .nav-logo {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.25rem; font-weight: 800;
+      font-family: 'Unbounded', sans-serif;
+      font-size: 1.1rem; font-weight: 800;
       letter-spacing: -0.5px;
     }
     .nav-logo span { color: var(--cinema); }
@@ -84,7 +85,7 @@
       animation: drift 12s ease-in-out infinite alternate;
     }
     .blob-1 { width: 400px; height: 400px; background: var(--cinema); top: -100px; left: -100px; animation-delay: 0s; }
-    .blob-2 { width: 350px; height: 350px; background: var(--hiking); top: 30%; right: -80px; animation-delay: -3s; }
+    .blob-2 { width: 350px; height: 350px; background: var(--walking); top: 30%; right: -80px; animation-delay: -3s; }
     .blob-3 { width: 300px; height: 300px; background: var(--games); bottom: -80px; left: 30%; animation-delay: -6s; }
     .blob-4 { width: 250px; height: 250px; background: var(--lgbtq); bottom: 10%; right: 20%; animation-delay: -2s; }
     @keyframes drift {
@@ -101,8 +102,8 @@
       margin-bottom: 1.5rem; z-index: 1; position: relative;
     }
     h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(3rem, 10vw, 7rem);
+      font-family: 'Unbounded', sans-serif;
+      font-size: clamp(2.4rem, 8vw, 6rem);
       font-weight: 800; line-height: 1;
       letter-spacing: -2px;
       z-index: 1; position: relative;
@@ -150,8 +151,8 @@
       margin-bottom: .6rem;
     }
     h2 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-family: 'Unbounded', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
       font-weight: 800; line-height: 1.1;
       letter-spacing: -1px;
       margin-bottom: 1rem;
@@ -184,8 +185,8 @@
     }
     .club-emoji { font-size: 2.8rem; display: block; margin-bottom: .8rem; }
     .club-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.4rem; font-weight: 800;
+      font-family: 'Unbounded', sans-serif;
+      font-size: 1.1rem; font-weight: 800;
       margin-bottom: .6rem;
     }
     .club-desc { font-size: .93rem; color: #555; line-height: 1.7; }
@@ -207,6 +208,26 @@
     }
     .club-stripe {
       height: 6px;
+    }
+
+    /* ── CLUB PHOTO ── */
+    .club-photo {
+      width: 100%; height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+    .club-photo-placeholder {
+      width: 100%; height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem;
+      opacity: 0.15;
+    }
+
+    /* ── NAV LOGO IMAGE ── */
+    .nav-logo-img {
+      height: 36px; width: auto;
+      vertical-align: middle;
+      margin-right: .4rem;
     }
 
     /* ── EVENTS ── */
@@ -321,7 +342,7 @@
       padding: 2.5rem;
     }
     .contact-right h3 {
-      font-family: 'Syne', sans-serif;
+      font-family: 'Unbounded', sans-serif;
       font-size: 1.6rem; font-weight: 800;
       margin-bottom: 1rem;
     }
@@ -360,7 +381,15 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">Aegean<span>Student</span></div>
+  <div class="nav-logo">
+    <!--
+      LOGO: Βάλε το αρχείο logo.png (ή .svg) στον ίδιο φάκελο με το index.html
+      και άλλαξε το src παρακάτω αντίστοιχα. Αν δεν έχεις logo ακόμα, απλώς
+      διέγραψε την ετικέτα <img> και κράτα μόνο το κείμενο.
+    -->
+    <img src="images/logo.png" alt="Aegean Student" class="nav-logo-img"
+         onerror="this.style.display='none'" />Aegean<span>Student</span>
+  </div>
   <ul>
     <li><a href="#lesxes">Λέσχες</a></li>
     <li><a href="#events">Εκδηλώσεις</a></li>
@@ -377,20 +406,18 @@
     <div class="blob blob-3"></div>
     <div class="blob blob-4"></div>
   </div>
-  <div class="hero-badge">Τμήμα Ψυχολογίας · Aegean College · Θεσσαλονίκη</div>
-  <h1>Aegean<br><span class="accent">Student</span></h1>
-  <p class="hero-sub">Έξι λέσχες για φοιτητές Ψυχολογίας. Κινηματογράφος, βιβλία, επιτραπέζια, θέατρο, πεζοπορία, κοινότητα — μαζί κάνουμε κάτι αξιόλογο.</p>
+  <div class="hero-badge">Από φοιτητές για φοιτητές</div>
+  <h1>Φοιτητικές<br><span class="accent">Λέσχες</span></h1>
+  <p class="hero-sub">Έλα κι εσύ στις λέσχες των φοιτητών Ψυχολογίας του Aegean College Θεσσαλονίκης. Κινηματογράφος, βιβλία, επιτραπέζια, πεζοπορία και ό,τι άλλο φανταστείς θα το φτιάξουμε μαζί.</p>
   <div class="hero-actions">
     <a href="#eggrafi" class="btn btn-primary">Δήλωσε συμμετοχή</a>
     <a href="#lesxes" class="btn btn-outline">Δες τις λέσχες</a>
   </div>
   <div class="hero-clubs-preview">
     <span class="club-pill" style="background:var(--cinema)">🎬 Κινηματογράφου</span>
-    <span class="club-pill" style="background:var(--hiking)">🥾 Πεζοπορίας</span>
+    <span class="club-pill" style="background:var(--walking)">🥾 Πεζοπορίας</span>
     <span class="club-pill" style="background:var(--books)">📚 Βιβλίου</span>
     <span class="club-pill" style="background:var(--games)">🎲 Επιτραπέζιων</span>
-    <span class="club-pill" style="background:var(--theatre)">🎭 Θεατρική</span>
-    <span class="club-pill" style="background:var(--lgbtq)">🏳️‍🌈 ΛΟΑΤΚΙ+</span>
   </div>
 </section>
 
@@ -398,16 +425,20 @@
 <section id="lesxes">
   <div style="max-width:1100px;margin:0 auto;">
     <div class="section-label reveal">Οι Λέσχες μας</div>
-    <h2 class="reveal">Βρες την ομάδα σου</h2>
-    <p class="section-intro reveal">Έξι λέσχες, κάθε μία με τη δική της ταυτότητα και ατμόσφαιρα. Μπορείς να συμμετέχεις σε όσες θέλεις.</p>
+    <h2 class="reveal">Βρες την ομάδα που σου ταιριάζει</h2>
+    <p class="section-intro reveal">Τέσσερις λέσχες, κάθε μία με τη δική της ταυτότητα και ατμόσφαιρα. Μπορείς να συμμετέχεις σε όσες θέλεις.</p>
     <div class="clubs-grid">
 
       <div class="club-card reveal">
         <div class="club-stripe" style="background:var(--cinema)"></div>
+        <!-- ΦΩΤΟΓΡΑΦΙΑ: βάλε το αρχείο images/cinema.jpg στον φάκελό σου -->
+        <img src="images/cinema.jpg" alt="Λέσχη Κινηματογράφου" class="club-photo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+        <div class="club-photo-placeholder" style="background:color-mix(in srgb,var(--cinema) 12%,#fff);display:none">🎬</div>
         <div class="club-card-top">
           <span class="club-emoji">🎬</span>
           <div class="club-name">Λέσχη Κινηματογράφου</div>
-          <p class="club-desc">Προβολές ταινιών με ψυχολογικό βάθος, ανάλυση χαρακτήρων και συζητήσεις που συνδέουν κινηματογραφικά αφηγήματα με έννοιες της ψυχολογίας.</p>
+          <p class="club-desc">Προβολές ταινιών με ψυχολογικό βάθος, ανάλυση χαρακτήρων και συζητήσεις που συνδέουν τα κινηματογραφικά αφηγήματα με τις θεωρίε της ψυχολογίας.</p>
         </div>
         <div class="club-card-footer">
           <span class="club-status status-active">✦ Ενεργή</span>
@@ -416,11 +447,15 @@
       </div>
 
       <div class="club-card reveal">
-        <div class="club-stripe" style="background:var(--hiking)"></div>
+        <div class="club-stripe" style="background:var(--walking)"></div>
+        <!-- ΦΩΤΟΓΡΑΦΙΑ: βάλε το αρχείο images/hiking.jpg στον φάκελό σου -->
+        <img src="images/hiking.jpg" alt="Λέσχη Πεζοπορίας" class="club-photo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+        <div class="club-photo-placeholder" style="background:color-mix(in srgb,var(--walking) 12%,#fff);display:none">🥾</div>
         <div class="club-card-top">
           <span class="club-emoji">🥾</span>
           <div class="club-name">Λέσχη Πεζοπορίας</div>
-          <p class="club-desc">Εξορμήσεις στον Χορτιάτη, τον Βέρμιο και πέρα — γιατί οι καλύτερες συζητήσεις γίνονται στο μονοπάτι. Φύση, κίνηση, ψυχική υγεία.</p>
+          <p class="club-desc">Φοιτητικές εκδρομές σε κοντινούς προορισμούς και περίπατος στη φύση. Γιατί οι καλύτερες συζητήσεις γίνονται στο μονοπάτι. Φύση, κίνηση, ψυχική υγεία.</p>
         </div>
         <div class="club-card-footer">
           <span class="club-status status-active">✦ Ενεργή</span>
@@ -430,10 +465,14 @@
 
       <div class="club-card reveal">
         <div class="club-stripe" style="background:var(--books)"></div>
+        <!-- ΦΩΤΟΓΡΑΦΙΑ: βάλε το αρχείο images/books.jpg στον φάκελό σου -->
+        <img src="images/books.jpg" alt="Λέσχη Βιβλίου" class="club-photo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+        <div class="club-photo-placeholder" style="background:color-mix(in srgb,var(--books) 12%,#fff);display:none">📚</div>
         <div class="club-card-top">
           <span class="club-emoji">📚</span>
           <div class="club-name">Λέσχη Βιβλίου</div>
-          <p class="club-desc">Book club με έμφαση στη λογοτεχνία που αγγίζει την ανθρώπινη εμπειρία. Blind date with a book, κριτικές, ανταλλαγή — διαβάζουμε και συζητάμε μαζί.</p>
+          <p class="club-desc">Book club με έμφαση στα βιβλία που μας ανοίγουν μια νέα κατανόηση στην ψυχολογία. Blind date with a book, κριτικές, ανταλλαγές βιβλίων — διαβάζουμε και συζητάμε μαζί.</p>
         </div>
         <div class="club-card-footer">
           <span class="club-status status-active">✦ Ενεργή</span>
@@ -443,10 +482,14 @@
 
       <div class="club-card reveal">
         <div class="club-stripe" style="background:var(--games)"></div>
+        <!-- ΦΩΤΟΓΡΑΦΙΑ: βάλε το αρχείο images/games.jpg στον φάκελό σου -->
+        <img src="images/games.jpg" alt="Λέσχη Επιτραπέζιων" class="club-photo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+        <div class="club-photo-placeholder" style="background:color-mix(in srgb,var(--games) 12%,#fff);display:none">🎲</div>
         <div class="club-card-top">
           <span class="club-emoji">🎲</span>
           <div class="club-name">Λέσχη Επιτραπέζιων</div>
-          <p class="club-desc">Από Codenames μέχρι Catan. Τακτικές game nights, cooperative και competitive παιχνίδια σε ζεστή ατμόσφαιρα — για όσους η διασκέδαση είναι σοβαρή υπόθεση.</p>
+          <p class="club-desc">Codenames, Titchu, Catan. Βραδιές επιτραπέζιων στη σχολή και τουρνουά για δυνατούς παίχτες. Για όσους η διασκέδαση είναι σοβαρή υπόθεση.</p>
         </div>
         <div class="club-card-footer">
           <span class="club-status status-active">✦ Ενεργή</span>
@@ -454,32 +497,7 @@
         </div>
       </div>
 
-      <div class="club-card reveal">
-        <div class="club-stripe" style="background:var(--theatre)"></div>
-        <div class="club-card-top">
-          <span class="club-emoji">🎭</span>
-          <div class="club-name">Θεατρική Λέσχη</div>
-          <p class="club-desc">Improv, αυτοσχεδιασμός, θέαση παραστάσεων και δημιουργία. Δεν χρειάζεται εμπειρία — μόνο διάθεση να σπάσεις τον πάγο και να παίξεις.</p>
-        </div>
-        <div class="club-card-footer">
-          <span class="club-status status-soon">⏳ Σύντομα</span>
-          <span class="club-tag">Drama & Improv</span>
-        </div>
-      </div>
-
-      <div class="club-card reveal">
-        <div class="club-stripe" style="background:var(--lgbtq)"></div>
-        <div class="club-card-top">
-          <span class="club-emoji">🏳️‍🌈</span>
-          <div class="club-name">Λέσχη ΛΟΑΤΚΙ+</div>
-          <p class="club-desc">Ένας ασφαλής, χαρούμενος χώρος για μέλη της ΛΟΑΤΚΙ+ κοινότητας και συμμάχους. Ταινίες, συζητήσεις, εκδηλώσεις και αλληλεγγύη.</p>
-        </div>
-        <div class="club-card-footer">
-          <span class="club-status status-soon">⏳ Σύντομα</span>
-          <span class="club-tag">Community & Pride</span>
-        </div>
-      </div>
-
+  
     </div>
   </div>
 </section>
@@ -488,56 +506,56 @@
 <section>
   <div id="events">
     <div class="section-label reveal">Ημερολόγιο</div>
-    <h2 class="reveal">Επερχόμενες Δράσεις</h2>
-    <p class="section-intro reveal">Κράτα τις ημερομηνίες — όλες οι δράσεις είναι ανοιχτές και σε μη μέλη. Έλα να το δεις πρώτα.</p>
+    <h2 class="reveal">Επόμενες Δράσεις</h2>
+    <p class="section-intro reveal">Θυμήσου τις ημερομηνίες. Οι δράσεις είναι ανοιχτές σε όλους τους φοιτητές. Σε περιμένουμε με πολλή χαρά.</p>
     <div class="events-list">
 
       <div class="event-item reveal">
         <div class="event-date" style="background:var(--cinema)">
-          <div class="day">22</div>
-          <div class="month">Μαρ</div>
+          <div class="day"></div>
+          <div class="month">ΤΒΑ</div>
         </div>
         <div class="event-info">
-          <h3>Προβολή & Συζήτηση: Θέμα TBA</h3>
-          <p>Κινηματογραφική βραδιά με ψυχολογική ανάλυση · Microsoft Teams</p>
+          <h3>Προβολή & Συζήτηση: TBA</h3>
+          <p>Μια κινηματογραφική βραδιά με ψυχολογική ανάλυση · Αίθουσα ΧΧΧ & Teams</p>
         </div>
-        <span class="event-club-tag" style="background:var(--cinema)">🎬 Cinema</span>
+        <span class="event-club-tag" style="background:var(--cinema)">🎬 Film</span>
       </div>
 
       <div class="event-item reveal">
         <div class="event-date" style="background:var(--games)">
-          <div class="day">28</div>
-          <div class="month">Μαρ</div>
+          <div class="day"></div>
+          <div class="month">ΤΒΑ</div>
         </div>
         <div class="event-info">
-          <h3>Game Night — Ανοιχτή στη Σχολή</h3>
+          <h3>Game Night</h3>
           <p>Codenames, Catan και άλλα · Αίθουσα Aegean College</p>
         </div>
-        <span class="event-club-tag" style="background:var(--games)">🎲 Games</span>
+        <span class="event-club-tag" style="background:var(--games)">🎲 Board Game</span>
       </div>
 
       <div class="event-item reveal">
         <div class="event-date" style="background:var(--books)">
-          <div class="day">4</div>
-          <div class="month">Απρ</div>
+          <div class="day"></div>
+          <div class="month">ΤΒΑ</div>
         </div>
         <div class="event-info">
           <h3>Blind Date with a Book</h3>
-          <p>Πρώτη συνάντηση λέσχης βιβλίου · Λεπτομέρειες σύντομα</p>
+          <p>Πρώτη συνάντηση της λέσχης βιβλίου · Λεπτομέρειες σύντομα</p>
         </div>
-        <span class="event-club-tag" style="background:var(--books)">📚 Βιβλίο</span>
+        <span class="event-club-tag" style="background:var(--books)">📚 Book</span>
       </div>
 
       <div class="event-item reveal">
-        <div class="event-date" style="background:var(--hiking)">
-          <div class="day">12</div>
-          <div class="month">Απρ</div>
+        <div class="event-date" style="background:var(--walking)">
+          <div class="day"></div>
+          <div class="month">ΤΒΑ</div>
         </div>
         <div class="event-info">
-          <h3>Πρώτη Εξόρμηση — Χορτιάτης</h3>
-          <p>Μονοπάτι για όλα τα επίπεδα · Αναχώρηση από Θεσσαλονίκη</p>
+          <h3>Περίπατος στον Χορτιάτη</h3>
+          <p>Ιδανικό μονοπάτι για όλους τους αρχάριους · Αναχώρηση από Θεσσαλονίκη</p>
         </div>
-        <span class="event-club-tag" style="background:var(--hiking)">🥾 Hiking</span>
+        <span class="event-club-tag" style="background:var(--walking)">🥾 Walking</span>
       </div>
 
     </div>
@@ -549,54 +567,13 @@
   <div style="max-width:680px;margin:0 auto;">
     <div class="section-label reveal">Εγγραφή</div>
     <h2 class="reveal">Θέλεις να συμμετέχεις;</h2>
-    <p class="section-intro reveal">Συμπλήρωσε τη φόρμα και θα σε προσθέσουμε στη λέσχη που σε ενδιαφέρει. Δεν δεσμεύεσαι με τίποτα — απλώς ενδιαφέρον.</p>
+    <p class="section-intro reveal">Συμπλήρωσε τη φόρμα και θα σε προσθέσουμε στη λέσχη που σε ενδιαφέρει, για να ενημερώνεσαι για νέες συναντήσεις. Δεν δεσμεύεσαι σε τίποτα!</p>
     <div class="form-wrap reveal">
-      <!--
-        ΟΔΗΓΙΑ SETUP:
-        1. Πήγαινε στο https://formspree.io και δημιούργησε δωρεάν λογαριασμό
-        2. Δημιούργησε νέο form και αντέγραψε το endpoint (π.χ. https://formspree.io/f/xxxxxxxx)
-        3. Άλλαξε το action παρακάτω με το δικό σου endpoint
-        ΄Η χρησιμοποίησε ένα Google Form embed αντί για αυτή τη φόρμα.
-      -->
-      <form action="https://formspree.io/f/ΑΛΛΑΞΕ_ΜΕ_ΤΟ_ΔΙΚΟ_ΣΟΥ" method="POST">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="fname">Όνομα</label>
-            <input type="text" id="fname" name="fname" placeholder="Π.χ. Μαρία" required />
-          </div>
-          <div class="form-group">
-            <label for="lname">Επώνυμο</label>
-            <input type="text" id="lname" name="lname" placeholder="Π.χ. Παπαδοπούλου" required />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="email@aegean.ac.uk" required />
-        </div>
-        <div class="form-group">
-          <label for="year">Έτος σπουδών</label>
-          <select id="year" name="year" required>
-            <option value="" disabled selected>Επίλεξε...</option>
-            <option>1ο Έτος</option>
-            <option>2ο Έτος</option>
-            <option>3ο Έτος</option>
-            <option>Άλλο</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Λέσχες που σε ενδιαφέρουν</label>
-          <div class="clubs-checkboxes">
-            <label class="club-check"><input type="checkbox" name="clubs" value="Cinema" /> <span>🎬 Κινηματογράφου</span></label>
-            <label class="club-check"><input type="checkbox" name="clubs" value="Hiking" /> <span>🥾 Πεζοπορίας</span></label>
-            <label class="club-check"><input type="checkbox" name="clubs" value="Books"  /> <span>📚 Βιβλίου</span></label>
-            <label class="club-check"><input type="checkbox" name="clubs" value="Games"  /> <span>🎲 Επιτραπέζιων</span></label>
-            <label class="club-check"><input type="checkbox" name="clubs" value="Theatre"/> <span>🎭 Θεατρική</span></label>
-            <label class="club-check"><input type="checkbox" name="clubs" value="LGBTQ"  /> <span>🏳️‍🌈 ΛΟΑΤΚΙ+</span></label>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-submit btn">Στείλε τη δήλωση ενδιαφέροντος →</button>
+	<p>Για να δηλώσεις συμμετοχή στις Λέσχες, πρέπει να συνδεθείς με τους ακαδημαϊκούς σου κωδικούς Aegean. Πάτησε παρακάτω για να συνδεθείς.</p><br>
+        
+        <a target="_blank" href="https://forms.microsoft.com/e/9U0ZkAVnZG"><button class="btn btn-submit btn">Δήλωσε συμμετοχή →</button></a>
         <p class="form-note">Τα στοιχεία σου χρησιμοποιούνται αποκλειστικά για την επικοινωνία σχετικά με τις λέσχες.</p>
-      </form>
+     </div>
     </div>
   </div>
 </section>
@@ -606,24 +583,18 @@
   <div id="contact">
     <div class="contact-info">
       <div class="section-label reveal">Επικοινωνία</div>
-      <h2 class="reveal">Βρες μας</h2>
-      <p class="reveal">Φοιτητικές Λέσχες Ψυχολογίας του Aegean College Θεσσαλονίκης. Φτιάχτηκαν από φοιτητές, για φοιτητές.</p>
+      <h2 class="reveal">Μίλησέ μας</h2>
+      <p class="reveal">Φοιτητικές Λέσχες των φοιτητών Ψυχολογίας του Aegean College Θεσσαλονίκης. Μπορείς να μας βρεις στα παρακάτω λινκ.</p>
       <div class="contact-links reveal">
-        <a href="mailto:aegeanstudent@example.com" class="contact-link">
-          <span class="icon">✉️</span> aegeanstudent@example.com
+        
+        <a href="https://instagram.com/aegeanstudent/" target="_blank" class="contact-link">
+          <i class="fa-brands fa-instagram"></i> @aegeanstudent
         </a>
-        <a href="https://instagram.com/" target="_blank" class="contact-link">
-          <span class="icon">📸</span> @aegean.student
-        </a>
-        <a href="https://facebook.com/" target="_blank" class="contact-link">
-          <span class="icon">📘</span> Aegean Student Clubs
-        </a>
-      </div>
+        </div>
     </div>
     <div class="contact-right reveal">
       <h3>Ανήκεις εδώ.</h3>
-      <p>Δεν χρειάζεσαι εμπειρία, εξειδίκευση ή τέλειο βιογραφικό. Αρκεί να θες να γνωρίσεις ανθρώπους που μοιράζονται κάτι μαζί σου.</p>
-      <p style="margin-top:1rem">Έλα σε μια πρώτη συνάντηση, δες πώς σου φαίνεται — και αποφάσισε μόνος/η σου.</p>
+      <p>Έλα στις Λέσχες να γνωριστούμε, να μιλήσουμε για αυτά που αγαπάμε, να περάσουμε καλά.</p>
       <a href="#eggrafi" class="email-big">→ Δήλωσε συμμετοχή</a>
     </div>
   </div>
@@ -631,7 +602,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2025 <strong>Aegean Student</strong> · Φοιτητικές Λέσχες Τμήματος Ψυχολογίας · Aegean College Θεσσαλονίκης</p>
+  <p>© 2026 <strong>Aegean Student</strong> · Φοιτητικές Λέσχες του τμήματος Ψυχολογίας του Aegean College Θεσσαλονίκης</p>
 </footer>
 
 <script>
