@@ -384,7 +384,7 @@
     <h1 class="login-title">Ανταλλακτική Βιβλιοθήκη</h1>
     <p class="login-subtitle">Λέσχη Βιβλίου · Aegean College</p>
     <div class="login-card">
-      <label for="input-name">Το όνομά σου</label>
+      <label for="input-name">Ονοματεπώνυμο</label>
       <input type="text" id="input-name" placeholder="π.χ. Μαρία Παπαδοπούλου"
              maxlength="60" autocomplete="name"
              onkeydown="if(event.key==='Enter') doLogin()">
@@ -437,6 +437,41 @@
 
 </main>
 
+<!-- ── LOGIN (plain script, no Firebase dependency) ── -->
+<script>
+  let currentUser = localStorage.getItem('lib_user') || null;
+
+  function doLogin() {
+    const name = document.getElementById('input-name').value.trim();
+    if (!name) { alert('Γράψε το όνομά σου'); return; }
+    currentUser = name;
+    localStorage.setItem('lib_user', name);
+    _showMain();
+  }
+
+  function logout() {
+    localStorage.removeItem('lib_user');
+    currentUser = null;
+    if (window._allBooks) window._allBooks = [];
+    document.getElementById('screen-main').classList.remove('active');
+    document.getElementById('screen-login').classList.add('active');
+    document.getElementById('app-header').style.display = 'none';
+    document.getElementById('input-name').value = '';
+  }
+
+  function _showMain() {
+    document.getElementById('screen-login').classList.remove('active');
+    document.getElementById('screen-main').classList.add('active');
+    document.getElementById('app-header').style.display = 'flex';
+    document.getElementById('header-username').textContent = currentUser;
+    if (window._loadBooks) window._loadBooks();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (currentUser) _showMain();
+  });
+</script>
+
 <!-- ═══════════════════════════════════════════════════
      FIREBASE CONFIGURATION
      Αντικατέστησε τις τιμές με τα δικά σου credentials
@@ -450,8 +485,7 @@ const FIREBASE_CONFIG = {
   projectId:         "book-club-233b7",
   storageBucket:     "book-club-233b7.firebasestorage.app",
   messagingSenderId: "1099164172932",
-  appId:             "1:1099164172932:web:0bc55dfd2097e1744c78d1"
-};
+  appId:             "1:1099164172932:web:0bc55dfd2097e1744c78d1"};
 
 // ── IMPORTS ──────────────────────────────────────────────
 import { initializeApp }
@@ -462,45 +496,24 @@ import { getFirestore, collection, doc, getDocs, getDoc,
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // ── INIT ─────────────────────────────────────────────────
-const app = initializeApp(FIREBASE_CONFIG);
-const db  = getFirestore(app);
+let db;
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  db = getFirestore(app);
+} catch(e) {
+  console.error('Firebase init error:', e);
+}
 
 // ── STATE ─────────────────────────────────────────────────
-let currentUser = localStorage.getItem('lib_user') || null;
-let allBooks    = [];
-let currentTab  = 'all';
-let _leaveMode  = 'new';
+let allBooks   = [];
+let currentTab = 'all';
+let _leaveMode = 'none';
 
-// ── BOOT ──────────────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', () => {
-  if (currentUser) showMain();
-});
+// expose loadBooks so the plain-script login can call it
+window._loadBooks = loadBooks;
+window._allBooks  = allBooks;
 
-// ── LOGIN / LOGOUT ────────────────────────────────────────
-window.doLogin = function () {
-  const name = document.getElementById('input-name').value.trim();
-  if (!name) return showToast('Γράψε το όνομά σου', 'error');
-  currentUser = name;
-  localStorage.setItem('lib_user', name);
-  showMain();
-};
-
-window.logout = function () {
-  localStorage.removeItem('lib_user');
-  currentUser = null; allBooks = [];
-  document.getElementById('screen-main').classList.remove('active');
-  document.getElementById('screen-login').classList.add('active');
-  document.getElementById('app-header').style.display = 'none';
-  document.getElementById('input-name').value = '';
-};
-
-function showMain() {
-  document.getElementById('screen-login').classList.remove('active');
-  document.getElementById('screen-main').classList.add('active');
-  document.getElementById('app-header').style.display = 'flex';
-  document.getElementById('header-username').textContent = currentUser;
-  loadBooks();
-}
+function showMain() { _showMain(); }
 
 // ── FIRESTORE ─────────────────────────────────────────────
 async function loadBooks() {
