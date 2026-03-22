@@ -882,7 +882,7 @@ window.doAddBook = async function () {
 };
 
 // ── MODAL UTILS ───────────────────────────────────────────
-function openModal(html) {
+window.openModal = function openModal(html) {
   document.getElementById('modal-content').innerHTML = html;
   document.getElementById('modal-overlay').classList.add('open');
 }
@@ -892,10 +892,10 @@ window.closeModal = function () {
 window.closeModalOnOverlay = function (e) {
   if (e.target.id === 'modal-overlay') closeModal();
 };
-function disableModalBtns() {
+window.disableModalBtns = function disableModalBtns() {
   document.querySelectorAll('#modal-content .btn').forEach(b => b.disabled = true);
 }
-function enableModalBtns() {
+window.enableModalBtns  = function enableModalBtns() {
   document.querySelectorAll('#modal-content .btn').forEach(b => b.disabled = false);
 }
 
@@ -910,8 +910,8 @@ window.showToast = function (msg, type = '') {
 };
 
 // ── UTILS ─────────────────────────────────────────────────
-function pad(n) { return String(n || 0).padStart(3, '0'); }
-function esc(s) {
+window.pad = function pad(n) { return String(n || 0).padStart(3, '0'); }
+window.esc = function esc(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;')
                         .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
