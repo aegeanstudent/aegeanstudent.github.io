@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ανταλλακτική Βιβλιοθήκη</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --paper: #fdfaf4;
+    --ink: #1c1810;
+    --ink-light: #4a4236;
+    --amber: #c17f3a;
+    --amber-light: #e8a84a;
+    --amber-pale: #f5e4c8;
+    --rust: #9b3f2a;
+    --sage: #5a7a5c;
+    --border: #d8cdb8;
+    --shadow: rgba(28, 24, 16, 0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 15px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+    border-bottom: 3px solid var(--amber);
+  }
+
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.02em;
+  }
+
+  .header-title span { color: var(--amber-light); font-style: italic; }
+
+  .user-badge {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.85rem; color: var(--border);
+  }
+  .user-badge strong { color: var(--amber-light); font-weight: 500; }
+
+  .btn-logout {
+    background: none; border: 1px solid #444; color: var(--border);
+    padding: 0.2rem 0.6rem; border-radius: 4px; cursor: pointer;
+    font-size: 0.75rem; font-family: inherit; transition: all 0.2s;
+  }
+  .btn-logout:hover { border-color: var(--amber); color: var(--amber-light); }
+
+  main {
+    position: relative; z-index: 1;
+    max-width: 900px; margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  #screen-login {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; text-align: center; padding: 2rem;
+  }
+  #screen-login.active { display: flex; }
+
+  .login-ornament { font-size: 3.5rem; margin-bottom: 1rem; line-height: 1; }
+
+  .login-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; font-weight: 600;
+    color: var(--ink); margin-bottom: 0.3rem;
+  }
+
+  .login-subtitle {
+    color: var(--ink-light); font-size: 0.95rem;
+    margin-bottom: 2.5rem; font-weight: 300;
+  }
+
+  .login-card {
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 12px; padding: 2rem;
+    width: 100%; max-width: 380px;
+    box-shadow: 0 8px 32px var(--shadow);
+  }
+
+  .login-card label {
+    display: block; font-size: 0.8rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--ink-light); margin-bottom: 0.5rem;
+  }
+
+  .login-card input {
+    width: 100%; padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: inherit; font-size: 1rem;
+    background: var(--cream); color: var(--ink);
+    transition: border-color 0.2s; outline: none;
+  }
+  .login-card input:focus { border-color: var(--amber); }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    padding: 0.7rem 1.4rem; border-radius: 8px;
+    font-family: inherit; font-size: 0.9rem; font-weight: 500;
+    cursor: pointer; border: none; transition: all 0.2s;
+  }
+
+  .btn-primary { background: var(--amber); color: #fff; width: 100%; margin-top: 1rem; }
+  .btn-primary:hover { background: var(--amber-light); transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-secondary { background: transparent; color: var(--amber); border: 1.5px solid var(--amber); }
+  .btn-secondary:hover { background: var(--amber-pale); }
+
+  .btn-danger { background: transparent; color: var(--rust); border: 1.5px solid var(--rust); }
+  .btn-danger:hover { background: #f5e4e0; }
+
+  .btn-success { background: var(--sage); color: #fff; }
+  .btn-success:hover { background: #4a6a4c; transform: translateY(-1px); }
+
+  .btn-neutral { background: transparent; color: var(--ink-light); border: 1.5px solid var(--border); }
+  .btn-neutral:hover { border-color: var(--ink-light); }
+
+  .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.82rem; }
+
+  .action-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem; margin-bottom: 2rem;
+  }
+
+  .action-card {
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.4rem;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .action-card:hover {
+    border-color: var(--amber); transform: translateY(-2px);
+    box-shadow: 0 6px 20px var(--shadow);
+  }
+  .action-card .icon { font-size: 2rem; margin-bottom: 0.6rem; }
+  .action-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; }
+  .action-card p { font-size: 0.8rem; color: var(--ink-light); font-weight: 300; }
+
+  .tabs {
+    display: flex; gap: 0;
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.3rem;
+    margin-bottom: 1.5rem;
+  }
+  .tab {
+    flex: 1; padding: 0.55rem;
+    font-family: inherit; font-size: 0.85rem; font-weight: 500;
+    background: none; border: none; border-radius: 7px;
+    cursor: pointer; color: var(--ink-light); transition: all 0.2s;
+  }
+  .tab.active { background: var(--ink); color: var(--cream); }
+
+  .stats-row { display: flex; gap: 0.8rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .stat-chip {
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0.9rem;
+    font-size: 0.82rem; color: var(--ink-light);
+  }
+  .stat-chip strong { color: var(--ink); font-weight: 600; }
+
+  .search-bar { position: relative; margin-bottom: 1.2rem; }
+  .search-bar input {
+    width: 100%; padding: 0.7rem 1rem 0.7rem 2.5rem;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: inherit; font-size: 0.9rem;
+    background: var(--paper); color: var(--ink);
+    outline: none; transition: border-color 0.2s;
+  }
+  .search-bar input:focus { border-color: var(--amber); }
+  .search-bar::before {
+    content: '🔍'; position: absolute; left: 0.7rem; top: 50%;
+    transform: translateY(-50%); font-size: 0.85rem; pointer-events: none;
+  }
+
+  .book-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .book-item {
+    background: var(--paper); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1rem 1.2rem;
+    display: flex; align-items: center; gap: 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .book-item:hover { box-shadow: 0 4px 12px var(--shadow); }
+
+  .book-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 600; color: var(--amber);
+    min-width: 2.8rem; text-align: center;
+  }
+
+  .book-info { flex: 1; min-width: 0; }
+  .book-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem; font-weight: 600; margin-bottom: 0.15rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .book-author { font-size: 0.82rem; color: var(--ink-light); font-weight: 300; }
+
+  .book-status {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.78rem; font-weight: 500; white-space: nowrap;
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .status-available .status-dot { background: var(--sage); }
+  .status-borrowed  .status-dot { background: var(--rust); }
+  .status-available { color: var(--sage); }
+  .status-borrowed  { color: var(--rust); }
+
+  .book-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(28, 24, 16, 0.5);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--paper); border-radius: 14px;
+    padding: 2rem; width: 100%; max-width: 460px;
+    box-shadow: 0 20px 60px rgba(28,24,16,0.2);
+    transform: translateY(10px); transition: transform 0.2s;
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; font-weight: 600;
+    margin-bottom: 1.2rem; padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .form-group { margin-bottom: 1rem; }
+  .form-group label {
+    display: block; font-size: 0.78rem; font-weight: 500;
+    letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--ink-light); margin-bottom: 0.4rem;
+  }
+  .form-group input,
+  .form-group select {
+    width: 100%; padding: 0.65rem 0.9rem;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: inherit; font-size: 0.9rem;
+    background: var(--cream); color: var(--ink);
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--amber); }
+
+  .modal-book-preview {
+    background: var(--amber-pale); border-radius: 8px;
+    padding: 0.8rem 1rem; margin: 0.8rem 0;
+  }
+
+  .modal-actions {
+    display: flex; gap: 0.6rem; justify-content: flex-end;
+    margin-top: 1.2rem; flex-wrap: wrap;
+  }
+
+  .optional-label {
+    font-size: 0.8rem; color: var(--ink-light);
+    display: flex; align-items: center; gap: 0.5rem;
+    margin: 1rem 0 0.8rem;
+  }
+  .optional-label::before, .optional-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  .leave-toggle {
+    display: flex; gap: 0.5rem; margin-bottom: 0.8rem;
+  }
+  .leave-toggle button {
+    flex: 1; padding: 0.5rem;
+    font-family: inherit; font-size: 0.82rem; font-weight: 500;
+    border-radius: 7px; cursor: pointer; transition: all 0.2s;
+    border: 1.5px solid var(--border); background: transparent; color: var(--ink-light);
+  }
+  .leave-toggle button.active {
+    border-color: var(--amber); background: var(--amber-pale); color: var(--ink);
+  }
+
+  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--ink-light); }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.8rem; }
+  .empty-state p { font-size: 0.9rem; }
+
+  .toast {
+    position: fixed; bottom: 1.5rem; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--ink); color: var(--cream);
+    padding: 0.7rem 1.4rem; border-radius: 8px;
+    font-size: 0.9rem; z-index: 300;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap; max-width: 90vw; text-align: center;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { background: var(--sage); }
+  .toast.error { background: var(--rust); }
+
+  .loading {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.5rem; padding: 2rem; color: var(--ink-light); font-size: 0.9rem;
+  }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border); border-top-color: var(--amber);
+    border-radius: 50%; animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .info-box {
+    background: var(--amber-pale); border: 1px solid #dcc090;
+    border-radius: 8px; padding: 0.8rem 1rem;
+    font-size: 0.82rem; color: var(--ink-light);
+    margin-bottom: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 0 1rem; }
+    .header-title { font-size: 1rem; }
+    .header-title span { display: none; }
+    main { padding: 1.2rem 1rem; }
+    .action-grid { grid-template-columns: 1fr 1fr; }
+    .book-item { flex-wrap: wrap; }
+    .book-actions { width: 100%; justify-content: flex-end; }
+    .modal { padding: 1.4rem; }
+    .modal-actions { justify-content: stretch; }
+    .modal-actions .btn { flex: 1; }
+  }
+</style>
+</head>
+<body>
+
+<header id="app-header" style="display:none">
+  <div class="header-title">📚 <span>Ανταλλακτική</span> Βιβλιοθήκη</div>
+  <div class="user-badge">
+    <span>Γεια, <strong id="header-username"></strong></span>
+    <button class="btn-logout" onclick="logout()">Αλλαγή</button>
+  </div>
+</header>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnOverlay(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<main>
+
+  <!-- LOGIN -->
+  <div class="screen active" id="screen-login">
+    <div class="login-ornament">📖</div>
+    <h1 class="login-title">Ανταλλακτική Βιβλιοθήκη</h1>
+    <p class="login-subtitle">Λέσχη Βιβλίου · Aegean College</p>
+    <div class="login-card">
+      <label for="input-name">Το όνομά σου</label>
+      <input type="text" id="input-name" placeholder="π.χ. Μαρία Παπαδοπούλου"
+             maxlength="60" autocomplete="name"
+             onkeydown="if(event.key==='Enter') doLogin()">
+      <button class="btn btn-primary" onclick="doLogin()">Είσοδος →</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="screen" id="screen-main">
+    <div class="action-grid">
+      <div class="action-card" onclick="openBorrowModal()">
+        <div class="icon">📤</div>
+        <h3>Δανεισμός</h3>
+        <p>Πάρε ένα βιβλίο</p>
+      </div>
+      <div class="action-card" onclick="openReturnModal()">
+        <div class="icon">📥</div>
+        <h3>Επιστροφή</h3>
+        <p>Επίστρεψε βιβλίο</p>
+      </div>
+      <div class="action-card" onclick="openAddModal()">
+        <div class="icon">➕</div>
+        <h3>Νέο βιβλίο</h3>
+        <p>Πρόσθεσε στη συλλογή</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('all')">Όλα</button>
+      <button class="tab" onclick="switchTab('available')">Διαθέσιμα</button>
+      <button class="tab" onclick="switchTab('mine')">Δανεισμένα από μένα</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-chip"><strong id="stat-total">—</strong> σύνολο</div>
+      <div class="stat-chip"><strong id="stat-available">—</strong> διαθέσιμα</div>
+      <div class="stat-chip"><strong id="stat-borrowed">—</strong> δανεισμένα</div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="search-input"
+             placeholder="Αναζήτηση τίτλου, συγγραφέα ή αριθμού…"
+             oninput="renderBooks()">
+    </div>
+
+    <div id="book-list-container">
+      <div class="loading"><div class="spinner"></div> Φόρτωση βιβλίων…</div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════
+     FIREBASE CONFIGURATION
+     Αντικατέστησε τις τιμές με τα δικά σου credentials
+     από το Firebase Console → Project Settings
+     ═══════════════════════════════════════════════════ -->
+<script type="module">
+
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyBcAKBurs_GMtM3A6-XT31jQaA-56wKM34",
+  authDomain:        "book-club-233b7.firebaseapp.com",
+  projectId:         "book-club-233b7",
+  storageBucket:     "book-club-233b7.firebasestorage.app",
+  messagingSenderId: "1099164172932",
+  appId:             "1:1099164172932:web:0bc55dfd2097e1744c78d1"
+};
+
+// ── IMPORTS ──────────────────────────────────────────────
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, getDocs, getDoc,
+         addDoc, updateDoc, setDoc, query, orderBy,
+         serverTimestamp, increment }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ── INIT ─────────────────────────────────────────────────
+const app = initializeApp(FIREBASE_CONFIG);
+const db  = getFirestore(app);
+
+// ── STATE ─────────────────────────────────────────────────
+let currentUser = localStorage.getItem('lib_user') || null;
+let allBooks    = [];
+let currentTab  = 'all';
+let _leaveMode  = 'new';
+
+// ── BOOT ──────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  if (currentUser) showMain();
+});
+
+// ── LOGIN / LOGOUT ────────────────────────────────────────
+window.doLogin = function () {
+  const name = document.getElementById('input-name').value.trim();
+  if (!name) return showToast('Γράψε το όνομά σου', 'error');
+  currentUser = name;
+  localStorage.setItem('lib_user', name);
+  showMain();
+};
+
+window.logout = function () {
+  localStorage.removeItem('lib_user');
+  currentUser = null; allBooks = [];
+  document.getElementById('screen-main').classList.remove('active');
+  document.getElementById('screen-login').classList.add('active');
+  document.getElementById('app-header').style.display = 'none';
+  document.getElementById('input-name').value = '';
+};
+
+function showMain() {
+  document.getElementById('screen-login').classList.remove('active');
+  document.getElementById('screen-main').classList.add('active');
+  document.getElementById('app-header').style.display = 'flex';
+  document.getElementById('header-username').textContent = currentUser;
+  loadBooks();
+}
+
+// ── FIRESTORE ─────────────────────────────────────────────
+async function loadBooks() {
+  document.getElementById('book-list-container').innerHTML =
+    '<div class="loading"><div class="spinner"></div> Φόρτωση…</div>';
+  try {
+    const snap = await getDocs(query(collection(db, 'books'), orderBy('number', 'asc')));
+    allBooks   = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    updateStats();
+    renderBooks();
+  } catch (e) {
+    console.error(e);
+    document.getElementById('book-list-container').innerHTML =
+      `<div class="empty-state"><div class="icon">⚠️</div>
+       <p>Αδυναμία σύνδεσης.<br>Έλεγξε τα Firebase credentials.</p></div>`;
+  }
+}
+
+async function getNextNumber() {
+  const ref  = doc(db, 'meta', 'counter');
+  const snap = await getDoc(ref);
+  if (!snap.exists()) { await setDoc(ref, { lastNumber: 1 }); return 1; }
+  await updateDoc(ref, { lastNumber: increment(1) });
+  return (await getDoc(ref)).data().lastNumber;
+}
+
+async function openLoanFor(bookId) {
+  const snap = await getDocs(collection(db, 'loans'));
+  return snap.docs.find(d => d.data().bookId === bookId && !d.data().returnedAt) || null;
+}
+
+// ── STATS + RENDER ────────────────────────────────────────
+function updateStats() {
+  const avail = allBooks.filter(b => b.available).length;
+  document.getElementById('stat-total').textContent     = allBooks.length;
+  document.getElementById('stat-available').textContent = avail;
+  document.getElementById('stat-borrowed').textContent  = allBooks.length - avail;
+}
+
+window.renderBooks = function () {
+  const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+  let books = [...allBooks];
+  if (currentTab === 'available') books = books.filter(b => b.available);
+  if (currentTab === 'mine')      books = books.filter(b => !b.available && b.borrowedBy === currentUser);
+  if (q) books = books.filter(b =>
+    String(b.number).includes(q) ||
+    (b.title  || '').toLowerCase().includes(q) ||
+    (b.author || '').toLowerCase().includes(q)
+  );
+
+  const container = document.getElementById('book-list-container');
+  if (!books.length) {
+    container.innerHTML = `<div class="empty-state">
+      <div class="icon">${currentTab === 'mine' ? '🎒' : '📭'}</div>
+      <p>${currentTab === 'mine' ? 'Δεν έχεις δανεισμένα βιβλία.' : 'Δεν βρέθηκαν βιβλία.'}</p>
+    </div>`;
+    return;
+  }
+  container.innerHTML = `<div class="book-list">${books.map(bookCard).join('')}</div>`;
+};
+
+function bookCard(b) {
+  const isMyLoan = !b.available && b.borrowedBy === currentUser;
+  const borrowInfo = !b.available
+    ? `<div style="font-size:0.73rem;color:var(--ink-light);margin-top:0.1rem">
+         από: ${esc(b.borrowedBy)}</div>` : '';
+  const actions = b.available
+    ? `<button class="btn btn-success btn-sm" onclick="quickBorrow('${b.id}')">📤 Δανεισμός</button>`
+    : isMyLoan
+      ? `<button class="btn btn-secondary btn-sm" onclick="quickReturn('${b.id}')">📥 Επιστροφή</button>`
+      : '';
+  return `<div class="book-item">
+    <div class="book-number">#${pad(b.number)}</div>
+    <div class="book-info">
+      <div class="book-title">${esc(b.title)}</div>
+      <div class="book-author">${esc(b.author || '—')}</div>
+      ${borrowInfo}
+    </div>
+    <div class="book-status ${b.available ? 'status-available' : 'status-borrowed'}">
+      <div class="status-dot"></div>
+      ${b.available ? 'Διαθέσιμο' : 'Δανεισμένο'}
+    </div>
+    <div class="book-actions">${actions}</div>
+  </div>`;
+}
+
+// ── TABS ──────────────────────────────────────────────────
+window.switchTab = function (tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach((t, i) =>
+    t.classList.toggle('active', ['all','available','mine'][i] === tab));
+  renderBooks();
+};
+
+// ── BORROW ────────────────────────────────────────────────
+window.openBorrowModal = function () {
+  openModal(`
+    <div class="modal-title">📤 Δανεισμός Βιβλίου</div>
+    <div class="info-box">Κοίταξε τον αριθμό στο αυτοκόλλητο του βιβλίου.</div>
+    <div class="form-group">
+      <label>Αριθμός βιβλίου</label>
+      <input type="number" id="borrow-num" placeholder="π.χ. 7" min="1"
+             oninput="lookupBook()" autofocus>
+    </div>
+    <div id="borrow-preview"></div>
+    <div class="modal-actions">
+      <button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>
+      <button class="btn btn-success" id="borrow-confirm-btn" style="display:none"
+              onclick="confirmBorrowByNum()">✓ Δανείζομαι</button>
+    </div>`);
+};
+
+window.lookupBook = function () {
+  const num  = parseInt(document.getElementById('borrow-num')?.value);
+  const prev = document.getElementById('borrow-preview');
+  const btn  = document.getElementById('borrow-confirm-btn');
+  if (!prev || !btn) return;
+  if (!num) { prev.innerHTML = ''; btn.style.display = 'none'; return; }
+  const b = allBooks.find(x => x.number === num);
+  if (!b) {
+    prev.innerHTML = `<p style="color:var(--rust);font-size:0.85rem;margin-top:0.4rem">⚠ Δεν βρέθηκε βιβλίο #${num}</p>`;
+    btn.style.display = 'none';
+  } else if (!b.available) {
+    prev.innerHTML = `<div class="modal-book-preview">
+      <strong>${esc(b.title)}</strong>
+      <div style="font-size:0.8rem;color:var(--rust);margin-top:0.3rem">Ήδη δανεισμένο από ${esc(b.borrowedBy)}</div>
+    </div>`;
+    btn.style.display = 'none';
+  } else {
+    prev.innerHTML = `<div class="modal-book-preview">
+      <strong style="font-family:'Playfair Display',serif">${esc(b.title)}</strong>
+      <div style="font-size:0.82rem;color:var(--ink-light)">${esc(b.author||'')}</div>
+      <div style="font-size:0.78rem;color:var(--sage);margin-top:0.3rem">✅ Διαθέσιμο</div>
+    </div>`;
+    btn.style.display = 'inline-flex';
+    btn.dataset.bookId = b.id;
+  }
+};
+
+window.quickBorrow = function (bookId) {
+  const b = allBooks.find(x => x.id === bookId);
+  if (!b) return;
+  openModal(`
+    <div class="modal-title">📤 Επιβεβαίωση Δανεισμού</div>
+    <div class="modal-book-preview">
+      <div style="font-size:0.8rem;color:var(--amber);margin-bottom:0.3rem">#${pad(b.number)}</div>
+      <strong style="font-family:'Playfair Display',serif">${esc(b.title)}</strong>
+      <div style="font-size:0.82rem;color:var(--ink-light)">${esc(b.author||'')}</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>
+      <button class="btn btn-success" onclick="confirmBorrow('${bookId}')">✓ Δανείζομαι</button>
+    </div>`);
+};
+
+window.confirmBorrowByNum = function () {
+  const btn = document.getElementById('borrow-confirm-btn');
+  if (btn?.dataset.bookId) confirmBorrow(btn.dataset.bookId);
+};
+
+window.confirmBorrow = async function (bookId) {
+  disableModalBtns();
+  try {
+    await updateDoc(doc(db, 'books', bookId), {
+      available: false, borrowedBy: currentUser, borrowedAt: serverTimestamp()
+    });
+    await addDoc(collection(db, 'loans'), {
+      bookId, borrowerName: currentUser, borrowedAt: serverTimestamp(), returnedAt: null
+    });
+    await loadBooks();
+    openLeaveModal();
+  } catch (e) { console.error(e); showToast('Σφάλμα κατά τον δανεισμό', 'error'); enableModalBtns(); }
+};
+
+function openLeaveModal() {
+  _leaveMode = 'none';
+  openModal(`
+    <div class="modal-title">🎉 Δανεισμός επιτυχής!</div>
+    <div class="info-box">Αφήνεις κάποιο βιβλίο στη θέση του;</div>
+
+    <div class="leave-toggle" style="margin-bottom:1rem">
+      <button id="ltg-new"      onclick="setLeaveMode('new')">📘 Καινούργιο</button>
+      <button id="ltg-existing" onclick="setLeaveMode('existing')">🔢 Υπάρχον (#)</button>
+      <button id="ltg-none"  class="active"   onclick="setLeaveMode('none')">✗ Κανένα</button>
+    </div>
+
+    <div id="leave-new-fields" style="display:none">
+      <div class="form-group">
+        <label>Τίτλος *</label>
+        <input type="text" id="leave-title" placeholder="Τίτλος βιβλίου">
+      </div>
+      <div class="form-group">
+        <label>Συγγραφέας</label>
+        <input type="text" id="leave-author" placeholder="Συγγραφέας">
+      </div>
+    </div>
+
+    <div id="leave-existing-fields" style="display:none">
+      <div class="form-group">
+        <label>Αριθμός βιβλίου</label>
+        <input type="number" id="leave-num" placeholder="π.χ. 12" min="1"
+               oninput="lookupLeaveBook()">
+      </div>
+      <div id="leave-existing-preview"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-neutral" onclick="closeModal(); showToast('Καλή ανάγνωση! 📚', 'success')">Παράλειψη</button>
+      <button class="btn btn-primary" onclick="doLeaveBook()">✓ Αφήνω βιβλίο</button>
+    </div>`);
+}
+
+window.doLeaveBook = async function () {
+  if (_leaveMode === 'none') { closeModal(); showToast('Καλή ανάγνωση! 📚', 'success'); return; }
+  disableModalBtns();
+  try {
+    if (_leaveMode === 'new') {
+      const title  = document.getElementById('leave-title')?.value.trim();
+      const author = document.getElementById('leave-author')?.value.trim() || '';
+      if (!title) { showToast('Βάλε τίτλο για το βιβλίο που αφήνεις', 'error'); enableModalBtns(); return; }
+      const n = await getNextNumber();
+      await addDoc(collection(db, 'books'), {
+        number: n, title, author, available: true,
+        addedBy: currentUser, addedAt: serverTimestamp(),
+        borrowedBy: null, borrowedAt: null
+      });
+      closeModal();
+      showToast(`Το βιβλίο καταχωρήθηκε ως #${pad(n)} 🏷 Κόλλα αυτοκόλλητο!`, 'success');
+    } else if (_leaveMode === 'existing') {
+      const num = parseInt(document.getElementById('leave-num')?.value);
+      const b   = allBooks.find(x => x.number === num);
+      if (!b) { showToast('Δεν βρέθηκε το βιβλίο που αφήνεις', 'error'); enableModalBtns(); return; }
+      await updateDoc(doc(db, 'books', b.id), { available: true, borrowedBy: null, borrowedAt: null });
+      closeModal();
+      showToast('Καλή ανάγνωση! 📚', 'success');
+    }
+    await loadBooks();
+  } catch (e) { console.error(e); showToast('Σφάλμα', 'error'); enableModalBtns(); }
+};
+
+// ── RETURN ────────────────────────────────────────────────
+window.openReturnModal = function () {
+  const mine = allBooks.filter(b => !b.available && b.borrowedBy === currentUser);
+  if (!mine.length) return showToast('Δεν έχεις δανεισμένα βιβλία', 'error');
+  const opts = mine.map(b =>
+    `<option value="${b.id}">#${pad(b.number)} — ${esc(b.title)}</option>`).join('');
+  openModal(`
+    <div class="modal-title">📥 Επιστροφή Βιβλίου</div>
+    <div class="form-group">
+      <label>Βιβλίο που επιστρέφεις</label>
+      <select id="return-select">${opts}</select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>
+      <button class="btn btn-primary" onclick="goToReturnStep2()">Επόμενο →</button>
+    </div>`);
+};
+
+window.goToReturnStep2 = function () {
+  const sel = document.getElementById('return-select');
+  if (sel) quickReturn(sel.value);
+};
+
+window.quickReturn = function (bookId) {
+  const b = allBooks.find(x => x.id === bookId);
+  if (!b) return;
+  openModal(`
+    <div class="modal-title">📥 Επιστροφή Βιβλίου</div>
+    <div class="modal-book-preview" style="margin-bottom:1rem">
+      <div style="font-size:0.8rem;color:var(--amber);margin-bottom:0.25rem">#${pad(b.number)}</div>
+      <strong style="font-family:'Playfair Display',serif">${esc(b.title)}</strong>
+      <div style="font-size:0.82rem;color:var(--ink-light)">${esc(b.author||'')}</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>
+      <button class="btn btn-primary" onclick="doReturn('${bookId}')">✓ Επιστροφή</button>
+    </div>\`);
+};
+window.setLeaveMode = function (mode) {
+  _leaveMode = mode;
+  ['new','existing','none'].forEach(m => {
+    const el = document.getElementById(`ltg-${m}`);
+    if (el) el.classList.toggle('active', m === mode);
+  });
+  document.getElementById('leave-new-fields').style.display      = mode === 'new'      ? 'block' : 'none';
+  document.getElementById('leave-existing-fields').style.display = mode === 'existing' ? 'block' : 'none';
+};
+
+window.lookupLeaveBook = function () {
+  const num  = parseInt(document.getElementById('leave-num')?.value);
+  const prev = document.getElementById('leave-existing-preview');
+  if (!prev) return;
+  if (!num) { prev.innerHTML = ''; return; }
+  const b = allBooks.find(x => x.number === num);
+  prev.innerHTML = b
+    ? `<div class="modal-book-preview" style="margin-top:0.4rem">
+         <strong style="font-family:'Playfair Display',serif">${esc(b.title)}</strong>
+         <div style="font-size:0.78rem;color:var(--ink-light)">${esc(b.author||'')} · ${b.available ? '✅ Διαθέσιμο' : '⚠️ Ήδη δανεισμένο'}</div>
+       </div>`
+    : `<p style="color:var(--rust);font-size:0.8rem;margin-top:0.4rem">Δεν βρέθηκε βιβλίο #${num}</p>`;
+};
+
+window.doReturn = async function (bookId) {
+  disableModalBtns();
+  try {
+    await updateDoc(doc(db, 'books', bookId), { available: true, borrowedBy: null, borrowedAt: null });
+    const loan = await openLoanFor(bookId);
+    if (loan) await updateDoc(doc(db, 'loans', loan.id), { returnedAt: serverTimestamp() });
+    closeModal();
+    showToast('Επιστροφή καταχωρήθηκε ✔', 'success');
+    await loadBooks();
+  } catch (e) { console.error(e); showToast('Σφάλμα κατά την επιστροφή', 'error'); enableModalBtns(); }
+};
+
+// ── ADD NEW BOOK ──────────────────────────────────────────
+window.openAddModal = function () {
+  openModal(`
+    <div class="modal-title">➕ Νέο Βιβλίο</div>
+    <div class="info-box">Μετά την αποθήκευση θα αποδοθεί αυτόματα αύξων αριθμός. Κόλλα το αυτοκόλλητο στο εξώφυλλο.</div>
+    <div class="form-group">
+      <label>Τίτλος *</label>
+      <input type="text" id="add-title" placeholder="Τίτλος βιβλίου" autofocus>
+    </div>
+    <div class="form-group">
+      <label>Συγγραφέας</label>
+      <input type="text" id="add-author" placeholder="Όνομα συγγραφέα">
+    </div>
+    <div class="form-group">
+      <label>Το αφήνεις τώρα στη βιβλιοθήκη;</label>
+      <select id="add-leave">
+        <option value="yes">✅ Ναι, το αφήνω</option>
+        <option value="no">📤 Όχι, το δανείζομαι αμέσως</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>
+      <button class="btn btn-primary" onclick="doAddBook()">✓ Προσθήκη</button>
+    </div>`);
+};
+
+window.doAddBook = async function () {
+  const title  = document.getElementById('add-title')?.value.trim();
+  const author = document.getElementById('add-author')?.value.trim() || '';
+  const leave  = document.getElementById('add-leave')?.value === 'yes';
+  if (!title) return showToast('Βάλε τίτλο για το βιβλίο', 'error');
+  disableModalBtns();
+  try {
+    const n = await getNextNumber();
+    const docRef = await addDoc(collection(db, 'books'), {
+      number: n, title, author,
+      available: leave,
+      addedBy: currentUser, addedAt: serverTimestamp(),
+      borrowedBy: leave ? null : currentUser,
+      borrowedAt: leave ? null : serverTimestamp()
+    });
+    if (!leave) {
+      await addDoc(collection(db, 'loans'), {
+        bookId: docRef.id, borrowerName: currentUser,
+        borrowedAt: serverTimestamp(), returnedAt: null
+      });
+    }
+    closeModal();
+    showToast(`#${pad(n)} — Κόλλα το αυτοκόλλητο! 🏷`, 'success');
+    await loadBooks();
+  } catch (e) { console.error(e); showToast('Σφάλμα κατά την προσθήκη', 'error'); enableModalBtns(); }
+};
+
+// ── MODAL UTILS ───────────────────────────────────────────
+function openModal(html) {
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+window.closeModal = function () {
+  document.getElementById('modal-overlay').classList.remove('open');
+};
+window.closeModalOnOverlay = function (e) {
+  if (e.target.id === 'modal-overlay') closeModal();
+};
+function disableModalBtns() {
+  document.querySelectorAll('#modal-content .btn').forEach(b => b.disabled = true);
+}
+function enableModalBtns() {
+  document.querySelectorAll('#modal-content .btn').forEach(b => b.disabled = false);
+}
+
+// ── TOAST ─────────────────────────────────────────────────
+let _toastTimer;
+window.showToast = function (msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type}`;
+  void t.offsetWidth; t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+};
+
+// ── UTILS ─────────────────────────────────────────────────
+function pad(n) { return String(n || 0).padStart(3, '0'); }
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
