@@ -124,6 +124,25 @@ input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 
 .toast.ok{background:var(--ok)}.toast.err{background:var(--err)}.toast{font-weight:500}
 @media(max-width:480px){.action-grid{grid-template-columns:1fr}}
 </style>
+
+<!-- =====================================================
+     FIREBASE CREDENTIALS — edit ONLY this block
+     Copy values from Firebase Console > Project Settings
+     ===================================================== -->
+<script id="firebase-config" type="application/json">
+{
+  "firebase": {
+    "apiKey":            "AIzaSyBcAKBurs_GMtM3A6-XT31jQaA-56wKM34",
+    "authDomain":        "book-club-233b7.firebaseapp.com",
+    "projectId":         "book-club-233b7",
+    "storageBucket":     "book-club-233b7.firebasestorage.app",
+    "messagingSenderId": "1099164172932",
+    "appId":             "1:1099164172932:web:0bc55dfd2097e1744c78d1"
+  },
+  "appUrl": "aegeanstudent.gr/books.html"
+}
+</script>
+<!-- ===================================================== -->
 </head>
 <body>
 
@@ -209,19 +228,10 @@ import { getFirestore, collection, doc, getDocs, getDoc,
          serverTimestamp, increment }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-// --- REPLACE WITH YOUR FIREBASE CREDENTIALS ---
-// Firebase Console > Project Settings > Your apps
-var CFG = {
-  apiKey:            "AIzaSyBcAKBurs_GMtM3A6-XT31jQaA-56wKM34",
-  authDomain:        "book-club-233b7.firebaseapp.com",
-  projectId:         "book-club-233b7",
-  storageBucket:     "book-club-233b7.firebasestorage.app",
-  messagingSenderId: "1099164172932",
-  appId:             "1:1099164172932:web:0bc55dfd2097e1744c78d1"};
-};
-// Your GitHub Pages URL, e.g. "https://aegeanstudent.gr/books.html"
-var APP_URL = "REPLACE_WITH_YOUR_URL";
-// ----------------------------------------------
+// Read config from JSON block -- edit the <script id="firebase-config"> tag in the HTML
+var _cfg = JSON.parse(document.getElementById('firebase-config').textContent);
+var CFG = _cfg.firebase;
+var APP_URL = _cfg.appUrl;
 
 var app, auth, db;
 try {
