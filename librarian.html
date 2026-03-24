@@ -417,10 +417,10 @@ function renderTable() {
       '<td class="td-status">' + statusBadge + '</td>' +
       '<td style="font-size:.82rem;color:var(--muted)">' + addedBy + '</td>' +
       '<td class="td-actions">' +
-        '<button class="btn btn-neutral btn-sm" onclick="openEditModal('' + b.id + '')">✏️ Επεξεργασία</button>' +
+        '<button class="btn btn-neutral btn-sm" onclick="openEditModal(\'' + b.id + '\')">✏️ Επεξεργασία</button>' +
         (b.available
-          ? '<button class="btn btn-danger btn-sm" onclick="confirmDelete('' + b.id + '')">🗑 Διαγραφή</button>'
-          : '<button class="btn btn-neutral btn-sm" onclick="forceReturn('' + b.id + '')">↩ Επιστροφή</button>'
+          ? '<button class="btn btn-danger btn-sm" onclick="confirmDelete(\'' + b.id + '\')">🗑 Διαγραφή</button>'
+          : '<button class="btn btn-neutral btn-sm" onclick="forceReturn(\'' + b.id + '\')">↩ Επιστροφή</button>'
         ) +
       '</td>' +
     '</tr>';
