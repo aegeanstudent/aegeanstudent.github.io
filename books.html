@@ -224,9 +224,14 @@ const CFG = {
 const APP_URL = "https://ΧΡΗΣΤΗΣ.github.io/REPO/vivliothiki.html";
 // ════════════════════════════════════════════════════════════
 
-const app  = initializeApp(CFG);
-const auth = getAuth(app);
-const db   = getFirestore(app);
+let app, auth, db;
+try {
+  app  = initializeApp(CFG);
+  auth = getAuth(app);
+  db   = getFirestore(app);
+} catch(e) {
+  console.error('Firebase init failed:', e);
+}
 
 const ALLOWED_DOMAIN = 'aegeancollege.gr';
 
@@ -252,6 +257,17 @@ function openModal(html) {
 function closeModal() { document.getElementById('overlay').classList.remove('open'); }
 function disableBtns() { document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=true); }
 function setAlert(id, msg, type) { document.getElementById(id).innerHTML = msg ? '<div class="alert alert-'+type+'">'+msg+'</div>' : ''; }
+
+// ── expose to window immediately (before any async Firebase calls) ──
+Object.assign(window, {
+  sendLink, goBackToLogin, resendLink, doLogout,
+  renderBooks, switchTab,
+  openBorrow, onLookup, quickBorrow, doBorrow, confirmBorrow, selectLeaveBook,
+  openLeaveModal, setLeave, onLookupLeave, doLeave,
+  openReturn, quickReturn, confirmReturn, doReturn,
+  openAdd, doAdd,
+  closeModal, toast
+});
 
 // ── screens ──
 function showLogin() {
@@ -578,16 +594,6 @@ function selectLeaveBook(id) {
     el.style.border = el.id==='lp-'+id ? '2px solid var(--accent)' : '2px solid transparent';
   });
 }
-// ── expose to window ──
-Object.assign(window, {
-  sendLink, goBackToLogin, resendLink, doLogout,
-  renderBooks, switchTab,
-  openBorrow, onLookup, quickBorrow, doBorrow, confirmBorrow, selectLeaveBook,
-  openLeaveModal, setLeave, onLookupLeave, doLeave,
-  openReturn, quickReturn, confirmReturn, doReturn,
-  openAdd, doAdd,
-  closeModal, toast
-});
 </script>
 </body>
 </html>
