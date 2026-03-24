@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Διαχείριση Βιβλιοθήκης · Λέσχη Βιβλίου</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F8F5FF;--surface:#FFFFFF;--surface2:#EDE8FB;--text:#1A0A3C;--muted:#6B5C9E;--accent:#FF6B35;--accent-dk:#D94E1A;--accent2:#7C3AED;--border:#C4B5E8;--ok:#16A34A;--err:#DC2626;--warn:#D97706;--shadow:rgba(124,58,237,.10)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);background-image:radial-gradient(ellipse at 15% 15%,rgba(124,58,237,.08) 0%,transparent 50%),radial-gradient(ellipse at 85% 80%,rgba(255,107,53,.06) 0%,transparent 50%);color:var(--text);min-height:100vh}
+#app-header{display:none;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);background:rgba(255,255,255,.92);backdrop-filter:blur(12px);align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.brand{font-family:'Playfair Display',serif;font-weight:600;font-size:.95rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand-sub{font-size:.7rem;color:var(--muted);font-style:italic;margin-top:1px}
+.admin-badge{background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.25);border-radius:4px;padding:.2rem .6rem;font-size:.7rem;font-weight:600;color:var(--err);margin-left:.5rem;vertical-align:middle}
+.user-badge{background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:.28rem .85rem;font-size:.76rem;cursor:pointer;transition:border-color .2s}
+.user-badge:hover{border-color:var(--accent2)}
+main{max-width:860px;margin:0 auto;padding:1.5rem}
+
+/* screens */
+.screen{display:none}.screen.active{display:block}
+#screen-login{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center;padding:2rem}
+#screen-check{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center;padding:2rem}
+#screen-denied{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center;padding:2rem}
+
+/* login */
+.login-icon{font-size:3.5rem;margin-bottom:1rem}
+.login-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:.3rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-sub{font-style:italic;color:var(--muted);margin-bottom:2rem}
+.login-card{width:100%;max-width:380px;text-align:left}
+.check-icon{font-size:3.5rem;margin-bottom:1.25rem}
+.check-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;margin-bottom:.5rem}
+.check-email-display{font-weight:700;color:var(--accent2);margin:.4rem 0 1rem;font-size:1.05rem}
+.check-sub{color:var(--muted);font-size:.88rem;line-height:1.6;margin-bottom:.75rem}
+.spam-warning{background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.25);border-radius:8px;padding:.85rem 1rem;font-size:.83rem;color:var(--accent-dk);margin-bottom:1.5rem;line-height:1.6;text-align:left;max-width:380px}
+.check-card{width:100%;max-width:380px}
+
+/* denied */
+.denied-icon{font-size:3.5rem;margin-bottom:1rem}
+.denied-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;margin-bottom:.5rem;color:var(--err)}
+.denied-sub{color:var(--muted);margin-bottom:1.5rem;font-size:.9rem}
+
+/* forms */
+.form-group{margin-bottom:1.1rem}
+label{display:block;font-size:.73rem;font-weight:600;color:var(--muted);margin-bottom:.35rem;letter-spacing:.06em;text-transform:uppercase}
+input[type=text],input[type=email],input[type=number],select,textarea{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;transition:border-color .2s}
+textarea{resize:vertical;min-height:80px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent2);box-shadow:0 0 0 3px rgba(124,58,237,.10)}
+.input-hint{font-size:.73rem;color:var(--muted);margin-top:.3rem;font-style:italic}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.75rem 1.4rem;border-radius:6px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;transition:all .18s}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 10px rgba(124,58,237,.2)}.btn-primary:hover{filter:brightness(1.08)}
+.btn-success{background:var(--ok);color:#fff}.btn-success:hover{filter:brightness(1.08)}
+.btn-neutral{background:transparent;color:var(--text);border:1.5px solid var(--border)}.btn-neutral:hover{border-color:var(--text)}
+.btn-ghost{background:transparent;color:var(--muted);border:none;padding:.4rem .6rem;font-size:.8rem;cursor:pointer}.btn-ghost:hover{color:var(--text)}
+.btn-danger{background:transparent;color:var(--err);border:1.5px solid rgba(220,38,38,.3)}.btn-danger:hover{background:rgba(220,38,38,.05);border-color:var(--err)}
+.btn-sm{padding:.45rem .9rem;font-size:.8rem}
+.btn-full{width:100%;justify-content:center}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* toolbar */
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;gap:1rem;flex-wrap:wrap}
+.toolbar-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700}
+.search-wrap{position:relative;flex:1;min-width:200px}
+.search-wrap input{padding-left:2.3rem}
+.search-wrap::before{content:'🔍';position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.8rem;pointer-events:none}
+
+/* stats */
+.stats-row{display:flex;gap:.65rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.stat-chip{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.79rem;color:var(--muted)}
+.stat-chip strong{color:var(--text);font-weight:600}
+
+/* table */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--surface2)}
+th{padding:.75rem 1rem;text-align:left;font-size:.73rem;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+td{padding:.75rem 1rem;border-bottom:1px solid var(--border);font-size:.88rem;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(124,58,237,.02)}
+.td-title{font-family:'Playfair Display',serif;font-weight:600;font-size:.92rem}
+.td-author{color:var(--muted);font-size:.82rem}
+.td-status{white-space:nowrap}
+.badge{display:inline-block;padding:.22rem .65rem;border-radius:999px;font-size:.72rem;font-weight:600}
+.badge-ok{background:rgba(22,163,74,.1);color:var(--ok)}
+.badge-no{background:rgba(220,38,38,.09);color:var(--err)}
+.td-actions{white-space:nowrap;text-align:right}
+.td-actions .btn{margin-left:.3rem}
+.td-borrower{font-size:.78rem;color:var(--muted);font-style:italic}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(26,10,60,.40);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .22s;padding:1rem}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--surface);border-radius:12px;width:100%;max-width:460px;padding:1.6rem;transform:translateY(20px);transition:transform .22s;max-height:90vh;overflow-y:auto}
+.overlay.open .modal{transform:translateY(0)}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:1.25rem}
+.modal-actions{display:flex;gap:.6rem;margin-top:1.25rem;flex-wrap:wrap;justify-content:flex-end}
+
+/* alerts */
+.alert{padding:.75rem 1rem;border-radius:6px;margin-bottom:.85rem;font-size:.85rem}
+.alert-err{background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.18);color:var(--err)}
+.alert-ok{background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.18);color:var(--ok)}
+.alert-warn{background:rgba(217,119,6,.07);border:1px solid rgba(217,119,6,.2);color:var(--warn)}
+
+/* misc */
+.loading{text-align:center;padding:3rem;color:var(--muted)}
+.empty-state{text-align:center;padding:3rem;color:var(--muted)}
+.spinner{display:inline-block;width:1.2rem;height:1.2rem;border:2px solid var(--border);border-top-color:var(--accent2);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.5rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:.65rem 1.3rem;border-radius:999px;font-size:.85rem;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;z-index:200;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{background:var(--ok)}.toast.err{background:var(--err)}
+.divider{height:1px;background:var(--border);margin:1.25rem 0}
+@media(max-width:640px){
+  .toolbar{flex-direction:column;align-items:stretch}
+  table{font-size:.82rem}
+  th,td{padding:.6rem .75rem}
+  .td-actions{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<header id="app-header">
+  <div style="display:flex;align-items:center;gap:.5rem">
+    <div>
+      <div class="brand">📚 Βιβλιοθήκη <span class="admin-badge">ADMIN</span></div>
+      <div class="brand-sub">Λέσχη Βιβλίου · Aegean College</div>
+    </div>
+  </div>
+  <div class="user-badge" onclick="doLogout()" title="Αποσύνδεση">
+    <span id="hdr-user"></span> &nbsp;✕
+  </div>
+</header>
+
+<div id="toast"></div>
+<div class="overlay" id="overlay" onclick="if(event.target.id==='overlay') closeModal()">
+  <div class="modal" id="modal-body"></div>
+</div>
+
+<!-- LOGIN -->
+<div id="screen-login">
+  <div class="login-icon">🔐</div>
+  <h1 class="login-title">Διαχείριση Βιβλιοθήκης</h1>
+  <p class="login-sub">Πρόσβαση μόνο για υπεύθυνους Λέσχης Βιβλίου</p>
+  <div class="login-card">
+    <div class="form-group">
+      <label for="inp-email">Email Aegean College</label>
+      <input type="email" id="inp-email" placeholder="username@aegeancollege.gr"
+             autocomplete="email" onkeydown="if(event.key==='Enter') sendLink()">
+      <div class="input-hint">Μόνο εξουσιοδοτημένοι λογαριασμοί</div>
+    </div>
+    <div id="login-alert"></div>
+    <button class="btn btn-primary btn-full" id="btn-send" onclick="sendLink()">
+      Αποστολή συνδέσμου →
+    </button>
+  </div>
+</div>
+
+<!-- CHECK EMAIL -->
+<div id="screen-check">
+  <div class="check-icon">📬</div>
+  <h2 class="check-title">Έλεγξε το email σου</h2>
+  <div class="check-email-display" id="check-email-display"></div>
+  <p class="check-sub">Σου στείλαμε έναν σύνδεσμο σύνδεσης.<br>Άνοιξέ τον από το ίδιο browser.</p>
+  <div class="spam-warning">⚠️ Αν δεν βλέπεις το email, έλεγξε τον φάκελο <strong>Ανεπιθύμητης Αλληλογραφίας (Spam / Junk)</strong>.</div>
+  <div class="check-card">
+    <button class="btn btn-neutral btn-full" onclick="goBackToLogin()" style="margin-bottom:.6rem">← Διαφορετικό email</button>
+    <button class="btn btn-ghost btn-full" onclick="resendLink()">Επανάληψη αποστολής</button>
+  </div>
+</div>
+
+<!-- ACCESS DENIED -->
+<div id="screen-denied">
+  <div class="denied-icon">🚫</div>
+  <h2 class="denied-title">Δεν έχεις πρόσβαση</h2>
+  <p class="denied-sub">Ο λογαριασμός σου δεν είναι εξουσιοδοτημένος<br>για τη διαχείριση της βιβλιοθήκης.</p>
+  <button class="btn btn-neutral" onclick="doLogout()">← Επιστροφή</button>
+</div>
+
+<!-- MAIN ADMIN -->
+<main>
+<div class="screen" id="screen-main">
+
+  <div class="toolbar">
+    <div class="toolbar-title">Βιβλία Βιβλιοθήκης</div>
+    <div class="search-wrap">
+      <input type="text" id="inp-search" placeholder="Αναζήτηση τίτλου ή συγγραφέα…" oninput="renderTable()">
+    </div>
+    <button class="btn btn-primary" onclick="openAddModal()">➕ Νέο βιβλίο</button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-chip"><strong id="st-total">—</strong> σύνολο</div>
+    <div class="stat-chip"><strong id="st-avail">—</strong> διαθέσιμα</div>
+    <div class="stat-chip"><strong id="st-lent">—</strong> δανεισμένα</div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Τίτλος / Συγγραφέας</th>
+          <th>Κατάσταση</th>
+          <th>Προστέθηκε από</th>
+          <th style="text-align:right">Ενέργειες</th>
+        </tr>
+      </thead>
+      <tbody id="books-tbody">
+        <tr><td colspan="4"><div class="loading"><span class="spinner"></span>Φόρτωση…</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</main>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink,
+         signInWithEmailLink, signOut, onAuthStateChanged }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getFirestore, collection, doc, getDocs, getDoc,
+         addDoc, updateDoc, deleteDoc, setDoc, query, orderBy,
+         serverTimestamp, increment }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const CFG = {
+  apiKey:            "AIzaSyBcAKBurs_GMtM3A6-XT31jQaA-56wKM34",
+  authDomain:        "book-club-233b7.firebaseapp.com",
+  projectId:         "book-club-233b7",
+  storageBucket:     "book-club-233b7.firebasestorage.app",
+  messagingSenderId: "1099164172932",
+  appId:             "1:1099164172932:web:0bc55dfd2097e1744c78d1"
+};
+const APP_URL = "https://aegeanstudent.gr/librarian.html";
+
+// --- Εξουσιοδοτημένα emails ---
+const ADMIN_EMAILS = [
+  "130-11051@aegeancollege.gr"
+];
+// Για να προσθέσεις κι άλλο admin, απλώς πρόσθεσε μια γραμμή εδώ
+
+const ALLOWED_DOMAIN = 'aegeancollege.gr';
+
+const app  = initializeApp(CFG);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+let allBooks    = [];
+let currentUser = null;
+
+// helpers
+function pad(n) { return String(n||0).padStart(3,'0'); }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg, type) {
+  type = type || '';
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type;
+  void t.offsetWidth; t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+function openModal(html) {
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+function disableBtns() { document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=true); }
+
+// screens
+function showLogin() {
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('screen-check').style.display = 'none';
+  document.getElementById('screen-denied').style.display = 'none';
+  document.getElementById('screen-main').classList.remove('active');
+  document.getElementById('app-header').style.display = 'none';
+}
+function showCheckEmail(email) {
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-check').style.display = 'flex';
+  document.getElementById('check-email-display').textContent = email;
+}
+function showDenied() {
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-check').style.display = 'none';
+  document.getElementById('screen-denied').style.display = 'flex';
+  document.getElementById('app-header').style.display = 'none';
+}
+function showApp(user) {
+  currentUser = user;
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-check').style.display = 'none';
+  document.getElementById('screen-denied').style.display = 'none';
+  document.getElementById('screen-main').classList.add('active');
+  document.getElementById('app-header').style.display = 'flex';
+  document.getElementById('hdr-user').textContent = user.email.split('@')[0];
+  loadBooks();
+}
+
+// auth
+onAuthStateChanged(auth, user => {
+  if (user) {
+    if (ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+      showApp(user);
+    } else {
+      showDenied();
+    }
+  } else if (isSignInWithEmailLink(auth, window.location.href)) {
+    let email = localStorage.getItem('adminEmailForSignIn');
+    if (!email) email = window.prompt('Επιβεβαίωσε το email σου:');
+    if (email) {
+      signInWithEmailLink(auth, email, window.location.href)
+        .then(result => {
+          localStorage.removeItem('adminEmailForSignIn');
+          window.history.replaceState(null, '', window.location.pathname);
+          if (ADMIN_EMAILS.includes(result.user.email.toLowerCase())) {
+            showApp(result.user);
+          } else {
+            showDenied();
+          }
+        })
+        .catch(e => { console.error(e); toast('Ο σύνδεσμος δεν είναι έγκυρος ή έχει λήξει.','err'); showLogin(); });
+    } else { showLogin(); }
+  } else { showLogin(); }
+});
+
+async function sendLink() {
+  const email = document.getElementById('inp-email').value.trim().toLowerCase();
+  document.getElementById('login-alert').innerHTML = '';
+  if (!email) { document.getElementById('login-alert').innerHTML = '<div class="alert alert-err">Γράψε το email σου.</div>'; return; }
+  if (!email.endsWith('@' + ALLOWED_DOMAIN)) {
+    document.getElementById('login-alert').innerHTML = '<div class="alert alert-err">Μόνο λογαριασμοί @' + ALLOWED_DOMAIN + '.</div>'; return;
+  }
+  const btn = document.getElementById('btn-send');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Αποστολή…';
+  try {
+    await sendSignInLinkToEmail(auth, email, { url: APP_URL, handleCodeInApp: true });
+    localStorage.setItem('adminEmailForSignIn', email);
+    showCheckEmail(email);
+  } catch(e) {
+    console.error(e);
+    document.getElementById('login-alert').innerHTML = '<div class="alert alert-err">Σφάλμα: ' + e.message + '</div>';
+    btn.disabled = false; btn.innerHTML = 'Αποστολή συνδέσμου →';
+  }
+}
+
+function goBackToLogin() {
+  document.getElementById('screen-check').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('inp-email').value = '';
+  const btn = document.getElementById('btn-send');
+  btn.disabled = false; btn.innerHTML = 'Αποστολή συνδέσμου →';
+}
+
+async function resendLink() {
+  const email = localStorage.getItem('adminEmailForSignIn');
+  if (!email) { goBackToLogin(); return; }
+  try {
+    await sendSignInLinkToEmail(auth, email, { url: APP_URL, handleCodeInApp: true });
+    toast('Εστάλη ξανά στο ' + email, 'ok');
+  } catch(e) { toast('Σφάλμα: ' + e.message, 'err'); }
+}
+
+async function doLogout() {
+  await signOut(auth);
+  currentUser = null; allBooks = [];
+  showLogin();
+}
+
+// Firestore
+async function getNextNumber() {
+  const ref  = doc(db,'meta','counter');
+  const snap = await getDoc(ref);
+  if (!snap.exists()) { await setDoc(ref,{lastNumber:1}); return 1; }
+  await updateDoc(ref,{lastNumber:increment(1)});
+  return (await getDoc(ref)).data().lastNumber;
+}
+
+async function loadBooks() {
+  document.getElementById('books-tbody').innerHTML =
+    '<tr><td colspan="4"><div class="loading"><span class="spinner"></span>Φόρτωση…</div></td></tr>';
+  try {
+    const snap = await getDocs(query(collection(db,'books'), orderBy('number','asc')));
+    allBooks = snap.docs.map(d=>({id:d.id,...d.data()}));
+    const avail = allBooks.filter(b=>b.available).length;
+    document.getElementById('st-total').textContent = allBooks.length;
+    document.getElementById('st-avail').textContent = avail;
+    document.getElementById('st-lent').textContent  = allBooks.length - avail;
+    renderTable();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('books-tbody').innerHTML =
+      '<tr><td colspan="4"><div class="empty-state">⚠️ Σφάλμα φόρτωσης.</div></td></tr>';
+  }
+}
+
+function renderTable() {
+  const q = (document.getElementById('inp-search')?.value||'').toLowerCase();
+  let books = [...allBooks];
+  if (q) books = books.filter(b=>(b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q));
+  const tbody = document.getElementById('books-tbody');
+  if (!books.length) {
+    tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state">Δεν βρέθηκαν βιβλία.</div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = books.map(b => {
+    const statusBadge = b.available
+      ? '<span class="badge badge-ok">Διαθέσιμο</span>'
+      : '<span class="badge badge-no">Δανεισμένο</span>' +
+        (b.borrowedBy ? '<div class="td-borrower">' + esc(b.borrowedBy) + '</div>' : '');
+    const addedBy = b.addedBy ? esc(b.addedBy.split('@')[0]) : '—';
+    return '<tr>' +
+      '<td><div class="td-title">' + esc(b.title) + '</div><div class="td-author">' + esc(b.author||'—') + '</div></td>' +
+      '<td class="td-status">' + statusBadge + '</td>' +
+      '<td style="font-size:.82rem;color:var(--muted)">' + addedBy + '</td>' +
+      '<td class="td-actions">' +
+        '<button class="btn btn-neutral btn-sm" onclick="openEditModal('' + b.id + '')">✏️ Επεξεργασία</button>' +
+        (b.available
+          ? '<button class="btn btn-danger btn-sm" onclick="confirmDelete('' + b.id + '')">🗑 Διαγραφή</button>'
+          : '<button class="btn btn-neutral btn-sm" onclick="forceReturn('' + b.id + '')">↩ Επιστροφή</button>'
+        ) +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+// ADD
+function openAddModal() {
+  openModal(
+    '<div class="modal-title">➕ Νέο Βιβλίο</div>' +
+    '<div class="form-group"><label>Τίτλος *</label><input type="text" id="f-title" placeholder="Τίτλος βιβλίου" autofocus></div>' +
+    '<div class="form-group"><label>Συγγραφέας</label><input type="text" id="f-author" placeholder="Όνομα συγγραφέα"></div>' +
+    '<div class="form-group"><label>Κατάσταση</label>' +
+    '<select id="f-available"><option value="yes">✅ Διαθέσιμο</option><option value="no">📤 Δανεισμένο</option></select></div>' +
+    '<div class="modal-actions">' +
+    '<button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>' +
+    '<button class="btn btn-primary" onclick="doAdd()">✓ Προσθήκη</button>' +
+    '</div>');
+}
+
+async function doAdd() {
+  const title  = document.getElementById('f-title')?.value.trim();
+  const author = document.getElementById('f-author')?.value.trim()||'';
+  const avail  = document.getElementById('f-available')?.value === 'yes';
+  if (!title) { toast('Βάλε τίτλο','err'); return; }
+  disableBtns();
+  try {
+    const n = await getNextNumber();
+    await addDoc(collection(db,'books'), {
+      number:n, title, author, available:avail,
+      addedBy: currentUser.email, addedAt: serverTimestamp(),
+      borrowedBy: null, borrowedAt: null
+    });
+    closeModal(); toast('Βιβλίο προστέθηκε ✓','ok');
+    await loadBooks();
+  } catch(e) { console.error(e); toast('Σφάλμα κατά την προσθήκη','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); }
+}
+
+// EDIT
+function openEditModal(bookId) {
+  const b = allBooks.find(x=>x.id===bookId);
+  if (!b) return;
+  openModal(
+    '<div class="modal-title">✏️ Επεξεργασία Βιβλίου</div>' +
+    '<div class="form-group"><label>Τίτλος *</label><input type="text" id="f-title" value="' + esc(b.title) + '"></div>' +
+    '<div class="form-group"><label>Συγγραφέας</label><input type="text" id="f-author" value="' + esc(b.author||'') + '"></div>' +
+    '<div class="form-group"><label>Κατάσταση</label>' +
+    '<select id="f-available">' +
+    '<option value="yes"' + (b.available?' selected':'') + '>✅ Διαθέσιμο</option>' +
+    '<option value="no"'  + (!b.available?' selected':'') + '>📤 Δανεισμένο</option>' +
+    '</select></div>' +
+    '<div class="modal-actions">' +
+    '<button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>' +
+    '<button class="btn btn-primary" onclick="doEdit('' + bookId + '')">✓ Αποθήκευση</button>' +
+    '</div>');
+}
+
+async function doEdit(bookId) {
+  const title  = document.getElementById('f-title')?.value.trim();
+  const author = document.getElementById('f-author')?.value.trim()||'';
+  const avail  = document.getElementById('f-available')?.value === 'yes';
+  if (!title) { toast('Βάλε τίτλο','err'); return; }
+  disableBtns();
+  try {
+    const updates = { title, author, available: avail };
+    if (avail) { updates.borrowedBy = null; updates.borrowedAt = null; }
+    await updateDoc(doc(db,'books',bookId), updates);
+    closeModal(); toast('Αλλαγές αποθηκεύτηκαν ✓','ok');
+    await loadBooks();
+  } catch(e) { console.error(e); toast('Σφάλμα κατά την αποθήκευση','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); }
+}
+
+// DELETE
+function confirmDelete(bookId) {
+  const b = allBooks.find(x=>x.id===bookId);
+  if (!b) return;
+  openModal(
+    '<div class="modal-title">🗑 Διαγραφή Βιβλίου</div>' +
+    '<div class="alert alert-warn">Αυτή η ενέργεια δεν αναιρείται.</div>' +
+    '<p style="font-size:.9rem;margin-bottom:.5rem">Θέλεις να διαγράψεις το βιβλίο:</p>' +
+    '<p style="font-family:'Playfair Display',serif;font-weight:600;font-size:1rem;margin-bottom:1.5rem">' + esc(b.title) + '</p>' +
+    '<div class="modal-actions">' +
+    '<button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>' +
+    '<button class="btn btn-danger" onclick="doDelete('' + bookId + '')">🗑 Ναι, διαγραφή</button>' +
+    '</div>');
+}
+
+async function doDelete(bookId) {
+  disableBtns();
+  try {
+    await deleteDoc(doc(db,'books',bookId));
+    closeModal(); toast('Βιβλίο διαγράφηκε','ok');
+    await loadBooks();
+  } catch(e) { console.error(e); toast('Σφάλμα κατά τη διαγραφή','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); }
+}
+
+// FORCE RETURN
+async function forceReturn(bookId) {
+  try {
+    await updateDoc(doc(db,'books',bookId), { available:true, borrowedBy:null, borrowedAt:null });
+    toast('Βιβλίο επιστράφηκε ✓','ok');
+    await loadBooks();
+  } catch(e) { console.error(e); toast('Σφάλμα','err'); }
+}
+
+Object.assign(window, {
+  sendLink, goBackToLogin, resendLink, doLogout,
+  renderTable, openAddModal, doAdd,
+  openEditModal, doEdit,
+  confirmDelete, doDelete,
+  forceReturn, closeModal, toast
+});
+</script>
+</body>
+</html>
