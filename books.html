@@ -209,9 +209,9 @@ import { getFirestore, collection, doc, getDocs, getDoc,
          serverTimestamp, increment }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-// ════════════════════════════════════════════════════════════
-// ΑΛΛΑΞΕ ΤΑ ΠΑΡΑΚΑΤΩ — Firebase Console → Project Settings
-const CFG = {
+// --- REPLACE WITH YOUR FIREBASE CREDENTIALS ---
+// Firebase Console > Project Settings > Your apps
+var CFG = {
   apiKey:            "AIzaSyBcAKBurs_GMtM3A6-XT31jQaA-56wKM34",
   authDomain:        "book-club-233b7.firebaseapp.com",
   projectId:         "book-club-233b7",
@@ -219,46 +219,44 @@ const CFG = {
   messagingSenderId: "1099164172932",
   appId:             "1:1099164172932:web:0bc55dfd2097e1744c78d1"};
 };
-// Η διεύθυνση της σελίδας σου στο GitHub Pages, π.χ.:
-// "https://aegeanstudent.gr/vivliothiki.html"
-const APP_URL = "https://ΧΡΗΣΤΗΣ.github.io/REPO/vivliothiki.html";
-// ════════════════════════════════════════════════════════════
+// Your GitHub Pages URL, e.g. "https://aegeanstudent.gr/books.html"
+var APP_URL = "REPLACE_WITH_YOUR_URL";
+// ----------------------------------------------
 
-let app, auth, db;
+var app, auth, db;
 try {
   app  = initializeApp(CFG);
   auth = getAuth(app);
   db   = getFirestore(app);
 } catch(e) {
-  console.error('Firebase init failed:', e);
+  console.error('Firebase init error:', e);
 }
 
-const ALLOWED_DOMAIN = 'aegeancollege.gr';
+var ALLOWED_DOMAIN = 'aegeancollege.gr';
+var allBooks   = [];
+var currentTab = 'all';
+var leaveMode  = 'none';
+var currentUser = null;
 
-let allBooks   = [];
-let currentTab = 'all';
-let leaveMode  = 'none';
-let currentUser = null;
+function pad(n)  { return String(n||0).padStart(3,'0'); }
+function esc(s)  { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── helpers ──
-function pad(n) { return String(n||0).padStart(3,'0'); }
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function toast(msg, type='') {
-  const t = document.getElementById('toast');
+function toast(msg, type) {
+  type = type || '';
+  var t = document.getElementById('toast');
   t.textContent = msg; t.className = 'toast ' + type;
   void t.offsetWidth; t.classList.add('show');
   clearTimeout(window._tt);
-  window._tt = setTimeout(()=>t.classList.remove('show'), 3200);
+  window._tt = setTimeout(function(){ t.classList.remove('show'); }, 3200);
 }
+
 function openModal(html) {
   document.getElementById('modal-body').innerHTML = html;
   document.getElementById('overlay').classList.add('open');
 }
 function closeModal() { document.getElementById('overlay').classList.remove('open'); }
-function disableBtns() { document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=true); }
-function setAlert(id, msg, type) { document.getElementById(id).innerHTML = msg ? '<div class="alert alert-'+type+'">'+msg+'</div>' : ''; }
+function disableBtns() { document.querySelectorAll('#modal-body .btn').forEach(function(b){ b.disabled=true; }); }
 
-// ── screens ──
 function showLogin() {
   document.getElementById('screen-login').style.display = 'flex';
   document.getElementById('screen-check').style.display = 'none';
@@ -276,67 +274,57 @@ function showApp(user) {
   document.getElementById('screen-check').style.display = 'none';
   document.getElementById('screen-main').classList.add('active');
   document.getElementById('app-header').style.display = 'flex';
-  // show first part of email before @
   document.getElementById('hdr-user').textContent = user.email.split('@')[0];
   loadBooks();
 }
 
-// ── auth state ──
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, function(user) {
   if (user) {
     showApp(user);
-  } else {
-    // check if this is a magic link callback
-    if (isSignInWithEmailLink(auth, window.location.href)) {
-      let email = localStorage.getItem('emailForSignIn');
-      if (!email) {
-        // fallback: ask user (e.g. opened on different device)
-        email = window.prompt('Επιβεβαίωσε το email σου:');
-      }
-      if (email) {
-        signInWithEmailLink(auth, email, window.location.href)
-          .then(result => {
-            localStorage.removeItem('emailForSignIn');
-            // clean URL
-            window.history.replaceState(null, '', window.location.pathname);
-            showApp(result.user);
-          })
-          .catch(e => {
-            console.error(e);
-            toast('Ο σύνδεσμος δεν είναι έγκυρος ή έχει λήξει.', 'err');
-            showLogin();
-          });
-      } else {
-        showLogin();
-      }
+  } else if (isSignInWithEmailLink(auth, window.location.href)) {
+    var email = localStorage.getItem('emailForSignIn');
+    if (!email) email = window.prompt('Confirm your email:');
+    if (email) {
+      signInWithEmailLink(auth, email, window.location.href)
+        .then(function(result) {
+          localStorage.removeItem('emailForSignIn');
+          window.history.replaceState(null, '', window.location.pathname);
+          showApp(result.user);
+        })
+        .catch(function(e) {
+          console.error(e);
+          toast('Invalid or expired link.', 'err');
+          showLogin();
+        });
     } else {
       showLogin();
     }
+  } else {
+    showLogin();
   }
 });
 
-// ── send magic link ──
 async function sendLink() {
-  const email = document.getElementById('inp-email').value.trim().toLowerCase();
-  setAlert('login-alert','','');
-  if (!email) { setAlert('login-alert','Γράψε το email σου.','err'); return; }
-  if (!email.endsWith('@' + ALLOWED_DOMAIN)) {
-    setAlert('login-alert','Μόνο λογαριασμοί @' + ALLOWED_DOMAIN + ' επιτρέπονται.','err');
+  var email = document.getElementById('inp-email').value.trim().toLowerCase();
+  document.getElementById('login-alert').innerHTML = '';
+  if (!email) {
+    document.getElementById('login-alert').innerHTML = '<div class="alert alert-err">Γράψε το email σου.</div>';
     return;
   }
-  const btn = document.getElementById('btn-send');
+  if (!email.endsWith('@' + ALLOWED_DOMAIN)) {
+    document.getElementById('login-alert').innerHTML = '<div class="alert alert-err">Μόνο λογαριασμοί @' + ALLOWED_DOMAIN + ' επιτρέπονται.</div>';
+    return;
+  }
+  var btn = document.getElementById('btn-send');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Αποστολή…';
   try {
-    await sendSignInLinkToEmail(auth, email, {
-      url: APP_URL,
-      handleCodeInApp: true
-    });
+    await sendSignInLinkToEmail(auth, email, { url: APP_URL, handleCodeInApp: true });
     localStorage.setItem('emailForSignIn', email);
     showCheckEmail(email);
   } catch(e) {
     console.error(e);
-    setAlert('login-alert', 'Σφάλμα αποστολής: ' + e.message, 'err');
+    document.getElementById('login-alert').innerHTML = '<div class="alert alert-err">Σφάλμα: ' + e.message + '</div>';
     btn.disabled = false;
     btn.innerHTML = 'Αποστολή συνδέσμου →';
   }
@@ -346,12 +334,13 @@ function goBackToLogin() {
   document.getElementById('screen-check').style.display = 'none';
   document.getElementById('screen-login').style.display = 'flex';
   document.getElementById('inp-email').value = '';
-  document.getElementById('btn-send').disabled = false;
-  document.getElementById('btn-send').innerHTML = 'Αποστολή συνδέσμου →';
+  var btn = document.getElementById('btn-send');
+  btn.disabled = false;
+  btn.innerHTML = 'Αποστολή συνδέσμου →';
 }
 
 async function resendLink() {
-  const email = localStorage.getItem('emailForSignIn');
+  var email = localStorage.getItem('emailForSignIn');
   if (!email) { goBackToLogin(); return; }
   try {
     await sendSignInLinkToEmail(auth, email, { url: APP_URL, handleCodeInApp: true });
@@ -365,234 +354,297 @@ async function doLogout() {
   showLogin();
 }
 
-// ── Firestore ──
 async function getNextNumber() {
-  const ref  = doc(db,'meta','counter');
-  const snap = await getDoc(ref);
-  if (!snap.exists()) { await setDoc(ref,{lastNumber:1}); return 1; }
-  await updateDoc(ref,{lastNumber:increment(1)});
+  var ref  = doc(db, 'meta', 'counter');
+  var snap = await getDoc(ref);
+  if (!snap.exists()) { await setDoc(ref, {lastNumber:1}); return 1; }
+  await updateDoc(ref, {lastNumber: increment(1)});
   return (await getDoc(ref)).data().lastNumber;
 }
 
 async function loadBooks() {
-  document.getElementById('book-list').innerHTML='<div class="loading"><span class="spinner"></span>Φόρτωση βιβλίων…</div>';
+  document.getElementById('book-list').innerHTML = '<div class="loading"><span class="spinner"></span>Φόρτωση βιβλίων…</div>';
   try {
-    const snap = await getDocs(query(collection(db,'books'),orderBy('number','asc')));
-    allBooks = snap.docs.map(d=>({id:d.id,...d.data()}));
-    const avail = allBooks.filter(b=>b.available).length;
+    var snap = await getDocs(query(collection(db,'books'), orderBy('number','asc')));
+    allBooks = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+    var avail = allBooks.filter(function(b){ return b.available; }).length;
     document.getElementById('st-total').textContent = allBooks.length;
     document.getElementById('st-avail').textContent = avail;
     document.getElementById('st-lent').textContent  = allBooks.length - avail;
     renderBooks();
   } catch(e) {
     console.error(e);
-    document.getElementById('book-list').innerHTML=
+    document.getElementById('book-list').innerHTML =
       '<div class="empty-state"><div class="es-icon">⚠️</div><p>Σφάλμα σύνδεσης.<br>Έλεγξε τα Firebase credentials.</p></div>';
   }
 }
 
 function renderBooks() {
-  const q   = (document.getElementById('inp-search')?.value||'').toLowerCase();
-  const uid = currentUser?.email||'';
-  let books = [...allBooks];
-  if (currentTab==='available') books=books.filter(b=>b.available);
-  if (currentTab==='mine')      books=books.filter(b=>!b.available && b.borrowedBy===uid);
-  if (q) books=books.filter(b=>
-    String(b.number).includes(q)||(b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q));
-  const el=document.getElementById('book-list');
+  var q   = (document.getElementById('inp-search') ? document.getElementById('inp-search').value : '').toLowerCase();
+  var uid = currentUser ? currentUser.email : '';
+  var books = allBooks.slice();
+  if (currentTab === 'available') books = books.filter(function(b){ return b.available; });
+  if (currentTab === 'mine')      books = books.filter(function(b){ return !b.available && b.borrowedBy === uid; });
+  if (q) books = books.filter(function(b){
+    return String(b.number).includes(q) || (b.title||'').toLowerCase().includes(q) || (b.author||'').toLowerCase().includes(q);
+  });
+  var el = document.getElementById('book-list');
   if (!books.length) {
-    el.innerHTML='<div class="empty-state"><div class="es-icon">'+(currentTab==='mine'?'🎒':'📭')+'</div><p>'+(currentTab==='mine'?'Δεν έχεις δανεισμένα βιβλία.':'Δεν βρέθηκαν βιβλία.')+'</p></div>';
+    el.innerHTML = '<div class="empty-state"><div class="es-icon">' + (currentTab==='mine'?'🎒':'📭') + '</div><p>' + (currentTab==='mine'?'Δεν έχεις δανεισμένα βιβλία.':'Δεν βρέθηκαν βιβλία.') + '</p></div>';
     return;
   }
-  el.innerHTML=books.map(b=>{
-    const isMine=!b.available&&b.borrowedBy===uid;
-    return '<div class="book-item">'+
-      '<div class="bi-num">#'+pad(b.number)+'</div>'+
-      '<div class="bi-info">'+
-        '<div class="bi-title">'+esc(b.title)+'</div>'+
-        '<div class="bi-author">'+esc(b.author||'')+'</div>'+
-        (!b.available?'<div class="bi-borrower">από: '+esc(b.borrowedBy)+'</div>':'')+
-      '</div>'+
-      '<div class="bi-status '+(b.available?'s-ok':'s-no')+'">'+(b.available?'● Διαθέσιμο':'● Δανεισμένο')+'</div>'+
-      '<div class="bi-action">'+
-        (b.available?'<button class="btn btn-success" onclick="quickBorrow(\''+b.id+'\')">📤</button>':
-         isMine    ?'<button class="btn btn-neutral" onclick="quickReturn(\''+b.id+'\')">📥</button>':'')+
+  el.innerHTML = books.map(function(b) {
+    var isMine = !b.available && b.borrowedBy === uid;
+    return '<div class="book-item">' +
+      '<div class="bi-num">#' + pad(b.number) + '</div>' +
+      '<div class="bi-info">' +
+        '<div class="bi-title">' + esc(b.title) + '</div>' +
+        '<div class="bi-author">' + esc(b.author||'') + '</div>' +
+        (!b.available ? '<div class="bi-borrower">από: ' + esc(b.borrowedBy) + '</div>' : '') +
+      '</div>' +
+      '<div class="bi-status ' + (b.available?'s-ok':'s-no') + '">' + (b.available?'● Διαθέσιμο':'● Δανεισμένο') + '</div>' +
+      '<div class="bi-action">' +
+        (b.available  ? '<button class="btn btn-success" onclick="quickBorrow('' + b.id + '')">📤</button>' :
+         isMine       ? '<button class="btn btn-neutral" onclick="quickReturn('' + b.id + '')">📥</button>' : '') +
       '</div></div>';
   }).join('');
 }
 
 function switchTab(tab) {
-  currentTab=tab;
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['all','available','mine'][i]===tab));
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('active', ['all','available','mine'][i]===tab); });
   renderBooks();
 }
 
-// ── borrow ──
 function openBorrow() {
   openModal(
-    '<div class="modal-title">📤 Δανεισμός Βιβλίου</div>'+
-    '<div class="form-group"><label>Αναζήτηση τίτλου ή συγγραφέα</label>'+
-    '<input type="text" id="m-search" placeholder="π.χ. Μικρός Πρίγκιπας…" autofocus oninput="onLookup()"></div>'+
-    '<div id="m-results" style="max-height:260px;overflow-y:auto"></div>'+
+    '<div class="modal-title">📤 Δανεισμός Βιβλίου</div>' +
+    '<div class="form-group"><label>Αναζήτηση τίτλου ή συγγραφέα</label>' +
+    '<input type="text" id="m-search" placeholder="π.χ. Μικρός Πρίγκιπας…" autofocus oninput="onLookup()"></div>' +
+    '<div id="m-results" style="max-height:260px;overflow-y:auto"></div>' +
     '<div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button></div>');
 }
+
 function onLookup() {
-  const q=(document.getElementById('m-search')?.value||'').toLowerCase().trim();
-  const el=document.getElementById('m-results');
+  var q = (document.getElementById('m-search') ? document.getElementById('m-search').value : '').toLowerCase().trim();
+  var el = document.getElementById('m-results');
   if (!el) return;
-  if (!q) { el.innerHTML=''; return; }
-  const matches=allBooks.filter(b=>b.available&&((b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q)));
-  if (!matches.length) { el.innerHTML='<div class="alert alert-err" style="margin-top:.5rem">Δεν βρέθηκαν διαθέσιμα βιβλία.</div>'; return; }
-  el.innerHTML='<div style="margin-top:.5rem">'+matches.map(b=>
-    '<div class="modal-preview" style="cursor:pointer;margin-bottom:.5rem" onclick="quickBorrow(''+b.id+'')">'+
-    '<div class="mp-title">'+esc(b.title)+'</div>'+
-    '<div class="mp-author">'+esc(b.author||'')+'</div>'+
-    '<div style="font-size:.72rem;color:var(--ok);margin-top:.2rem">● Διαθέσιμο — πάτα για δανεισμό</div>'+
-    '</div>'
-  ).join('')+'</div>';
+  if (!q) { el.innerHTML = ''; return; }
+  var matches = allBooks.filter(function(b){ return b.available && ((b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q)); });
+  if (!matches.length) { el.innerHTML = '<div class="alert alert-err" style="margin-top:.5rem">Δεν βρέθηκαν διαθέσιμα βιβλία.</div>'; return; }
+  el.innerHTML = '<div style="margin-top:.5rem">' + matches.map(function(b){
+    return '<div class="modal-preview" style="cursor:pointer;margin-bottom:.5rem" onclick="quickBorrow('' + b.id + '')">' +
+      '<div class="mp-title">' + esc(b.title) + '</div>' +
+      '<div class="mp-author">' + esc(b.author||'') + '</div>' +
+      '<div style="font-size:.72rem;color:var(--ok);margin-top:.2rem">● Διαθέσιμο — πάτα για δανεισμό</div>' +
+      '</div>';
+  }).join('') + '</div>';
 }
+
 function quickBorrow(bookId) {
-  const b=allBooks.find(x=>x.id===bookId); if (!b) return;
-  openModal('<div class="modal-title">📤 Δανεισμός</div><div class="modal-preview"><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-success" onclick="confirmBorrow(\''+bookId+'\')">✓ Δανείζομαι</button></div>');
+  var b = allBooks.find(function(x){ return x.id===bookId; });
+  if (!b) return;
+  openModal(
+    '<div class="modal-title">📤 Δανεισμός</div>' +
+    '<div class="modal-preview"><div class="mp-title">' + esc(b.title) + '</div><div class="mp-author">' + esc(b.author||'') + '</div></div>' +
+    '<div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>' +
+    '<button class="btn btn-success" onclick="confirmBorrow('' + bookId + '')">✓ Δανείζομαι</button></div>');
 }
-async function doBorrow() { /* unused */ }
+
 async function confirmBorrow(bookId) {
-  const uid=currentUser.email; disableBtns();
+  var uid = currentUser.email;
+  disableBtns();
   try {
-    await updateDoc(doc(db,'books',bookId),{available:false,borrowedBy:uid,borrowedAt:serverTimestamp()});
-    await addDoc(collection(db,'loans'),{bookId,borrowerEmail:uid,borrowedAt:serverTimestamp(),returnedAt:null});
-    await loadBooks(); openLeaveModal();
+    await updateDoc(doc(db,'books',bookId), {available:false, borrowedBy:uid, borrowedAt:serverTimestamp()});
+    await addDoc(collection(db,'loans'), {bookId:bookId, borrowerEmail:uid, borrowedAt:serverTimestamp(), returnedAt:null});
+    await loadBooks();
+    openLeaveModal();
   } catch(e) { console.error(e); toast('Σφάλμα κατά τον δανεισμό','err'); }
 }
 
-// ── leave book ──
 function openLeaveModal() {
-  leaveMode='none';
+  leaveMode = 'none';
   openModal(
-    '<div class="modal-title">🎉 Δανεισμός επιτυχής!</div>'+
-    '<div class="info-box">Αφήνεις κάποιο βιβλίο στη θέση του;</div>'+
-    '<div class="leave-toggle">'+
-    '<button onclick="setLeave(\'new\')">📘 Καινούργιο</button>'+
-    '<button onclick="setLeave(\'existing\')">🔢 Υπάρχον (#)</button>'+
-    '<button class="active" onclick="setLeave(\'none\')">✗ Κανένα</button>'+
-    '</div>'+
-    '<div id="lv-new" style="display:none"><div class="form-group"><label>Τίτλος *</label><input type="text" id="lv-title" placeholder="Τίτλος βιβλίου"></div><div class="form-group"><label>Συγγραφέας</label><input type="text" id="lv-author" placeholder="Συγγραφέας"></div></div>'+
-    '<div id="lv-existing" style="display:none"><div class="form-group"><label>Αναζήτηση τίτλου ή συγγραφέα</label><input type="text" id="lv-num" placeholder="π.χ. Μικρός Πρίγκιπας…" oninput="onLookupLeave()"></div><div id="lv-preview"></div></div>'+
-    '<div class="modal-actions">'+
-    '<button class="btn btn-neutral" onclick="closeModal();toast(\'Καλή ανάγνωση! 📚\')">Παράλειψη</button>'+
-    '<button class="btn btn-primary" onclick="doLeave()">✓ Αφήνω βιβλίο</button>'+
+    '<div class="modal-title">🎉 Δανεισμός επιτυχής!</div>' +
+    '<div class="info-box">Αφήνεις κάποιο βιβλίο στη θέση του;</div>' +
+    '<div class="leave-toggle">' +
+    '<button onclick="setLeave('new')">📘 Καινούργιο</button>' +
+    '<button onclick="setLeave('existing')">🔎 Υπάρχον</button>' +
+    '<button class="active" onclick="setLeave('none')">✗ Κανένα</button>' +
+    '</div>' +
+    '<div id="lv-new" style="display:none">' +
+    '<div class="form-group"><label>Τίτλος *</label><input type="text" id="lv-title" placeholder="Τίτλος βιβλίου"></div>' +
+    '<div class="form-group"><label>Συγγραφέας</label><input type="text" id="lv-author" placeholder="Συγγραφέας"></div>' +
+    '</div>' +
+    '<div id="lv-existing" style="display:none">' +
+    '<div class="form-group"><label>Αναζήτηση τίτλου ή συγγραφέα</label>' +
+    '<input type="text" id="lv-num" placeholder="π.χ. Μικρός Πρίγκιπας…" oninput="onLookupLeave()"></div>' +
+    '<div id="lv-preview"></div>' +
+    '</div>' +
+    '<div class="modal-actions">' +
+    '<button class="btn btn-neutral" onclick="closeModal();toast('Καλή ανάγνωση! 📚')">Παράλειψη</button>' +
+    '<button class="btn btn-primary" onclick="doLeave()">✓ Αφήνω βιβλίο</button>' +
     '</div>');
 }
+
 function setLeave(mode) {
-  leaveMode=mode;
-  document.querySelectorAll('.leave-toggle button').forEach((b,i)=>b.classList.toggle('active',['new','existing','none'][i]===mode));
-  document.getElementById('lv-new').style.display=mode==='new'?'block':'none';
-  document.getElementById('lv-existing').style.display=mode==='existing'?'block':'none';
+  leaveMode = mode;
+  document.querySelectorAll('.leave-toggle button').forEach(function(b,i){ b.classList.toggle('active',['new','existing','none'][i]===mode); });
+  document.getElementById('lv-new').style.display      = mode==='new'      ? 'block' : 'none';
+  document.getElementById('lv-existing').style.display = mode==='existing' ? 'block' : 'none';
 }
+
 function onLookupLeave() {
-  const q=(document.getElementById('lv-num')?.value||'').toLowerCase().trim();
-  const prev=document.getElementById('lv-preview'); if (!prev) return;
-  if (!q) { prev.innerHTML=''; return; }
-  const matches=allBooks.filter(b=>b.available&&((b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q)));
-  if (!matches.length) { prev.innerHTML='<div class="alert alert-err" style="margin-top:.4rem">Δεν βρέθηκαν διαθέσιμα βιβλία.</div>'; return; }
-  prev.innerHTML='<div style="margin-top:.4rem">'+matches.map(b=>
-    '<div class="modal-preview" style="cursor:pointer;margin-bottom:.5rem;border:2px solid transparent" id="lp-'+b.id+'" onclick="selectLeaveBook(''+b.id+'')">'+
-    '<div class="mp-title">'+esc(b.title)+'</div>'+
-    '<div class="mp-author">'+esc(b.author||'')+'</div>'+
-    '</div>'
-  ).join('')+'</div>';
-  window._selectedLeaveId=null;
+  var q = (document.getElementById('lv-num') ? document.getElementById('lv-num').value : '').toLowerCase().trim();
+  var prev = document.getElementById('lv-preview');
+  if (!prev) return;
+  if (!q) { prev.innerHTML = ''; return; }
+  var matches = allBooks.filter(function(b){ return b.available && ((b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q)); });
+  if (!matches.length) { prev.innerHTML = '<div class="alert alert-err" style="margin-top:.4rem">Δεν βρέθηκαν διαθέσιμα βιβλία.</div>'; return; }
+  window._selectedLeaveId = null;
+  prev.innerHTML = '<div style="margin-top:.4rem">' + matches.map(function(b){
+    return '<div class="modal-preview" style="cursor:pointer;margin-bottom:.5rem;border:2px solid transparent" id="lp-' + b.id + '" onclick="selectLeaveBook('' + b.id + '')">' +
+      '<div class="mp-title">' + esc(b.title) + '</div>' +
+      '<div class="mp-author">' + esc(b.author||'') + '</div>' +
+      '</div>';
+  }).join('') + '</div>';
 }
+
+function selectLeaveBook(id) {
+  window._selectedLeaveId = id;
+  document.querySelectorAll('#lv-preview .modal-preview').forEach(function(el){
+    el.style.border = el.id==='lp-'+id ? '2px solid var(--accent2)' : '2px solid transparent';
+  });
+}
+
 async function doLeave() {
-  if (leaveMode==='none') { closeModal(); toast('Καλή ανάγνωση! 📚'); return; }
-  const uid=currentUser.email; disableBtns();
+  if (leaveMode === 'none') { closeModal(); toast('Καλή ανάγνωση! 📚'); return; }
+  var uid = currentUser.email;
+  disableBtns();
   try {
-    if (leaveMode==='new') {
-      const title=document.getElementById('lv-title')?.value.trim();
-      const author=document.getElementById('lv-author')?.value.trim()||'';
-      if (!title) { toast('Βάλε τίτλο για το βιβλίο','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); return; }
-      const n=await getNextNumber();
-      await addDoc(collection(db,'books'),{number:n,title,author,available:true,addedBy:uid,addedAt:serverTimestamp(),borrowedBy:null,borrowedAt:null});
-      closeModal(); toast('Βιβλίο #'+pad(n)+' — κόλλα αυτοκόλλητο! 🏷','ok');
+    if (leaveMode === 'new') {
+      var title  = document.getElementById('lv-title') ? document.getElementById('lv-title').value.trim() : '';
+      var author = document.getElementById('lv-author') ? document.getElementById('lv-author').value.trim() : '';
+      if (!title) { toast('Βάλε τίτλο για το βιβλίο','err'); document.querySelectorAll('#modal-body .btn').forEach(function(b){b.disabled=false;}); return; }
+      var n = await getNextNumber();
+      await addDoc(collection(db,'books'), {number:n, title:title, author:author, available:true, addedBy:uid, addedAt:serverTimestamp(), borrowedBy:null, borrowedAt:null});
+      closeModal();
+      toast('Καλή ανάγνωση! 📚 Νέο βιβλίο προστέθηκε.', 'ok');
     } else {
-      const bid=window._selectedLeaveId;
-      const b=bid?allBooks.find(x=>x.id===bid):null;
-      if (!b) { toast('Επίλεξε βιβλίο από τη λίστα','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); return; }
-      await updateDoc(doc(db,'books',b.id),{available:true,borrowedBy:null,borrowedAt:null});
+      var bid = window._selectedLeaveId;
+      var b = bid ? allBooks.find(function(x){return x.id===bid;}) : null;
+      if (!b) { toast('Επίλεξε βιβλίο από τη λίστα','err'); document.querySelectorAll('#modal-body .btn').forEach(function(b){b.disabled=false;}); return; }
+      await updateDoc(doc(db,'books',b.id), {available:true, borrowedBy:null, borrowedAt:null});
       closeModal(); toast('Καλή ανάγνωση! 📚','ok');
     }
     await loadBooks();
   } catch(e) { console.error(e); toast('Σφάλμα','err'); }
 }
 
-// ── return ──
 function openReturn() {
-  const uid=currentUser.email;
-  const mine=allBooks.filter(b=>!b.available&&b.borrowedBy===uid);
+  var uid  = currentUser.email;
+  var mine = allBooks.filter(function(b){ return !b.available && b.borrowedBy===uid; });
   if (!mine.length) { toast('Δεν έχεις δανεισμένα βιβλία','err'); return; }
-  const opts=mine.map(b=>'<option value="'+b.id+'">#'+pad(b.number)+' — '+esc(b.title)+'</option>').join('');
-  openModal('<div class="modal-title">📥 Επιστροφή Βιβλίου</div><div class="form-group"><label>Βιβλίο που επιστρέφεις</label><select id="m-ret-sel">'+opts+'</select></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-primary" onclick="confirmReturn()">✓ Επιστροφή</button></div>');
+  var opts = mine.map(function(b){ return '<option value="' + b.id + '">#' + pad(b.number) + ' — ' + esc(b.title) + '</option>'; }).join('');
+  openModal(
+    '<div class="modal-title">📥 Επιστροφή Βιβλίου</div>' +
+    '<div class="form-group"><label>Βιβλίο που επιστρέφεις</label><select id="m-ret-sel">' + opts + '</select></div>' +
+    '<div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>' +
+    '<button class="btn btn-primary" onclick="confirmReturn()">✓ Επιστροφή</button></div>');
 }
+
 function quickReturn(bookId) {
-  const b=allBooks.find(x=>x.id===bookId); if (!b) return;
-  openModal('<div class="modal-title">📥 Επιστροφή Βιβλίου</div><div class="modal-preview"><div class="mp-num">#'+pad(b.number)+'</div><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-primary" onclick="doReturn(\''+bookId+'\')">✓ Επιστροφή</button></div>');
+  var b = allBooks.find(function(x){ return x.id===bookId; });
+  if (!b) return;
+  openModal(
+    '<div class="modal-title">📥 Επιστροφή Βιβλίου</div>' +
+    '<div class="modal-preview"><div class="mp-title">' + esc(b.title) + '</div><div class="mp-author">' + esc(b.author||'') + '</div></div>' +
+    '<div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>' +
+    '<button class="btn btn-primary" onclick="doReturn('' + bookId + '')">✓ Επιστροφή</button></div>');
 }
-async function confirmReturn() { const sel=document.getElementById('m-ret-sel'); if (sel) await doReturn(sel.value); }
+
+async function confirmReturn() {
+  var sel = document.getElementById('m-ret-sel');
+  if (sel) await doReturn(sel.value);
+}
+
 async function doReturn(bookId) {
   disableBtns();
   try {
-    await updateDoc(doc(db,'books',bookId),{available:true,borrowedBy:null,borrowedAt:null});
-    const snap=await getDocs(query(collection(db,'loans'),where('bookId','==',bookId),where('returnedAt','==',null)));
-    await Promise.all(snap.docs.map(d=>updateDoc(doc(db,'loans',d.id),{returnedAt:serverTimestamp()})));
+    await updateDoc(doc(db,'books',bookId), {available:true, borrowedBy:null, borrowedAt:null});
+    var snap = await getDocs(query(collection(db,'loans'), where('bookId','==',bookId), where('returnedAt','==',null)));
+    await Promise.all(snap.docs.map(function(d){ return updateDoc(doc(db,'loans',d.id), {returnedAt:serverTimestamp()}); }));
     closeModal(); toast('Επιστροφή καταχωρήθηκε ✔','ok');
     await loadBooks();
   } catch(e) { console.error(e); toast('Σφάλμα κατά την επιστροφή','err'); }
 }
 
-// ── add book ──
 function openAdd() {
   openModal(
-    '<div class="modal-title">➕ Νέο Βιβλίο</div>'+
-    '<div class="form-group"><label>Τίτλος *</label><input type="text" id="m-add-title" placeholder="Τίτλος βιβλίου" autofocus></div>'+
-    '<div class="form-group"><label>Συγγραφέας</label><input type="text" id="m-add-author" placeholder="Όνομα συγγραφέα"></div>'+
-    '<div class="form-group"><label>Το αφήνεις τώρα στη βιβλιοθήκη;</label><select id="m-add-leave"><option value="yes">✅ Ναι, το αφήνω</option><option value="no">📤 Όχι, το δανείζομαι αμέσως</option></select></div>'+
-    '<div id="m-add-done" style="display:none"><div class="alert alert-ok">✓ Το βιβλίο προστέθηκε στη βιβλιοθήκη!</div></div>'+
-    '<div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-primary" onclick="doAdd()">✓ Προσθήκη</button></div>');
-}
-async function doAdd() {
-  const title=document.getElementById('m-add-title')?.value.trim();
-  const author=document.getElementById('m-add-author')?.value.trim()||'';
-  const leave=document.getElementById('m-add-leave')?.value==='yes';
-  if (!title) { toast('Βάλε τίτλο για το βιβλίο','err'); return; }
-  const uid=currentUser.email; disableBtns();
-  try {
-    const n=await getNextNumber();
-    const docRef=await addDoc(collection(db,'books'),{number:n,title,author,available:leave,addedBy:uid,addedAt:serverTimestamp(),borrowedBy:leave?null:uid,borrowedAt:leave?null:serverTimestamp()});
-    if (!leave) await addDoc(collection(db,'loans'),{bookId:docRef.id,borrowerEmail:uid,borrowedAt:serverTimestamp(),returnedAt:null});
-    document.getElementById('m-add-done').style.display='block';
-    document.querySelector('#modal-body .btn-primary').style.display='none';
-    document.querySelector('#modal-body .btn-neutral').textContent='Κλείσιμο';
-    document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false);
-    await loadBooks();
-  } catch(e) { console.error(e); toast('Σφάλμα κατά την προσθήκη','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); }
+    '<div class="modal-title">➕ Νέο Βιβλίο</div>' +
+    '<div class="form-group"><label>Τίτλος *</label><input type="text" id="m-add-title" placeholder="Τίτλος βιβλίου" autofocus></div>' +
+    '<div class="form-group"><label>Συγγραφέας</label><input type="text" id="m-add-author" placeholder="Όνομα συγγραφέα"></div>' +
+    '<div class="form-group"><label>Το αφήνεις τώρα στη βιβλιοθήκη;</label>' +
+    '<select id="m-add-leave"><option value="yes">✅ Ναι, το αφήνω</option><option value="no">📤 Όχι, το δανείζομαι αμέσως</option></select></div>' +
+    '<div id="m-add-done" style="display:none"><div class="alert alert-ok">✓ Το βιβλίο προστέθηκε!</div></div>' +
+    '<div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>' +
+    '<button class="btn btn-primary" onclick="doAdd()">✓ Προσθήκη</button></div>');
 }
 
-function selectLeaveBook(id) {
-  window._selectedLeaveId=id;
-  document.querySelectorAll('#lv-preview .modal-preview').forEach(el=>{
-    el.style.border = el.id==='lp-'+id ? '2px solid var(--accent)' : '2px solid transparent';
-  });
+async function doAdd() {
+  var title  = document.getElementById('m-add-title') ? document.getElementById('m-add-title').value.trim() : '';
+  var author = document.getElementById('m-add-author') ? document.getElementById('m-add-author').value.trim() : '';
+  var leave  = document.getElementById('m-add-leave') ? document.getElementById('m-add-leave').value === 'yes' : true;
+  if (!title) { toast('Βάλε τίτλο για το βιβλίο','err'); return; }
+  var uid = currentUser.email;
+  disableBtns();
+  try {
+    var n       = await getNextNumber();
+    var docRef  = await addDoc(collection(db,'books'), {
+      number:n, title:title, author:author, available:leave,
+      addedBy:uid, addedAt:serverTimestamp(),
+      borrowedBy: leave ? null : uid,
+      borrowedAt: leave ? null : serverTimestamp()
+    });
+    if (!leave) {
+      await addDoc(collection(db,'loans'), {bookId:docRef.id, borrowerEmail:uid, borrowedAt:serverTimestamp(), returnedAt:null});
+    }
+    document.getElementById('m-add-done').style.display = 'block';
+    document.querySelector('#modal-body .btn-primary').style.display = 'none';
+    document.querySelector('#modal-body .btn-neutral').textContent = 'Κλείσιμο';
+    document.querySelectorAll('#modal-body .btn').forEach(function(b){ b.disabled=false; });
+    await loadBooks();
+  } catch(e) {
+    console.error(e);
+    toast('Σφάλμα κατά την προσθήκη','err');
+    document.querySelectorAll('#modal-body .btn').forEach(function(b){ b.disabled=false; });
+  }
 }
-// ── expose to window (after all functions are defined) ──
-Object.assign(window, {
-  sendLink, goBackToLogin, resendLink, doLogout,
-  renderBooks, switchTab,
-  openBorrow, onLookup, quickBorrow, doBorrow, confirmBorrow, selectLeaveBook,
-  openLeaveModal, setLeave, onLookupLeave, doLeave,
-  openReturn, quickReturn, confirmReturn, doReturn,
-  openAdd, doAdd,
-  closeModal, toast
-});
+
+// Expose all functions to window (must be after all definitions)
+window.sendLink       = sendLink;
+window.goBackToLogin  = goBackToLogin;
+window.resendLink     = resendLink;
+window.doLogout       = doLogout;
+window.renderBooks    = renderBooks;
+window.switchTab      = switchTab;
+window.openBorrow     = openBorrow;
+window.onLookup       = onLookup;
+window.quickBorrow    = quickBorrow;
+window.confirmBorrow  = confirmBorrow;
+window.openLeaveModal = openLeaveModal;
+window.setLeave       = setLeave;
+window.onLookupLeave  = onLookupLeave;
+window.selectLeaveBook= selectLeaveBook;
+window.doLeave        = doLeave;
+window.openReturn     = openReturn;
+window.quickReturn    = quickReturn;
+window.confirmReturn  = confirmReturn;
+window.doReturn       = doReturn;
+window.openAdd        = openAdd;
+window.doAdd          = doAdd;
+window.closeModal     = closeModal;
+window.toast          = toast;
 </script>
 </body>
 </html>
