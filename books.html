@@ -5,266 +5,118 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ανταλλακτική Βιβλιοθήκη · Λέσχη Βιβλίου</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F8F5FF;--surface:#FFFFFF;--surface2:#EDE8FB;--text:#1A0A3C;--muted:#6B5C9E;--accent:#FF6B35;--accent-dk:#D94E1A;--accent2:#7C3AED;--accent3:#D97706;--border:#C4B5E8;--ok:#16A34A;--err:#DC2626;--shadow:rgba(124,58,237,.10)}
+:root{--bg:#F8F5FF;--surface:#FFFFFF;--surface2:#EDE8FB;--text:#1A0A3C;--muted:#6B5C9E;--accent:#FF6B35;--accent-dk:#D94E1A;--accent2:#7C3AED;--border:#C4B5E8;--ok:#16A34A;--err:#DC2626;--shadow:rgba(124,58,237,.10)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);background-image:radial-gradient(ellipse at 15% 15%,rgba(124,58,237,.09) 0%,transparent 50%),radial-gradient(ellipse at 85% 80%,rgba(255,107,53,.07) 0%,transparent 50%);color:var(--text);min-height:100vh}
-#app-header{display:none;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);background:rgba(255,255,255,.90);backdrop-filter:blur(12px);align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);background-image:radial-gradient(ellipse at 15% 15%,rgba(124,58,237,.08) 0%,transparent 50%),radial-gradient(ellipse at 85% 80%,rgba(255,107,53,.06) 0%,transparent 50%);color:var(--text);min-height:100vh}
+#app-header{display:none;padding:.9rem 1.5rem;border-bottom:1px solid var(--border);background:rgba(255,255,255,.92);backdrop-filter:blur(12px);align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
 .brand{font-family:'Playfair Display',serif;font-weight:600;font-size:.95rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .brand-sub{font-size:.7rem;color:var(--muted);font-style:italic;margin-top:1px}
 .user-badge{background:var(--surface2);border:1px solid var(--border);border-radius:999px;padding:.28rem .85rem;font-size:.76rem;cursor:pointer;transition:border-color .2s}
-.user-badge:hover{border-color:var(--accent)}
+.user-badge:hover{border-color:var(--accent2)}
 main{max-width:640px;margin:0 auto;padding:1.5rem}
 .screen{display:none}
 .screen.active{display:block}
-
-/* ── Login ── */
 #screen-login{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center;padding:2rem}
 .login-icon{font-size:3.5rem;margin-bottom:1rem}
-.login-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:.3rem;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;margin-bottom:.3rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .login-sub{font-style:italic;color:var(--muted);margin-bottom:2rem}
 .login-card{width:100%;max-width:380px;text-align:left}
-.login-step{display:none}.login-step.active{display:block}
-
-/* ── Check-email screen ── */
 #screen-check{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center;padding:2rem}
 .check-icon{font-size:3.5rem;margin-bottom:1.25rem}
 .check-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;margin-bottom:.5rem}
-.check-email-display{font-weight:600;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:.4rem 0 1rem}
-.check-sub{color:var(--muted);font-size:.88rem;line-height:1.6;margin-bottom:1.75rem}
+.check-email-display{font-weight:700;color:var(--accent2);margin:.4rem 0 1rem;font-size:1.05rem}
+.check-sub{color:var(--muted);font-size:.88rem;line-height:1.6;margin-bottom:.75rem}
+.spam-warning{background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.25);border-radius:8px;padding:.85rem 1rem;font-size:.83rem;color:var(--accent-dk);margin-bottom:1.5rem;line-height:1.6;text-align:left;max-width:380px}
 .check-card{width:100%;max-width:380px}
-
-/* ── Forms ── */
 .form-group{margin-bottom:1.1rem}
-label{display:block;font-size:.73rem;font-weight:500;color:var(--muted);margin-bottom:.35rem;letter-spacing:.06em;text-transform:uppercase}
-input[type=text],input[type=email],input[type=number],select{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;transition:border-color .2s}
-input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(184,98,42,.10)}
+label{display:block;font-size:.73rem;font-weight:600;color:var(--muted);margin-bottom:.35rem;letter-spacing:.06em;text-transform:uppercase}
+input[type=text],input[type=email],input[type=number],select{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;transition:border-color .2s}
+input:focus,select:focus{outline:none;border-color:var(--accent2);box-shadow:0 0 0 3px rgba(124,58,237,.10)}
 .input-hint{font-size:.73rem;color:var(--muted);margin-top:.3rem;font-style:italic}
-
-/* ── Buttons ── */
-.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.75rem 1.4rem;border-radius:4px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;transition:all .18s}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 12px rgba(255,107,53,.3)}.btn-primary:hover{filter:brightness(1.1);box-shadow:0 4px 20px rgba(168,85,247,.4)}
-.btn-success{background:var(--ok);color:#fff;box-shadow:0 2px 10px rgba(34,197,94,.3)}.btn-success:hover{filter:brightness(1.1)}
-.btn-neutral{background:transparent;color:var(--text);border:1.5px solid var(--border)}.btn-neutral:hover{border-color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.75rem 1.4rem;border-radius:6px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:600;transition:all .18s}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 2px 10px rgba(124,58,237,.2)}.btn-primary:hover{filter:brightness(1.08)}
+.btn-success{background:var(--ok);color:#fff;box-shadow:0 2px 8px rgba(22,163,74,.2)}.btn-success:hover{filter:brightness(1.08)}
+.btn-neutral{background:transparent;color:var(--text);border:1.5px solid var(--border)}.btn-neutral:hover{border-color:var(--text)}
 .btn-ghost{background:transparent;color:var(--muted);border:none;padding:.4rem .6rem;font-size:.8rem}.btn-ghost:hover{color:var(--text)}
 .btn-full{width:100%;justify-content:center}
 .btn:disabled{opacity:.4;cursor:not-allowed}
-
-/* ── Action cards ── */
 .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;margin-bottom:1.5rem}
-.action-card{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:1.3rem;cursor:pointer;transition:all .2s;text-align:left}
-.action-card:hover{border-color:var(--accent2);box-shadow:0 0 0 2px var(--accent2),0 8px 32px rgba(168,85,247,.25);transform:translateY(-2px)}
+.action-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:1.3rem;cursor:pointer;transition:all .2s;text-align:left}
+.action-card:hover{border-color:var(--accent2);box-shadow:0 0 0 2px var(--accent2),0 6px 24px rgba(124,58,237,.15);transform:translateY(-2px)}
 .ac-icon{font-size:1.8rem;display:block;margin-bottom:.55rem}
 .ac-title{font-family:'Playfair Display',serif;font-size:.93rem;font-weight:600;margin-bottom:.2rem}
 .ac-desc{font-size:.75rem;color:var(--muted);font-style:italic}
-
-/* ── Tabs ── */
 .tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.25rem;margin-bottom:1.2rem}
 .tab{flex:1;padding:.5rem;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;background:none;border:none;border-radius:6px;cursor:pointer;color:var(--muted);transition:all .2s}
-.tab.active{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;box-shadow:0 2px 12px rgba(168,85,247,.4)}
-
-/* ── Stats ── */
+.tab.active{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;box-shadow:0 2px 10px rgba(124,58,237,.25)}
 .stats-row{display:flex;gap:.65rem;margin-bottom:1.1rem;flex-wrap:wrap}
 .stat-chip{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.4rem .8rem;font-size:.79rem;color:var(--muted)}
 .stat-chip strong{color:var(--text);font-weight:600}
-
-/* ── Search ── */
 .search-wrap{position:relative;margin-bottom:1rem}
 .search-wrap input{padding-left:2.3rem}
 .search-wrap::before{content:'🔍';position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.8rem;pointer-events:none}
-
-/* ── Book list ── */
 .book-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.95rem 1.1rem;display:flex;align-items:center;gap:.85rem;margin-bottom:.55rem;transition:box-shadow .2s}
-.book-item:hover{box-shadow:0 0 0 1.5px var(--accent2),0 4px 20px rgba(168,85,247,.2)}
+.book-item:hover{box-shadow:0 0 0 1.5px var(--accent2),0 4px 16px rgba(124,58,237,.12)}
 .bi-num{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;min-width:2.6rem;text-align:center}
 .bi-info{flex:1;min-width:0}
 .bi-title{font-family:'Playfair Display',serif;font-size:.92rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bi-author{font-size:.79rem;color:var(--muted)}
 .bi-borrower{font-size:.72rem;color:var(--muted);font-style:italic}
 .bi-status{font-size:.75rem;font-weight:500;white-space:nowrap}
-.s-ok{color:var(--ok)}.s-no{color:var(--err)}.bi-status{font-weight:500}
+.s-ok{color:var(--ok)}.s-no{color:var(--err)}
 .bi-action button{padding:.35rem .8rem;font-size:.78rem}
-
-/* ── Modal ── */
 .overlay{position:fixed;inset:0;background:rgba(26,10,60,.40);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;opacity:0;pointer-events:none;transition:opacity .22s;padding:1rem}
 .overlay.open{opacity:1;pointer-events:all}
 .modal{background:var(--surface);border-radius:10px;width:100%;max-width:420px;padding:1.6rem;transform:translateY(20px);transition:transform .22s;max-height:90vh;overflow-y:auto}
 .overlay.open .modal{transform:translateY(0)}
 .modal-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:1.1rem}
 .modal-actions{display:flex;gap:.6rem;margin-top:1.2rem;flex-wrap:wrap}
-.modal-preview{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.9rem;margin-bottom:.9rem;transition:border-color .15s}
-.modal-preview .mp-num{font-size:.72rem;color:var(--accent3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem}
+.modal-preview{background:var(--surface2);border-radius:6px;padding:.9rem;margin-bottom:.9rem}
+.modal-preview .mp-num{font-size:.72rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.25rem}
 .modal-preview .mp-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:600}
 .modal-preview .mp-author{font-size:.82rem;color:var(--muted);font-style:italic}
-
-/* ── Leave toggle ── */
 .leave-toggle{display:flex;gap:.4rem;margin-bottom:1rem;background:var(--surface2);border-radius:6px;padding:.3rem}
 .leave-toggle button{flex:1;padding:.5rem .4rem;font-family:'DM Sans',sans-serif;font-size:.78rem;background:none;border:none;border-radius:4px;cursor:pointer;color:var(--muted);transition:all .18s}
-.leave-toggle button.active{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;box-shadow:0 2px 10px rgba(168,85,247,.35)}
-
-/* ── Sticker ── */
+.leave-toggle button.active{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;box-shadow:0 1px 6px rgba(124,58,237,.3)}
 .sticker{border:2px dashed var(--accent2);border-radius:8px;padding:1.75rem;text-align:center;margin:1.25rem 0;background:var(--surface)}
 .sticker-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}
-.sticker-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;color:var(--accent);line-height:1}
+.sticker-num{font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
 .sticker-hint{font-size:.75rem;color:var(--muted);font-style:italic;margin-top:.5rem}
-
-/* ── Alerts ── */
 .alert{padding:.75rem 1rem;border-radius:6px;margin-bottom:.85rem;font-size:.85rem}
-.alert-err{background:rgba(139,37,37,.07);border:1px solid rgba(139,37,37,.18);color:var(--err)}
-.alert-ok{background:rgba(61,107,74,.07);border:1px solid rgba(61,107,74,.18);color:var(--ok)}
-.info-box{background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.18);border-radius:6px;padding:.75rem 1rem;font-size:.82rem;color:var(--muted);margin-bottom:1rem;font-style:italic}
+.alert-err{background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.18);color:var(--err)}
+.alert-ok{background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.18);color:var(--ok)}
+.info-box{background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:6px;padding:.75rem 1rem;font-size:.82rem;color:var(--muted);margin-bottom:1rem;font-style:italic}
 .loading{text-align:center;padding:2rem;color:var(--muted);font-style:italic}
 .empty-state{text-align:center;padding:2.5rem;color:var(--muted)}
 .empty-state .es-icon{font-size:2.5rem;margin-bottom:.75rem}
-.spinner{display:inline-block;width:1.2rem;height:1.2rem;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.5rem}
+.spinner{display:inline-block;width:1.2rem;height:1.2rem;border:2px solid var(--border);border-top-color:var(--accent2);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.5rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:var(--bg);padding:.65rem 1.3rem;border-radius:999px;font-size:.85rem;opacity:0;transition:all .3s;pointer-events:none;z-index:200;white-space:nowrap}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:.65rem 1.3rem;border-radius:999px;font-size:.85rem;opacity:0;transition:all .3s;pointer-events:none;z-index:200;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast.ok{background:var(--ok)}.toast.err{background:var(--err)}.toast{font-weight:500}
+.toast.ok{background:var(--ok)}.toast.err{background:var(--err)}
 @media(max-width:480px){.action-grid{grid-template-columns:1fr}}
 </style>
-
-<!-- FIREBASE CREDENTIALS — edit only this block -->
-<script id="cfg" type="application/json">
-{
-  "firebase": {
-    "apiKey":            "AIzaSyBcAKBurs_GMtM3A6-XT31jQaA-56wKM34",
-    "authDomain":        "book-club-233b7.firebaseapp.com",
-    "projectId":         "book-club-233b7",
-    "storageBucket":     "book-club-233b7.firebasestorage.app",
-    "messagingSenderId": "1099164172932",
-    "appId":             "1:1099164172932:web:0bc55dfd2097e1744c78d1"
-},
-"appUrl":            "aegeanstudent.gr/books.html"
-}
-</script>
 </head>
 <body>
 
-<!-- HEADER -->
 <header id="app-header">
   <div>
     <div class="brand">📚 Βιβλιοθήκη</div>
     <div class="brand-sub">Λέσχη Βιβλίου · Aegean College</div>
   </div>
-  <div class="user-badge" id="hdr-user-btn" title="Αποσύνδεση"></div>
+  <div class="user-badge" onclick="doLogout()" title="Αποσύνδεση">
+    <span id="hdr-user"></span> &nbsp;✕
+  </div>
 </header>
 
 <div id="toast"></div>
-
-<!-- OVERLAY MODAL -->
-<div class="overlay" id="overlay">
+<div class="overlay" id="overlay" onclick="if(event.target.id==='overlay') closeModal()">
   <div class="modal" id="modal-body"></div>
 </div>
 
-<!-- HIDDEN MODAL TEMPLATES -->
-<template id="tpl-borrow">
-  <div class="modal-title">📤 Δανεισμός Βιβλίου</div>
-  <div class="form-group">
-    <label>Αναζήτηση τίτλου ή συγγραφέα</label>
-    <input type="text" id="m-search" placeholder="π.χ. Μικρός Πρίγκιπας…" autofocus>
-  </div>
-  <div id="m-results" style="max-height:260px;overflow-y:auto"></div>
-  <div class="modal-actions">
-    <button class="btn btn-neutral" id="btn-borrow-cancel">Άκυρο</button>
-  </div>
-</template>
-
-<template id="tpl-borrow-confirm">
-  <div class="modal-title">📤 Δανεισμός</div>
-  <div class="modal-preview">
-    <div class="mp-title" id="bc-title"></div>
-    <div class="mp-author" id="bc-author"></div>
-  </div>
-  <div class="modal-actions">
-    <button class="btn btn-neutral" id="btn-bc-cancel">Άκυρο</button>
-    <button class="btn btn-success" id="btn-bc-confirm">✓ Δανείζομαι</button>
-  </div>
-</template>
-
-<template id="tpl-leave">
-  <div class="modal-title">🎉 Δανεισμός επιτυχής!</div>
-  <div class="info-box">Αφήνεις κάποιο βιβλίο στη θέση του;</div>
-  <div class="leave-toggle">
-    <button id="lt-new">📘 Καινούργιο</button>
-    <button id="lt-existing">🔎 Υπάρχον</button>
-    <button id="lt-none" class="active">✗ Κανένα</button>
-  </div>
-  <div id="lv-new" style="display:none">
-    <div class="form-group">
-      <label>Τίτλος *</label>
-      <input type="text" id="lv-title" placeholder="Τίτλος βιβλίου">
-    </div>
-    <div class="form-group">
-      <label>Συγγραφέας</label>
-      <input type="text" id="lv-author" placeholder="Συγγραφέας">
-    </div>
-  </div>
-  <div id="lv-existing" style="display:none">
-    <div class="form-group">
-      <label>Αναζήτηση τίτλου ή συγγραφέα</label>
-      <input type="text" id="lv-search" placeholder="π.χ. Μικρός Πρίγκιπας…">
-    </div>
-    <div id="lv-preview"></div>
-  </div>
-  <div class="modal-actions">
-    <button class="btn btn-neutral" id="btn-leave-skip">Παράλειψη</button>
-    <button class="btn btn-primary" id="btn-leave-confirm">✓ Αφήνω βιβλίο</button>
-  </div>
-</template>
-
-<template id="tpl-return">
-  <div class="modal-title">📥 Επιστροφή Βιβλίου</div>
-  <div class="form-group">
-    <label>Βιβλίο που επιστρέφεις</label>
-    <select id="m-ret-sel"></select>
-  </div>
-  <div class="modal-actions">
-    <button class="btn btn-neutral" id="btn-ret-cancel">Άκυρο</button>
-    <button class="btn btn-primary" id="btn-ret-confirm">✓ Επιστροφή</button>
-  </div>
-</template>
-
-<template id="tpl-return-quick">
-  <div class="modal-title">📥 Επιστροφή Βιβλίου</div>
-  <div class="modal-preview">
-    <div class="mp-title" id="rq-title"></div>
-    <div class="mp-author" id="rq-author"></div>
-  </div>
-  <div class="modal-actions">
-    <button class="btn btn-neutral" id="btn-rq-cancel">Άκυρο</button>
-    <button class="btn btn-primary" id="btn-rq-confirm">✓ Επιστροφή</button>
-  </div>
-</template>
-
-<template id="tpl-add">
-  <div class="modal-title">➕ Νέο Βιβλίο</div>
-  <div class="form-group">
-    <label>Τίτλος *</label>
-    <input type="text" id="m-add-title" placeholder="Τίτλος βιβλίου" autofocus>
-  </div>
-  <div class="form-group">
-    <label>Συγγραφέας</label>
-    <input type="text" id="m-add-author" placeholder="Όνομα συγγραφέα">
-  </div>
-  <div class="form-group">
-    <label>Το αφήνεις τώρα στη βιβλιοθήκη;</label>
-    <select id="m-add-leave">
-      <option value="yes">Ναι, το αφήνω</option>
-      <option value="no">Όχι, το δανείζομαι αμέσως</option>
-    </select>
-  </div>
-  <div id="m-add-done" style="display:none">
-    <div class="alert alert-ok">✓ Το βιβλίο προστέθηκε!</div>
-  </div>
-  <div class="modal-actions">
-    <button class="btn btn-neutral" id="btn-add-cancel">Άκυρο</button>
-    <button class="btn btn-primary" id="btn-add-confirm">✓ Προσθήκη</button>
-  </div>
-</template>
-
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="screen-login">
   <div class="login-icon">📚</div>
   <h1 class="login-title">Ανταλλακτική Βιβλιοθήκη</h1>
@@ -272,58 +124,58 @@ input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 
   <div class="login-card">
     <div class="form-group">
       <label for="inp-email">Email Aegean College</label>
-      <input type="email" id="inp-email" placeholder="username@aegeancollege.gr" autocomplete="email">
+      <input type="email" id="inp-email" placeholder="username@aegeancollege.gr"
+             autocomplete="email" onkeydown="if(event.key==='Enter') sendLink()">
       <div class="input-hint">Μόνο λογαριασμοί @aegeancollege.gr</div>
     </div>
     <div id="login-alert"></div>
-    <button class="btn btn-primary btn-full" id="btn-send">Αποστολή συνδέσμου →</button>
+    <button class="btn btn-primary btn-full" id="btn-send" onclick="sendLink()">
+      Αποστολή συνδέσμου →
+    </button>
   </div>
 </div>
 
-<!-- CHECK EMAIL SCREEN -->
+<!-- CHECK EMAIL -->
 <div id="screen-check">
   <div class="check-icon">📬</div>
   <h2 class="check-title">Έλεγξε το email σου</h2>
   <div class="check-email-display" id="check-email-display"></div>
   <p class="check-sub">Σου στείλαμε έναν σύνδεσμο σύνδεσης.<br>Άνοιξέ τον από το ίδιο browser.</p>
-  <div style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:8px;padding:.85rem 1rem;font-size:.83rem;color:var(--accent2);margin:.5rem 0 1.5rem;line-height:1.6;max-width:380px">
-    ⚠️ Αν δεν βλέπεις το email, έλεγξε τον φάκελο <strong>Ανεπιθύμητης Αλληλογραφίας (Spam / Junk)</strong>.
-  </div>
+  <div class="spam-warning">⚠️ Αν δεν βλέπεις το email, έλεγξε τον φάκελο <strong>Ανεπιθύμητης Αλληλογραφίας (Spam / Junk)</strong>.</div>
   <div class="check-card">
-    <button class="btn btn-neutral btn-full" id="btn-back-login" style="margin-bottom:.6rem">← Διαφορετικό email</button>
-    <button class="btn btn-ghost btn-full" id="btn-resend">Επανάληψη αποστολής</button>
+    <button class="btn btn-neutral btn-full" onclick="goBackToLogin()" style="margin-bottom:.6rem">← Διαφορετικό email</button>
+    <button class="btn btn-ghost btn-full" onclick="resendLink()">Επανάληψη αποστολής</button>
   </div>
 </div>
 
 <!-- MAIN APP -->
 <main>
-  <div class="screen" id="screen-main">
-    <div class="action-grid">
-      <div class="action-card" id="card-borrow"><span class="ac-icon">📤</span><div class="ac-title">Δανεισμός</div><div class="ac-desc">Πάρε ένα βιβλίο</div></div>
-      <div class="action-card" id="card-return"><span class="ac-icon">📥</span><div class="ac-title">Επιστροφή</div><div class="ac-desc">Επίστρεψε βιβλίο</div></div>
-      <div class="action-card" id="card-add"><span class="ac-icon">➕</span><div class="ac-title">Νέο βιβλίο</div><div class="ac-desc">Πρόσθεσε στη συλλογή</div></div>
-      <div class="action-card" id="card-mine"><span class="ac-icon">📋</span><div class="ac-title">Δανεισμοί μου</div><div class="ac-desc">Τι έχω τώρα</div></div>
-    </div>
-    <div class="tabs">
-      <button class="tab active" id="tab-all">Όλα</button>
-      <button class="tab" id="tab-available">Διαθέσιμα</button>
-      <button class="tab" id="tab-mine">Δανεισμένα από μένα</button>
-    </div>
-    <div class="stats-row">
-      <div class="stat-chip"><strong id="st-total">—</strong> σύνολο</div>
-      <div class="stat-chip"><strong id="st-avail">—</strong> διαθέσιμα</div>
-      <div class="stat-chip"><strong id="st-lent">—</strong> δανεισμένα</div>
-    </div>
-    <div class="search-wrap">
-      <input type="text" id="inp-search" placeholder="Αναζήτηση τίτλου, συγγραφέα…">
-    </div>
-    <div id="book-list"><div class="loading"><span class="spinner"></span> Φόρτωση…</div></div>
+<div class="screen" id="screen-main">
+  <div class="action-grid">
+    <div class="action-card" onclick="openBorrow()"><span class="ac-icon">📤</span><div class="ac-title">Δανεισμός</div><div class="ac-desc">Πάρε ένα βιβλίο</div></div>
+    <div class="action-card" onclick="openReturn()"><span class="ac-icon">📥</span><div class="ac-title">Επιστροφή</div><div class="ac-desc">Επίστρεψε βιβλίο</div></div>
+    <div class="action-card" onclick="openAdd()"><span class="ac-icon">➕</span><div class="ac-title">Νέο βιβλίο</div><div class="ac-desc">Πρόσθεσε στη συλλογή</div></div>
+    <div class="action-card" onclick="switchTab('mine')"><span class="ac-icon">📋</span><div class="ac-title">Δανεισμοί μου</div><div class="ac-desc">Τι έχω τώρα</div></div>
   </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('all')">Όλα</button>
+    <button class="tab" onclick="switchTab('available')">Διαθέσιμα</button>
+    <button class="tab" onclick="switchTab('mine')">Δανεισμένα από μένα</button>
+  </div>
+  <div class="stats-row">
+    <div class="stat-chip"><strong id="st-total">—</strong> σύνολο</div>
+    <div class="stat-chip"><strong id="st-avail">—</strong> διαθέσιμα</div>
+    <div class="stat-chip"><strong id="st-lent">—</strong> δανεισμένα</div>
+  </div>
+  <div class="search-wrap">
+    <input type="text" id="inp-search" placeholder="Αναζήτηση τίτλου, συγγραφέα ή αριθμού…" oninput="renderBooks()">
+  </div>
+  <div id="book-list"><div class="loading"><span class="spinner"></span>Φόρτωση βιβλίων…</div></div>
+</div>
 </main>
 
 <script type="module">
-import { initializeApp }
-  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink,
          signInWithEmailLink, signOut, onAuthStateChanged }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
@@ -332,492 +184,338 @@ import { getFirestore, collection, doc, getDocs, getDoc,
          serverTimestamp, increment }
   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-var raw    = JSON.parse(document.getElementById('cfg').textContent);
-var app    = initializeApp(raw);
-var auth   = getAuth(app);
-var db     = getFirestore(app);
-var APP_URL = raw.appUrl;
+const CFG = {
+  apiKey:            "AIzaSyBcAKBurs_GMtM3A6-XT31jQaA-56wKM34",
+  authDomain:        "book-club-233b7.firebaseapp.com",
+  projectId:         "book-club-233b7",
+  storageBucket:     "book-club-233b7.firebasestorage.app",
+  messagingSenderId: "1099164172932",
+  appId:             "1:1099164172932:web:0bc55dfd2097e1744c78d1"
+};
+const APP_URL = "https://aegeanstudent.gr/books.html";
 
-var DOMAIN = 'aegeancollege.gr';
-var allBooks = [];
-var currentTab = 'all';
-var leaveMode = 'none';
-var selectedLeaveId = null;
-var currentUser = null;
+const app  = initializeApp(CFG);
+const auth = getAuth(app);
+const db   = getFirestore(app);
 
-// ----- UTILS -----
+const ALLOWED_DOMAIN = 'aegeancollege.gr';
+let allBooks   = [];
+let currentTab = 'all';
+let leaveMode  = 'none';
+let currentUser = null;
+
 function pad(n) { return String(n||0).padStart(3,'0'); }
-function esc(s) {
-  return String(s||'')
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;');
-}
-function toast(msg, type) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast' + (type ? ' ' + type : '');
-  void t.offsetWidth;
-  t.classList.add('show');
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast ' + type;
+  void t.offsetWidth; t.classList.add('show');
   clearTimeout(window._tt);
-  window._tt = setTimeout(function() { t.classList.remove('show'); }, 3200);
+  window._tt = setTimeout(()=>t.classList.remove('show'), 3200);
 }
-function openModal(tplId) {
-  var tpl   = document.getElementById(tplId);
-  var clone = document.importNode(tpl.content, true);
-  var body  = document.getElementById('modal-body');
-  body.innerHTML = '';
-  body.appendChild(clone);
+function openModal(html) {
+  document.getElementById('modal-body').innerHTML = html;
   document.getElementById('overlay').classList.add('open');
 }
-function closeModal() {
-  document.getElementById('overlay').classList.remove('open');
-}
-function el(id) { return document.getElementById(id); }
+function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+function disableBtns() { document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=true); }
+function setAlert(id, msg, type) { document.getElementById(id).innerHTML = msg ? '<div class="alert alert-'+type+'">'+msg+'</div>' : ''; }
 
-document.getElementById('overlay').addEventListener('click', function(e) {
-  if (e.target.id === 'overlay') closeModal();
-});
-
-// ----- SCREENS -----
 function showLogin() {
-  el('screen-login').style.display = 'flex';
-  el('screen-check').style.display = 'none';
-  el('screen-main').classList.remove('active');
-  el('app-header').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('screen-check').style.display = 'none';
+  document.getElementById('screen-main').classList.remove('active');
+  document.getElementById('app-header').style.display = 'none';
 }
-function showCheck(email) {
-  el('screen-login').style.display = 'none';
-  el('screen-check').style.display = 'flex';
-  el('check-email-display').textContent = email;
+function showCheckEmail(email) {
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-check').style.display = 'flex';
+  document.getElementById('check-email-display').textContent = email;
 }
 function showApp(user) {
   currentUser = user;
-  el('screen-login').style.display = 'none';
-  el('screen-check').style.display = 'none';
-  el('screen-main').classList.add('active');
-  el('app-header').style.display = 'flex';
-  el('hdr-user-btn').textContent = user.email.split('@')[0] + ' ✕';
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('screen-check').style.display = 'none';
+  document.getElementById('screen-main').classList.add('active');
+  document.getElementById('app-header').style.display = 'flex';
+  document.getElementById('hdr-user').textContent = user.email.split('@')[0];
   loadBooks();
 }
 
-// ----- AUTH -----
-onAuthStateChanged(auth, function(user) {
+onAuthStateChanged(auth, user => {
   if (user) {
     showApp(user);
   } else if (isSignInWithEmailLink(auth, window.location.href)) {
-    var email = localStorage.getItem('emailForSignIn') ||
-                window.prompt('Επιβεβαίωσε το email σου:');
-    if (!email) { showLogin(); return; }
-    signInWithEmailLink(auth, email, window.location.href)
-      .then(function(r) {
-        localStorage.removeItem('emailForSignIn');
-        window.history.replaceState(null, '', window.location.pathname);
-        showApp(r.user);
-      })
-      .catch(function(e) {
-        console.error(e);
-        toast('Μη έγκυρος ή ληγμένος σύνδεσμος.', 'err');
-        showLogin();
-      });
-  } else {
-    showLogin();
-  }
+    let email = localStorage.getItem('emailForSignIn');
+    if (!email) email = window.prompt('Επιβεβαίωσε το email σου:');
+    if (email) {
+      signInWithEmailLink(auth, email, window.location.href)
+        .then(result => {
+          localStorage.removeItem('emailForSignIn');
+          window.history.replaceState(null, '', window.location.pathname);
+          showApp(result.user);
+        })
+        .catch(e => { console.error(e); toast('Ο σύνδεσμος δεν είναι έγκυρος ή έχει λήξει.', 'err'); showLogin(); });
+    } else { showLogin(); }
+  } else { showLogin(); }
 });
 
-el('btn-send').addEventListener('click', sendLink);
-el('inp-email').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') sendLink();
-});
-el('btn-back-login').addEventListener('click', function() {
-  el('screen-check').style.display = 'none';
-  el('screen-login').style.display = 'flex';
-  el('inp-email').value = '';
-  el('btn-send').disabled = false;
-  el('btn-send').textContent = 'Αποστολή συνδέσμου →';
-});
-el('btn-resend').addEventListener('click', function() {
-  var email = localStorage.getItem('emailForSignIn');
-  if (!email) { el('btn-back-login').click(); return; }
-  sendSignInLinkToEmail(auth, email, { url: APP_URL, handleCodeInApp: true })
-    .then(function() { toast('Εστάλη ξανά!', 'ok'); })
-    .catch(function(e) { toast('Σφάλμα: ' + e.message, 'err'); });
-});
-el('hdr-user-btn').addEventListener('click', function() {
-  signOut(auth).then(function() { currentUser = null; allBooks = []; showLogin(); });
-});
-
-function sendLink() {
-  var email = el('inp-email').value.trim().toLowerCase();
-  el('login-alert').innerHTML = '';
-  if (!email) {
-    el('login-alert').innerHTML = '<div class="alert alert-err">Γράψε το email σου.</div>';
-    return;
+async function sendLink() {
+  const email = document.getElementById('inp-email').value.trim().toLowerCase();
+  setAlert('login-alert','','');
+  if (!email) { setAlert('login-alert','Γράψε το email σου.','err'); return; }
+  if (!email.endsWith('@' + ALLOWED_DOMAIN)) {
+    setAlert('login-alert','Μόνο λογαριασμοί @' + ALLOWED_DOMAIN + ' επιτρέπονται.','err'); return;
   }
-  if (email.indexOf('@' + DOMAIN) === -1 || !email.endsWith('@' + DOMAIN)) {
-    el('login-alert').innerHTML = '<div class="alert alert-err">Μόνο @' + DOMAIN + ' επιτρέπονται.</div>';
-    return;
+  const btn = document.getElementById('btn-send');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Αποστολή…';
+  try {
+    await sendSignInLinkToEmail(auth, email, { url: APP_URL, handleCodeInApp: true });
+    localStorage.setItem('emailForSignIn', email);
+    showCheckEmail(email);
+  } catch(e) {
+    console.error(e);
+    setAlert('login-alert', 'Σφάλμα αποστολής: ' + e.message, 'err');
+    btn.disabled = false;
+    btn.innerHTML = 'Αποστολή συνδέσμου →';
   }
-  el('btn-send').disabled = true;
-  el('btn-send').textContent = 'Αποστολή…';
-  sendSignInLinkToEmail(auth, email, { url: APP_URL, handleCodeInApp: true })
-    .then(function() {
-      localStorage.setItem('emailForSignIn', email);
-      showCheck(email);
-    })
-    .catch(function(e) {
-      console.error(e);
-      el('login-alert').innerHTML = '<div class="alert alert-err">Σφάλμα: ' + e.message + '</div>';
-      el('btn-send').disabled = false;
-      el('btn-send').textContent = 'Αποστολή συνδέσμου →';
-    });
 }
 
-// ----- FIRESTORE -----
-function getNextNumber() {
-  var ref = doc(db, 'meta', 'counter');
-  return getDoc(ref).then(function(snap) {
-    if (!snap.exists()) {
-      return setDoc(ref, { lastNumber: 1 }).then(function() { return 1; });
-    }
-    return updateDoc(ref, { lastNumber: increment(1) })
-      .then(function() { return getDoc(ref); })
-      .then(function(s) { return s.data().lastNumber; });
-  });
+function goBackToLogin() {
+  document.getElementById('screen-check').style.display = 'none';
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('inp-email').value = '';
+  document.getElementById('btn-send').disabled = false;
+  document.getElementById('btn-send').innerHTML = 'Αποστολή συνδέσμου →';
 }
 
-function loadBooks() {
-  el('book-list').innerHTML = '<div class="loading"><span class="spinner"></span> Φόρτωση…</div>';
-  getDocs(query(collection(db, 'books'), orderBy('number', 'asc')))
-    .then(function(snap) {
-      allBooks = snap.docs.map(function(d) {
-        return Object.assign({ id: d.id }, d.data());
-      });
-      var avail = allBooks.filter(function(b) { return b.available; }).length;
-      el('st-total').textContent = allBooks.length;
-      el('st-avail').textContent = avail;
-      el('st-lent').textContent  = allBooks.length - avail;
-      renderBooks();
-    })
-    .catch(function(e) {
-      console.error(e);
-      el('book-list').innerHTML =
-        '<div class="empty-state"><div class="es-icon">⚠️</div>' +
-        '<p>Σφάλμα σύνδεσης.<br>Έλεγξε τα Firebase credentials.</p></div>';
-    });
+async function resendLink() {
+  const email = localStorage.getItem('emailForSignIn');
+  if (!email) { goBackToLogin(); return; }
+  try {
+    await sendSignInLinkToEmail(auth, email, { url: APP_URL, handleCodeInApp: true });
+    toast('Εστάλη ξανά στο ' + email, 'ok');
+  } catch(e) { toast('Σφάλμα: ' + e.message, 'err'); }
 }
 
-// ----- RENDER -----
+async function doLogout() {
+  await signOut(auth);
+  currentUser = null; allBooks = [];
+  showLogin();
+}
+
+async function getNextNumber() {
+  const ref  = doc(db,'meta','counter');
+  const snap = await getDoc(ref);
+  if (!snap.exists()) { await setDoc(ref,{lastNumber:1}); return 1; }
+  await updateDoc(ref,{lastNumber:increment(1)});
+  return (await getDoc(ref)).data().lastNumber;
+}
+
+async function loadBooks() {
+  document.getElementById('book-list').innerHTML='<div class="loading"><span class="spinner"></span>Φόρτωση βιβλίων…</div>';
+  try {
+    const snap = await getDocs(query(collection(db,'books'),orderBy('number','asc')));
+    allBooks = snap.docs.map(d=>({id:d.id,...d.data()}));
+    const avail = allBooks.filter(b=>b.available).length;
+    document.getElementById('st-total').textContent = allBooks.length;
+    document.getElementById('st-avail').textContent = avail;
+    document.getElementById('st-lent').textContent  = allBooks.length - avail;
+    renderBooks();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('book-list').innerHTML=
+      '<div class="empty-state"><div class="es-icon">⚠️</div><p>Σφάλμα σύνδεσης.<br>Έλεγξε τα Firebase credentials.</p></div>';
+  }
+}
+
 function renderBooks() {
-  var q   = (el('inp-search') ? el('inp-search').value : '').toLowerCase();
-  var uid = currentUser ? currentUser.email : '';
-  var books = allBooks.slice();
-  if (currentTab === 'available') {
-    books = books.filter(function(b) { return b.available; });
-  } else if (currentTab === 'mine') {
-    books = books.filter(function(b) { return !b.available && b.borrowedBy === uid; });
-  }
-  if (q) {
-    books = books.filter(function(b) {
-      return String(b.number).includes(q) ||
-        (b.title||'').toLowerCase().includes(q) ||
-        (b.author||'').toLowerCase().includes(q);
-    });
-  }
-  var list = el('book-list');
+  const q   = (document.getElementById('inp-search')?.value||'').toLowerCase();
+  const uid = currentUser?.email||'';
+  let books = [...allBooks];
+  if (currentTab==='available') books=books.filter(b=>b.available);
+  if (currentTab==='mine')      books=books.filter(b=>!b.available && b.borrowedBy===uid);
+  if (q) books=books.filter(b=>
+    String(b.number).includes(q)||(b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q));
+  const el=document.getElementById('book-list');
   if (!books.length) {
-    list.innerHTML =
-      '<div class="empty-state"><div class="es-icon">' +
-      (currentTab === 'mine' ? '🎒' : '📭') + '</div><p>' +
-      (currentTab === 'mine' ? 'Δεν έχεις δανεισμένα βιβλία.' : 'Δεν βρέθηκαν βιβλία.') +
-      '</p></div>';
+    el.innerHTML='<div class="empty-state"><div class="es-icon">'+(currentTab==='mine'?'🎒':'📭')+'</div><p>'+(currentTab==='mine'?'Δεν έχεις δανεισμένα βιβλία.':'Δεν βρέθηκαν βιβλία.')+'</p></div>';
     return;
   }
-  var html = '';
-  books.forEach(function(b) {
-    var isMine = !b.available && b.borrowedBy === uid;
-    var actionBtn = '';
-    if (b.available) {
-      actionBtn = '<button class="btn btn-success bi-btn" data-id="' + b.id + '" data-action="borrow">📤</button>';
-    } else if (isMine) {
-      actionBtn = '<button class="btn btn-neutral bi-btn" data-id="' + b.id + '" data-action="return">📥</button>';
-    }
-    html +=
-      '<div class="book-item">' +
-        '<div class="bi-num">#' + pad(b.number) + '</div>' +
-        '<div class="bi-info">' +
-          '<div class="bi-title">' + esc(b.title) + '</div>' +
-          '<div class="bi-author">' + esc(b.author||'') + '</div>' +
-          (!b.available ? '<div class="bi-borrower">από: ' + esc(b.borrowedBy) + '</div>' : '') +
-        '</div>' +
-        '<div class="bi-status ' + (b.available ? 's-ok' : 's-no') + '">' +
-          (b.available ? '● Διαθέσιμο' : '● Δανεισμένο') +
-        '</div>' +
-        '<div class="bi-action">' + actionBtn + '</div>' +
-      '</div>';
-  });
-  list.innerHTML = html;
-  list.querySelectorAll('.bi-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      if (this.dataset.action === 'borrow') openBorrowConfirm(this.dataset.id);
-      else openReturnQuick(this.dataset.id);
-    });
-  });
+  el.innerHTML=books.map(b=>{
+    const isMine=!b.available&&b.borrowedBy===uid;
+    return '<div class="book-item">'+
+      '<div class="bi-num">#'+pad(b.number)+'</div>'+
+      '<div class="bi-info">'+
+        '<div class="bi-title">'+esc(b.title)+'</div>'+
+        '<div class="bi-author">'+esc(b.author||'')+'</div>'+
+        (!b.available?'<div class="bi-borrower">από: '+esc(b.borrowedBy)+'</div>':'')+
+      '</div>'+
+      '<div class="bi-status '+(b.available?'s-ok':'s-no')+'">'+(b.available?'● Διαθέσιμο':'● Δανεισμένο')+'</div>'+
+      '<div class="bi-action">'+
+        (b.available?'<button class="btn btn-success" onclick="quickBorrow(\''+b.id+'\')">📤</button>':
+         isMine    ?'<button class="btn btn-neutral" onclick="quickReturn(\''+b.id+'\')">📥</button>':'')+
+      '</div></div>';
+  }).join('');
 }
 
-el('inp-search').addEventListener('input', renderBooks);
-
-function setTab(tab) {
-  currentTab = tab;
-  ['all','available','mine'].forEach(function(t) {
-    el('tab-' + t).classList.toggle('active', t === tab);
-  });
+function switchTab(tab) {
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['all','available','mine'][i]===tab));
   renderBooks();
 }
-el('tab-all').addEventListener('click', function() { setTab('all'); });
-el('tab-available').addEventListener('click', function() { setTab('available'); });
-el('tab-mine').addEventListener('click', function() { setTab('mine'); });
-el('card-mine').addEventListener('click', function() { setTab('mine'); });
 
-// ----- BORROW -----
-el('card-borrow').addEventListener('click', function() {
-  openModal('tpl-borrow');
-  var inp = el('m-search');
-  if (inp) {
-    inp.addEventListener('input', function() {
-      var q = this.value.toLowerCase().trim();
-      var res = el('m-results');
-      if (!res) return;
-      if (!q) { res.innerHTML = ''; return; }
-      var hits = allBooks.filter(function(b) {
-        return b.available &&
-          ((b.title||'').toLowerCase().includes(q) ||
-           (b.author||'').toLowerCase().includes(q));
-      });
-      if (!hits.length) {
-        res.innerHTML = '<div class="alert alert-err" style="margin-top:.5rem">Δεν βρέθηκαν διαθέσιμα βιβλία.</div>';
-        return;
-      }
-      var h = '<div style="margin-top:.5rem">';
-      hits.forEach(function(b) {
-        h += '<div class="modal-preview" style="cursor:pointer;margin-bottom:.5rem" data-bid="' + b.id + '">' +
-          '<div class="mp-title">' + esc(b.title) + '</div>' +
-          '<div class="mp-author">' + esc(b.author||'') + '</div>' +
-          '<div style="font-size:.72rem;color:var(--ok);margin-top:.2rem">● Διαθέσιμο</div>' +
-          '</div>';
-      });
-      h += '</div>';
-      res.innerHTML = h;
-      res.querySelectorAll('.modal-preview').forEach(function(card) {
-        card.addEventListener('click', function() {
-          openBorrowConfirm(this.dataset.bid);
-        });
-      });
-    });
-  }
-  el('btn-borrow-cancel').addEventListener('click', closeModal);
-});
-
-function openBorrowConfirm(bookId) {
-  var b = allBooks.find(function(x) { return x.id === bookId; });
-  if (!b) return;
-  openModal('tpl-borrow-confirm');
-  el('bc-title').textContent  = b.title;
-  el('bc-author').textContent = b.author || '';
-  el('btn-bc-cancel').addEventListener('click', closeModal);
-  el('btn-bc-confirm').addEventListener('click', function() {
-    this.disabled = true;
-    el('btn-bc-cancel').disabled = true;
-    updateDoc(doc(db, 'books', bookId), {
-      available: false, borrowedBy: currentUser.email, borrowedAt: serverTimestamp()
-    }).then(function() {
-      return addDoc(collection(db, 'loans'), {
-        bookId: bookId, borrowerEmail: currentUser.email,
-        borrowedAt: serverTimestamp(), returnedAt: null
-      });
-    }).then(function() {
-      return loadBooks();
-    }).then(function() {
-      openLeaveModal();
-    }).catch(function(e) {
-      console.error(e); toast('Σφάλμα κατά τον δανεισμό', 'err');
-    });
-  });
+function openBorrow() {
+  openModal(
+    '<div class="modal-title">📤 Δανεισμός Βιβλίου</div>'+
+    '<div class="info-box">Γράψε τον αριθμό από το αυτοκόλλητο.</div>'+
+    '<div class="form-group"><label>Αριθμός βιβλίου</label>'+
+    '<input type="number" id="m-num" min="1" placeholder="π.χ. 7" autofocus oninput="onLookup()"></div>'+
+    '<div id="m-preview"></div>'+
+    '<div class="modal-actions">'+
+    '<button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>'+
+    '<button class="btn btn-success" id="m-confirm" style="display:none" onclick="doBorrow()">✓ Δανείζομαι</button>'+
+    '</div>');
+}
+function onLookup() {
+  const num=parseInt(document.getElementById('m-num')?.value);
+  const prev=document.getElementById('m-preview');
+  const btn=document.getElementById('m-confirm');
+  if (!prev||!btn) return;
+  if (!num) { prev.innerHTML=''; btn.style.display='none'; return; }
+  const b=allBooks.find(x=>x.number===num);
+  if (!b) { prev.innerHTML='<div class="alert alert-err">Δεν βρέθηκε βιβλίο #'+num+'.</div>'; btn.style.display='none'; }
+  else if (!b.available) { prev.innerHTML='<div class="modal-preview"><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">Δανεισμένο από: '+esc(b.borrowedBy)+'</div></div>'; btn.style.display='none'; }
+  else { prev.innerHTML='<div class="modal-preview"><div class="mp-num">#'+pad(b.number)+'</div><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div>'; btn.style.display='inline-flex'; btn.dataset.bookId=b.id; }
+}
+function quickBorrow(bookId) {
+  const b=allBooks.find(x=>x.id===bookId); if (!b) return;
+  openModal('<div class="modal-title">📤 Δανεισμός</div><div class="modal-preview"><div class="mp-num">#'+pad(b.number)+'</div><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-success" onclick="confirmBorrow(\''+bookId+'\')">✓ Δανείζομαι</button></div>');
+}
+async function doBorrow() { const btn=document.getElementById('m-confirm'); if (btn?.dataset.bookId) await confirmBorrow(btn.dataset.bookId); }
+async function confirmBorrow(bookId) {
+  const uid=currentUser.email; disableBtns();
+  try {
+    await updateDoc(doc(db,'books',bookId),{available:false,borrowedBy:uid,borrowedAt:serverTimestamp()});
+    await addDoc(collection(db,'loans'),{bookId,borrowerEmail:uid,borrowedAt:serverTimestamp(),returnedAt:null});
+    await loadBooks(); openLeaveModal();
+  } catch(e) { console.error(e); toast('Σφάλμα κατά τον δανεισμό','err'); }
 }
 
-// ----- LEAVE -----
 function openLeaveModal() {
-  leaveMode = 'none';
-  selectedLeaveId = null;
-  openModal('tpl-leave');
-
-  el('lt-new').addEventListener('click', function() { setLeave('new'); });
-  el('lt-existing').addEventListener('click', function() { setLeave('existing'); });
-  el('lt-none').addEventListener('click', function() { setLeave('none'); });
-
-  el('lv-search').addEventListener('input', function() {
-    var q = this.value.toLowerCase().trim();
-    var prev = el('lv-preview');
-    if (!q) { prev.innerHTML = ''; return; }
-    var hits = allBooks.filter(function(b) {
-      return b.available &&
-        ((b.title||'').toLowerCase().includes(q) ||
-         (b.author||'').toLowerCase().includes(q));
-    });
-    if (!hits.length) {
-      prev.innerHTML = '<div class="alert alert-err" style="margin-top:.4rem">Δεν βρέθηκαν βιβλία.</div>';
-      selectedLeaveId = null;
-      return;
-    }
-    var h = '<div style="margin-top:.4rem">';
-    hits.forEach(function(b) {
-      h += '<div class="modal-preview" style="cursor:pointer;margin-bottom:.5rem;border:2px solid transparent" data-lid="' + b.id + '">' +
-        '<div class="mp-title">' + esc(b.title) + '</div>' +
-        '<div class="mp-author">' + esc(b.author||'') + '</div>' +
-        '</div>';
-    });
-    h += '</div>';
-    prev.innerHTML = h;
-    prev.querySelectorAll('.modal-preview').forEach(function(card) {
-      card.addEventListener('click', function() {
-        selectedLeaveId = this.dataset.lid;
-        prev.querySelectorAll('.modal-preview').forEach(function(c) {
-          c.style.border = '2px solid transparent';
-        });
-        this.style.border = '2px solid var(--accent2)';
-      });
-    });
-  });
-
-  el('btn-leave-skip').addEventListener('click', function() {
-    closeModal(); toast('Καλή ανάγνωση! 📚');
-  });
-  el('btn-leave-confirm').addEventListener('click', doLeave);
+  leaveMode='none';
+  openModal(
+    '<div class="modal-title">🎉 Δανεισμός επιτυχής!</div>'+
+    '<div class="info-box">Αφήνεις κάποιο βιβλίο στη θέση του;</div>'+
+    '<div class="leave-toggle">'+
+    '<button onclick="setLeave(\'new\')">📘 Καινούργιο</button>'+
+    '<button onclick="setLeave(\'existing\')">🔢 Υπάρχον (#)</button>'+
+    '<button class="active" onclick="setLeave(\'none\')">✗ Κανένα</button>'+
+    '</div>'+
+    '<div id="lv-new" style="display:none"><div class="form-group"><label>Τίτλος *</label><input type="text" id="lv-title" placeholder="Τίτλος βιβλίου"></div><div class="form-group"><label>Συγγραφέας</label><input type="text" id="lv-author" placeholder="Συγγραφέας"></div></div>'+
+    '<div id="lv-existing" style="display:none"><div class="form-group"><label>Αριθμός βιβλίου</label><input type="number" id="lv-num" min="1" placeholder="π.χ. 12" oninput="onLookupLeave()"></div><div id="lv-preview"></div></div>'+
+    '<div class="modal-actions">'+
+    '<button class="btn btn-neutral" onclick="closeModal();toast(\'Καλή ανάγνωση! 📚\')">Παράλειψη</button>'+
+    '<button class="btn btn-primary" onclick="doLeave()">✓ Αφήνω βιβλίο</button>'+
+    '</div>');
 }
-
 function setLeave(mode) {
-  leaveMode = mode;
-  ['new','existing','none'].forEach(function(m) {
-    el('lt-' + m).classList.toggle('active', m === mode);
-  });
-  el('lv-new').style.display      = mode === 'new'      ? 'block' : 'none';
-  el('lv-existing').style.display = mode === 'existing' ? 'block' : 'none';
+  leaveMode=mode;
+  document.querySelectorAll('.leave-toggle button').forEach((b,i)=>b.classList.toggle('active',['new','existing','none'][i]===mode));
+  document.getElementById('lv-new').style.display=mode==='new'?'block':'none';
+  document.getElementById('lv-existing').style.display=mode==='existing'?'block':'none';
+}
+function onLookupLeave() {
+  const num=parseInt(document.getElementById('lv-num')?.value);
+  const prev=document.getElementById('lv-preview'); if (!prev) return;
+  if (!num) { prev.innerHTML=''; return; }
+  const b=allBooks.find(x=>x.number===num);
+  prev.innerHTML=b?'<div class="modal-preview"><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+' · '+(b.available?'✅ Διαθέσιμο':'⚠️ Ήδη δανεισμένο')+'</div></div>':'<div class="alert alert-err">Δεν βρέθηκε βιβλίο #'+num+'.</div>';
+}
+async function doLeave() {
+  if (leaveMode==='none') { closeModal(); toast('Καλή ανάγνωση! 📚'); return; }
+  const uid=currentUser.email; disableBtns();
+  try {
+    if (leaveMode==='new') {
+      const title=document.getElementById('lv-title')?.value.trim();
+      const author=document.getElementById('lv-author')?.value.trim()||'';
+      if (!title) { toast('Βάλε τίτλο για το βιβλίο','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); return; }
+      const n=await getNextNumber();
+      await addDoc(collection(db,'books'),{number:n,title,author,available:true,addedBy:uid,addedAt:serverTimestamp(),borrowedBy:null,borrowedAt:null});
+      closeModal(); toast('Βιβλίο #'+pad(n)+' — κόλλα αυτοκόλλητο! 🏷','ok');
+    } else {
+      const num=parseInt(document.getElementById('lv-num')?.value);
+      const b=allBooks.find(x=>x.number===num);
+      if (!b) { toast('Δεν βρέθηκε αυτός ο αριθμός','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); return; }
+      await updateDoc(doc(db,'books',b.id),{available:true,borrowedBy:null,borrowedAt:null});
+      closeModal(); toast('Καλή ανάγνωση! 📚','ok');
+    }
+    await loadBooks();
+  } catch(e) { console.error(e); toast('Σφάλμα','err'); }
 }
 
-function doLeave() {
-  if (leaveMode === 'none') { closeModal(); toast('Καλή ανάγνωση! 📚'); return; }
-  el('btn-leave-confirm').disabled = true;
-  el('btn-leave-skip').disabled    = true;
-  if (leaveMode === 'new') {
-    var title  = el('lv-title').value.trim();
-    var author = el('lv-author').value.trim();
-    if (!title) { toast('Βάλε τίτλο για το βιβλίο', 'err'); el('btn-leave-confirm').disabled=false; el('btn-leave-skip').disabled=false; return; }
-    getNextNumber().then(function(n) {
-      return addDoc(collection(db,'books'), {
-        number: n, title: title, author: author, available: true,
-        addedBy: currentUser.email, addedAt: serverTimestamp(),
-        borrowedBy: null, borrowedAt: null
-      });
-    }).then(function() {
-      closeModal(); toast('Βιβλίο προστέθηκε! Καλή ανάγνωση! 📚', 'ok');
-      loadBooks();
-    }).catch(function(e) { console.error(e); toast('Σφάλμα', 'err'); });
-  } else {
-    if (!selectedLeaveId) { toast('Επίλεξε βιβλίο από τη λίστα', 'err'); el('btn-leave-confirm').disabled=false; el('btn-leave-skip').disabled=false; return; }
-    updateDoc(doc(db,'books', selectedLeaveId), { available: true, borrowedBy: null, borrowedAt: null })
-      .then(function() {
-        closeModal(); toast('Καλή ανάγνωση! 📚', 'ok');
-        loadBooks();
-      }).catch(function(e) { console.error(e); toast('Σφάλμα', 'err'); });
-  }
+function openReturn() {
+  const uid=currentUser.email;
+  const mine=allBooks.filter(b=>!b.available&&b.borrowedBy===uid);
+  if (!mine.length) { toast('Δεν έχεις δανεισμένα βιβλία','err'); return; }
+  const opts=mine.map(b=>'<option value="'+b.id+'">#'+pad(b.number)+' — '+esc(b.title)+'</option>').join('');
+  openModal('<div class="modal-title">📥 Επιστροφή Βιβλίου</div><div class="form-group"><label>Βιβλίο που επιστρέφεις</label><select id="m-ret-sel">'+opts+'</select></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-primary" onclick="confirmReturn()">✓ Επιστροφή</button></div>');
+}
+function quickReturn(bookId) {
+  const b=allBooks.find(x=>x.id===bookId); if (!b) return;
+  openModal('<div class="modal-title">📥 Επιστροφή Βιβλίου</div><div class="modal-preview"><div class="mp-num">#'+pad(b.number)+'</div><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-primary" onclick="doReturn(\''+bookId+'\')">✓ Επιστροφή</button></div>');
+}
+async function confirmReturn() { const sel=document.getElementById('m-ret-sel'); if (sel) await doReturn(sel.value); }
+async function doReturn(bookId) {
+  disableBtns();
+  try {
+    await updateDoc(doc(db,'books',bookId),{available:true,borrowedBy:null,borrowedAt:null});
+    const snap=await getDocs(query(collection(db,'loans'),where('bookId','==',bookId),where('returnedAt','==',null)));
+    await Promise.all(snap.docs.map(d=>updateDoc(doc(db,'loans',d.id),{returnedAt:serverTimestamp()})));
+    closeModal(); toast('Επιστροφή καταχωρήθηκε ✔','ok');
+    await loadBooks();
+  } catch(e) { console.error(e); toast('Σφάλμα κατά την επιστροφή','err'); }
 }
 
-// ----- RETURN -----
-el('card-return').addEventListener('click', function() {
-  var uid  = currentUser.email;
-  var mine = allBooks.filter(function(b) { return !b.available && b.borrowedBy === uid; });
-  if (!mine.length) { toast('Δεν έχεις δανεισμένα βιβλία', 'err'); return; }
-  openModal('tpl-return');
-  var sel = el('m-ret-sel');
-  mine.forEach(function(b) {
-    var opt = document.createElement('option');
-    opt.value       = b.id;
-    opt.textContent = '#' + pad(b.number) + ' — ' + b.title;
-    sel.appendChild(opt);
-  });
-  el('btn-ret-cancel').addEventListener('click', closeModal);
-  el('btn-ret-confirm').addEventListener('click', function() {
-    doReturn(el('m-ret-sel').value);
-  });
+function openAdd() {
+  openModal(
+    '<div class="modal-title">➕ Νέο Βιβλίο</div>'+
+    '<div class="info-box">Θα αποδοθεί αυτόματα αύξων αριθμός. Κόλλα το αυτοκόλλητο στο εξώφυλλο.</div>'+
+    '<div class="form-group"><label>Τίτλος *</label><input type="text" id="m-add-title" placeholder="Τίτλος βιβλίου" autofocus></div>'+
+    '<div class="form-group"><label>Συγγραφέας</label><input type="text" id="m-add-author" placeholder="Όνομα συγγραφέα"></div>'+
+    '<div class="form-group"><label>Το αφήνεις τώρα στη βιβλιοθήκη;</label><select id="m-add-leave"><option value="yes">✅ Ναι, το αφήνω</option><option value="no">📤 Όχι, το δανείζομαι αμέσως</option></select></div>'+
+    '<div id="m-add-sticker" style="display:none"><div class="sticker"><div class="sticker-label">Αριθμός αυτοκόλλητου</div><div class="sticker-num" id="m-sticker-num">—</div><div class="sticker-hint">Κόλλα αυτοκόλλητο με αυτόν τον αριθμό</div></div></div>'+
+    '<div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-primary" onclick="doAdd()">✓ Προσθήκη</button></div>');
+}
+async function doAdd() {
+  const title=document.getElementById('m-add-title')?.value.trim();
+  const author=document.getElementById('m-add-author')?.value.trim()||'';
+  const leave=document.getElementById('m-add-leave')?.value==='yes';
+  if (!title) { toast('Βάλε τίτλο για το βιβλίο','err'); return; }
+  const uid=currentUser.email; disableBtns();
+  try {
+    const n=await getNextNumber();
+    const docRef=await addDoc(collection(db,'books'),{number:n,title,author,available:leave,addedBy:uid,addedAt:serverTimestamp(),borrowedBy:leave?null:uid,borrowedAt:leave?null:serverTimestamp()});
+    if (!leave) await addDoc(collection(db,'loans'),{bookId:docRef.id,borrowerEmail:uid,borrowedAt:serverTimestamp(),returnedAt:null});
+    document.getElementById('m-sticker-num').textContent=pad(n);
+    document.getElementById('m-add-sticker').style.display='block';
+    document.querySelector('#modal-body .btn-primary').style.display='none';
+    document.querySelector('#modal-body .btn-neutral').textContent='Κλείσιμο';
+    document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false);
+    await loadBooks();
+  } catch(e) { console.error(e); toast('Σφάλμα κατά την προσθήκη','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); }
+}
+
+Object.assign(window, {
+  sendLink, goBackToLogin, resendLink, doLogout,
+  renderBooks, switchTab,
+  openBorrow, onLookup, quickBorrow, doBorrow, confirmBorrow,
+  openLeaveModal, setLeave, onLookupLeave, doLeave,
+  openReturn, quickReturn, confirmReturn, doReturn,
+  openAdd, doAdd,
+  closeModal, toast
 });
-
-function openReturnQuick(bookId) {
-  var b = allBooks.find(function(x) { return x.id === bookId; });
-  if (!b) return;
-  openModal('tpl-return-quick');
-  el('rq-title').textContent  = b.title;
-  el('rq-author').textContent = b.author || '';
-  el('btn-rq-cancel').addEventListener('click', closeModal);
-  el('btn-rq-confirm').addEventListener('click', function() { doReturn(bookId); });
-}
-
-function doReturn(bookId) {
-  el('btn-rq-confirm') && (el('btn-rq-confirm').disabled = true);
-  el('btn-ret-confirm') && (el('btn-ret-confirm').disabled = true);
-  updateDoc(doc(db,'books',bookId), { available: true, borrowedBy: null, borrowedAt: null })
-    .then(function() {
-      return getDocs(query(collection(db,'loans'),
-        where('bookId','==',bookId), where('returnedAt','==',null)));
-    }).then(function(snap) {
-      return Promise.all(snap.docs.map(function(d) {
-        return updateDoc(doc(db,'loans',d.id), { returnedAt: serverTimestamp() });
-      }));
-    }).then(function() {
-      closeModal(); toast('Επιστροφή καταχωρήθηκε ✔', 'ok');
-      loadBooks();
-    }).catch(function(e) { console.error(e); toast('Σφάλμα κατά την επιστροφή', 'err'); });
-}
-
-// ----- ADD BOOK -----
-el('card-add').addEventListener('click', function() {
-  openModal('tpl-add');
-  el('btn-add-cancel').addEventListener('click', closeModal);
-  el('btn-add-confirm').addEventListener('click', function() {
-    var title  = el('m-add-title').value.trim();
-    var author = el('m-add-author').value.trim();
-    var leave  = el('m-add-leave').value === 'yes';
-    if (!title) { toast('Βάλε τίτλο για το βιβλίο', 'err'); return; }
-    el('btn-add-confirm').disabled = true;
-    el('btn-add-cancel').disabled  = true;
-    var uid = currentUser.email;
-    getNextNumber().then(function(n) {
-      return addDoc(collection(db,'books'), {
-        number: n, title: title, author: author, available: leave,
-        addedBy: uid, addedAt: serverTimestamp(),
-        borrowedBy: leave ? null : uid,
-        borrowedAt: leave ? null : serverTimestamp()
-      }).then(function(ref) {
-        if (!leave) {
-          return addDoc(collection(db,'loans'), {
-            bookId: ref.id, borrowerEmail: uid,
-            borrowedAt: serverTimestamp(), returnedAt: null
-          });
-        }
-      });
-    }).then(function() {
-      el('m-add-done').style.display = 'block';
-      el('btn-add-confirm').style.display = 'none';
-      el('btn-add-cancel').disabled  = false;
-      el('btn-add-cancel').textContent = 'Κλείσιμο';
-      loadBooks();
-    }).catch(function(e) {
-      console.error(e); toast('Σφάλμα κατά την προσθήκη', 'err');
-      el('btn-add-confirm').disabled = false;
-      el('btn-add-cancel').disabled  = false;
-    });
-  });
-});
-
 </script>
 </body>
 </html>
