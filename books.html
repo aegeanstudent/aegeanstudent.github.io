@@ -59,7 +59,6 @@ input:focus,select:focus{outline:none;border-color:var(--accent2);box-shadow:0 0
 .search-wrap::before{content:'🔍';position:absolute;left:.7rem;top:50%;transform:translateY(-50%);font-size:.8rem;pointer-events:none}
 .book-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.95rem 1.1rem;display:flex;align-items:center;gap:.85rem;margin-bottom:.55rem;transition:box-shadow .2s}
 .book-item:hover{box-shadow:0 0 0 1.5px var(--accent2),0 4px 16px rgba(124,58,237,.12)}
-.bi-num{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;min-width:2.6rem;text-align:center}
 .bi-info{flex:1;min-width:0}
 .bi-title{font-family:'Playfair Display',serif;font-size:.92rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bi-author{font-size:.79rem;color:var(--muted)}
@@ -168,7 +167,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent2);box-shadow:0 0
     <div class="stat-chip"><strong id="st-lent">—</strong> δανεισμένα</div>
   </div>
   <div class="search-wrap">
-    <input type="text" id="inp-search" placeholder="Αναζήτηση τίτλου, συγγραφέα ή αριθμού…" oninput="renderBooks()">
+    <input type="text" id="inp-search" placeholder="Αναζήτηση τίτλου ή συγγραφέα…" oninput="renderBooks()">
   </div>
   <div id="book-list"><div class="loading"><span class="spinner"></span>Φόρτωση βιβλίων…</div></div>
 </div>
@@ -337,7 +336,7 @@ function renderBooks() {
   if (currentTab==='available') books=books.filter(b=>b.available);
   if (currentTab==='mine')      books=books.filter(b=>!b.available && b.borrowedBy===uid);
   if (q) books=books.filter(b=>
-    String(b.number).includes(q)||(b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q));
+    (b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q));
   const el=document.getElementById('book-list');
   if (!books.length) {
     el.innerHTML='<div class="empty-state"><div class="es-icon">'+(currentTab==='mine'?'🎒':'📭')+'</div><p>'+(currentTab==='mine'?'Δεν έχεις δανεισμένα βιβλία.':'Δεν βρέθηκαν βιβλία.')+'</p></div>';
@@ -346,7 +345,6 @@ function renderBooks() {
   el.innerHTML=books.map(b=>{
     const isMine=!b.available&&b.borrowedBy===uid;
     return '<div class="book-item">'+
-      '<div class="bi-num">#'+pad(b.number)+'</div>'+
       '<div class="bi-info">'+
         '<div class="bi-title">'+esc(b.title)+'</div>'+
         '<div class="bi-author">'+esc(b.author||'')+'</div>'+
@@ -369,31 +367,27 @@ function switchTab(tab) {
 function openBorrow() {
   openModal(
     '<div class="modal-title">📤 Δανεισμός Βιβλίου</div>'+
-    '<div class="info-box">Γράψε τον αριθμό από το αυτοκόλλητο.</div>'+
-    '<div class="form-group"><label>Αριθμός βιβλίου</label>'+
-    '<input type="number" id="m-num" min="1" placeholder="π.χ. 7" autofocus oninput="onLookup()"></div>'+
-    '<div id="m-preview"></div>'+
-    '<div class="modal-actions">'+
-    '<button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button>'+
-    '<button class="btn btn-success" id="m-confirm" style="display:none" onclick="doBorrow()">✓ Δανείζομαι</button>'+
-    '</div>');
+    '<div class="form-group"><label>Αναζήτηση τίτλου ή συγγραφέα</label>'+
+    '<input type="text" id="m-search" placeholder="π.χ. Μικρός Πρίγκιπας…" autofocus oninput="onLookup()"></div>'+
+    '<div id="m-results" style="max-height:260px;overflow-y:auto"></div>'+
+    '<div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button></div>');
 }
 function onLookup() {
-  const num=parseInt(document.getElementById('m-num')?.value);
-  const prev=document.getElementById('m-preview');
-  const btn=document.getElementById('m-confirm');
-  if (!prev||!btn) return;
-  if (!num) { prev.innerHTML=''; btn.style.display='none'; return; }
-  const b=allBooks.find(x=>x.number===num);
-  if (!b) { prev.innerHTML='<div class="alert alert-err">Δεν βρέθηκε βιβλίο #'+num+'.</div>'; btn.style.display='none'; }
-  else if (!b.available) { prev.innerHTML='<div class="modal-preview"><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">Δανεισμένο από: '+esc(b.borrowedBy)+'</div></div>'; btn.style.display='none'; }
-  else { prev.innerHTML='<div class="modal-preview"><div class="mp-num">#'+pad(b.number)+'</div><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div>'; btn.style.display='inline-flex'; btn.dataset.bookId=b.id; }
+  const q=(document.getElementById('m-search')?.value||'').toLowerCase().trim();
+  const el=document.getElementById('m-results');
+  if (!el) return;
+  if (!q) { el.innerHTML=''; return; }
+  const matches=allBooks.filter(b=>b.available&&((b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q)));
+  if (!matches.length) { el.innerHTML='<div class="alert alert-err" style="margin-top:.5rem">Δεν βρέθηκαν διαθέσιμα βιβλία.</div>'; return; }
+  el.innerHTML=matches.map(b=>
+    '<div class="modal-preview" style="cursor:pointer" onclick="quickBorrow(\''+b.id+'\')">'+'<div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div><div style="font-size:.72rem;color:var(--ok);margin-top:.2rem">● Διαθέσιμο — πάτα για δανεισμό</div></div>'
+  ).join('');
 }
 function quickBorrow(bookId) {
   const b=allBooks.find(x=>x.id===bookId); if (!b) return;
-  openModal('<div class="modal-title">📤 Δανεισμός</div><div class="modal-preview"><div class="mp-num">#'+pad(b.number)+'</div><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-success" onclick="confirmBorrow(\''+bookId+'\')">✓ Δανείζομαι</button></div>');
+  openModal('<div class="modal-title">📤 Δανεισμός</div><div class="modal-preview"><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-success" onclick="confirmBorrow(\''+bookId+'\')">✓ Δανείζομαι</button></div>');
 }
-async function doBorrow() { const btn=document.getElementById('m-confirm'); if (btn?.dataset.bookId) await confirmBorrow(btn.dataset.bookId); }
+async function doBorrow() { /* unused */ }
 async function confirmBorrow(bookId) {
   const uid=currentUser.email; disableBtns();
   try {
@@ -414,7 +408,7 @@ function openLeaveModal() {
     '<button class="active" onclick="setLeave(\'none\')">✗ Κανένα</button>'+
     '</div>'+
     '<div id="lv-new" style="display:none"><div class="form-group"><label>Τίτλος *</label><input type="text" id="lv-title" placeholder="Τίτλος βιβλίου"></div><div class="form-group"><label>Συγγραφέας</label><input type="text" id="lv-author" placeholder="Συγγραφέας"></div></div>'+
-    '<div id="lv-existing" style="display:none"><div class="form-group"><label>Αριθμός βιβλίου</label><input type="number" id="lv-num" min="1" placeholder="π.χ. 12" oninput="onLookupLeave()"></div><div id="lv-preview"></div></div>'+
+    '<div id="lv-existing" style="display:none"><div class="form-group"><label>Αναζήτηση τίτλου ή συγγραφέα</label><input type="text" id="lv-num" placeholder="π.χ. Μικρός Πρίγκιπας…" oninput="onLookupLeave()"></div><div id="lv-preview"></div></div>'+
     '<div class="modal-actions">'+
     '<button class="btn btn-neutral" onclick="closeModal();toast(\'Καλή ανάγνωση! 📚\')">Παράλειψη</button>'+
     '<button class="btn btn-primary" onclick="doLeave()">✓ Αφήνω βιβλίο</button>'+
@@ -427,11 +421,21 @@ function setLeave(mode) {
   document.getElementById('lv-existing').style.display=mode==='existing'?'block':'none';
 }
 function onLookupLeave() {
-  const num=parseInt(document.getElementById('lv-num')?.value);
+  const q=(document.getElementById('lv-num')?.value||'').toLowerCase().trim();
   const prev=document.getElementById('lv-preview'); if (!prev) return;
-  if (!num) { prev.innerHTML=''; return; }
-  const b=allBooks.find(x=>x.number===num);
-  prev.innerHTML=b?'<div class="modal-preview"><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+' · '+(b.available?'✅ Διαθέσιμο':'⚠️ Ήδη δανεισμένο')+'</div></div>':'<div class="alert alert-err">Δεν βρέθηκε βιβλίο #'+num+'.</div>';
+  window._selectedLeaveId=null;
+  if (!q) { prev.innerHTML=''; return; }
+  const matches=allBooks.filter(b=>b.available&&((b.title||'').toLowerCase().includes(q)||(b.author||'').toLowerCase().includes(q)));
+  if (!matches.length) { prev.innerHTML='<div class="alert alert-err" style="margin-top:.4rem">Δεν βρέθηκαν διαθέσιμα βιβλία.</div>'; return; }
+  prev.innerHTML=matches.map(b=>
+    '<div class="modal-preview" id="lp-'+b.id+'" style="cursor:pointer;border:2px solid transparent;transition:border-color .15s" onclick="selectLeaveBook(\''+b.id+'\')">'+'<div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div>'
+  ).join('');
+}
+function selectLeaveBook(id) {
+  window._selectedLeaveId=id;
+  document.querySelectorAll('#lv-preview .modal-preview').forEach(el=>{
+    el.style.border=el.id==='lp-'+id?'2px solid var(--accent2)':'2px solid transparent';
+  });
 }
 async function doLeave() {
   if (leaveMode==='none') { closeModal(); toast('Καλή ανάγνωση! 📚'); return; }
@@ -445,9 +449,9 @@ async function doLeave() {
       await addDoc(collection(db,'books'),{number:n,title,author,available:true,addedBy:uid,addedAt:serverTimestamp(),borrowedBy:null,borrowedAt:null});
       closeModal(); toast('Βιβλίο #'+pad(n)+' — κόλλα αυτοκόλλητο! 🏷','ok');
     } else {
-      const num=parseInt(document.getElementById('lv-num')?.value);
-      const b=allBooks.find(x=>x.number===num);
-      if (!b) { toast('Δεν βρέθηκε αυτός ο αριθμός','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); return; }
+      const bid=window._selectedLeaveId;
+      const b=bid?allBooks.find(x=>x.id===bid):null;
+      if (!b) { toast('Επίλεξε βιβλίο από τη λίστα','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); return; }
       await updateDoc(doc(db,'books',b.id),{available:true,borrowedBy:null,borrowedAt:null});
       closeModal(); toast('Καλή ανάγνωση! 📚','ok');
     }
@@ -459,12 +463,12 @@ function openReturn() {
   const uid=currentUser.email;
   const mine=allBooks.filter(b=>!b.available&&b.borrowedBy===uid);
   if (!mine.length) { toast('Δεν έχεις δανεισμένα βιβλία','err'); return; }
-  const opts=mine.map(b=>'<option value="'+b.id+'">#'+pad(b.number)+' — '+esc(b.title)+'</option>').join('');
+  const opts=mine.map(b=>'<option value="'+b.id+'">'+esc(b.title)+(b.author?' — '+esc(b.author):'')+'</option>').join('');
   openModal('<div class="modal-title">📥 Επιστροφή Βιβλίου</div><div class="form-group"><label>Βιβλίο που επιστρέφεις</label><select id="m-ret-sel">'+opts+'</select></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-primary" onclick="confirmReturn()">✓ Επιστροφή</button></div>');
 }
 function quickReturn(bookId) {
   const b=allBooks.find(x=>x.id===bookId); if (!b) return;
-  openModal('<div class="modal-title">📥 Επιστροφή Βιβλίου</div><div class="modal-preview"><div class="mp-num">#'+pad(b.number)+'</div><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-primary" onclick="doReturn(\''+bookId+'\')">✓ Επιστροφή</button></div>');
+  openModal('<div class="modal-title">📥 Επιστροφή Βιβλίου</div><div class="modal-preview"><div class="mp-title">'+esc(b.title)+'</div><div class="mp-author">'+esc(b.author||'')+'</div></div><div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-primary" onclick="doReturn(\''+bookId+'\')">✓ Επιστροφή</button></div>');
 }
 async function confirmReturn() { const sel=document.getElementById('m-ret-sel'); if (sel) await doReturn(sel.value); }
 async function doReturn(bookId) {
@@ -481,11 +485,9 @@ async function doReturn(bookId) {
 function openAdd() {
   openModal(
     '<div class="modal-title">➕ Νέο Βιβλίο</div>'+
-    '<div class="info-box">Θα αποδοθεί αυτόματα αύξων αριθμός. Κόλλα το αυτοκόλλητο στο εξώφυλλο.</div>'+
     '<div class="form-group"><label>Τίτλος *</label><input type="text" id="m-add-title" placeholder="Τίτλος βιβλίου" autofocus></div>'+
     '<div class="form-group"><label>Συγγραφέας</label><input type="text" id="m-add-author" placeholder="Όνομα συγγραφέα"></div>'+
     '<div class="form-group"><label>Το αφήνεις τώρα στη βιβλιοθήκη;</label><select id="m-add-leave"><option value="yes">✅ Ναι, το αφήνω</option><option value="no">📤 Όχι, το δανείζομαι αμέσως</option></select></div>'+
-    '<div id="m-add-sticker" style="display:none"><div class="sticker"><div class="sticker-label">Αριθμός αυτοκόλλητου</div><div class="sticker-num" id="m-sticker-num">—</div><div class="sticker-hint">Κόλλα αυτοκόλλητο με αυτόν τον αριθμό</div></div></div>'+
     '<div class="modal-actions"><button class="btn btn-neutral" onclick="closeModal()">Άκυρο</button><button class="btn btn-primary" onclick="doAdd()">✓ Προσθήκη</button></div>');
 }
 async function doAdd() {
@@ -498,11 +500,11 @@ async function doAdd() {
     const n=await getNextNumber();
     const docRef=await addDoc(collection(db,'books'),{number:n,title,author,available:leave,addedBy:uid,addedAt:serverTimestamp(),borrowedBy:leave?null:uid,borrowedAt:leave?null:serverTimestamp()});
     if (!leave) await addDoc(collection(db,'loans'),{bookId:docRef.id,borrowerEmail:uid,borrowedAt:serverTimestamp(),returnedAt:null});
-    document.getElementById('m-sticker-num').textContent=pad(n);
-    document.getElementById('m-add-sticker').style.display='block';
     document.querySelector('#modal-body .btn-primary').style.display='none';
     document.querySelector('#modal-body .btn-neutral').textContent='Κλείσιμο';
     document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false);
+    toast('Βιβλίο προστέθηκε! ✓','ok');
+    closeModal();
     await loadBooks();
   } catch(e) { console.error(e); toast('Σφάλμα κατά την προσθήκη','err'); document.querySelectorAll('#modal-body .btn').forEach(b=>b.disabled=false); }
 }
@@ -510,7 +512,7 @@ async function doAdd() {
 Object.assign(window, {
   sendLink, goBackToLogin, resendLink, doLogout,
   renderBooks, switchTab,
-  openBorrow, onLookup, quickBorrow, doBorrow, confirmBorrow,
+  openBorrow, onLookup, quickBorrow, doBorrow, confirmBorrow, selectLeaveBook,
   openLeaveModal, setLeave, onLookupLeave, doLeave,
   openReturn, quickReturn, confirmReturn, doReturn,
   openAdd, doAdd,
