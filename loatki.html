@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Λέσχη ΛΟΑΤΚΙ & Friends — Aegean College Θεσσαλονίκης.">
+<title>Λέσχη ΛΟΑΤΚΙ & Friends — Aegean College</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:     #1a1028;
+  --ink-med: #4a3f60;
+  --ink-dim: #8a7fa0;
+  --bg:      #ffffff;
+  --bg-soft: #f8f5ff;
+  --bg-warm: #fff8f4;
+  --bg-mint: #f3fbf8;
+  --rose:    #c94070;
+  --rose-l:  #f0a0ba;
+  --rose-bg: #fff0f5;
+  --violet:  #7040c0;
+  --violet-l:#b090e8;
+  --violet-bg:#f5f0ff;
+  --teal:    #1a9070;
+  --teal-bg: #edfaf5;
+  --amber:   #d07020;
+  --amber-bg:#fff5e8;
+  --rule:    rgba(26,16,40,0.08);
+  --r: #e83535; --o: #f07820; --y: #f5c200;
+  --g: #2db55d; --b: #1a72d4; --p: #8038c8;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ── RAINBOW BAR ── */
+.rainbow-bar {
+  height: 5px;
+  background: linear-gradient(90deg,
+    var(--r) 0%,var(--r) 16.6%,var(--o) 16.6%,var(--o) 33.3%,
+    var(--y) 33.3%,var(--y) 50%,var(--g) 50%,var(--g) 66.6%,
+    var(--b) 66.6%,var(--b) 83.3%,var(--p) 83.3%,var(--p) 100%);
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 58px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 500; font-size: 15px; color: var(--ink);
+  text-decoration: none;
+}
+.nav-heart {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, var(--rose), var(--violet));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: white;
+}
+.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links a {
+  font-size: 13px; color: var(--ink-dim);
+  text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--rose); }
+
+/* ── HERO ── */
+.hero {
+  background: var(--bg-soft);
+  padding: 80px 24px 72px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 80%, rgba(201,64,112,0.08) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 60% at 85% 15%, rgba(112,64,192,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 55% 95%, rgba(26,144,112,0.06) 0%, transparent 55%);
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: white;
+  border: 1px solid var(--rule);
+  padding: 6px 18px; border-radius: 40px;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--ink-dim); margin-bottom: 28px;
+  box-shadow: 0 2px 12px rgba(26,16,40,0.06);
+  position: relative;
+}
+.badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--rose);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%    { opacity:0.4; transform:scale(0.65); }
+}
+.hero-label {
+  font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--rose); margin-bottom: 14px; position: relative;
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(34px, 5.5vw, 68px);
+  font-weight: 900; line-height: 1.07;
+  color: var(--ink); margin-bottom: 14px;
+  position: relative;
+}
+.hero-title em { font-style: italic; color: var(--rose); }
+.hero-sub {
+  font-size: 18px; color: var(--ink-dim);
+  margin-bottom: 52px; position: relative;
+}
+
+/* Event pills */
+.event-row {
+  display: inline-flex; flex-wrap: wrap; gap: 10px;
+  justify-content: center; position: relative;
+}
+.event-pill {
+  background: white;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 14px 22px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(26,16,40,0.06);
+  min-width: 110px;
+}
+.ep-lbl { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 5px; }
+.ep-val { font-size: 20px; font-weight: 500; color: var(--ink); }
+.ep-val.hi { color: var(--rose); }
+.ep-val.hi2 { color: var(--teal); }
+
+/* ── SECTION BASE ── */
+section { padding: 72px 24px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.sec-lbl { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--rose); margin-bottom: 10px; }
+.sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 3.5vw, 38px);
+  font-weight: 700; line-height: 1.18;
+  color: var(--ink); margin-bottom: 24px;
+}
+
+/* ── IDENTITY ── */
+.identity { background: white; border-top: 1px solid var(--rule); }
+.id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.id-text p { font-size: 16.5px; line-height: 1.78; color: var(--ink-med); margin-bottom: 18px; }
+.id-url {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 500; color: var(--violet);
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--violet-l);
+  padding-bottom: 2px; transition: color 0.2s;
+}
+.id-url:hover { color: var(--rose); border-color: var(--rose-l); }
+.id-visual {
+  display: flex; align-items: center; justify-content: center;
+  position: relative; height: 280px;
+}
+.id-visual svg { width: 220px; height: 220px; }
+
+/* ── FILM ── */
+.film { background: var(--bg-warm); }
+.film-grid { display: grid; grid-template-columns: 260px 1fr; gap: 60px; align-items: center; }
+.film-card {
+  border-radius: 16px;
+  background: white;
+  border: 1px solid var(--rule);
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 4px 32px rgba(201,64,112,0.10);
+  position: relative; overflow: hidden;
+}
+.film-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--rose), var(--violet));
+}
+.film-clap { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 14px; }
+.film-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 40px; font-weight: 900; line-height: 1.0;
+  color: var(--ink); margin-bottom: 8px;
+}
+.film-name em { font-style: italic; color: var(--rose); font-size: 34px; }
+.film-year { font-size: 13px; color: var(--ink-dim); margin-bottom: 16px; }
+.film-badge {
+  display: inline-block;
+  background: var(--rose-bg); color: var(--rose);
+  border: 1px solid var(--rose-l);
+  font-size: 11px; letter-spacing: 1px;
+  padding: 4px 14px; border-radius: 20px;
+}
+.film-body p { font-size: 16.5px; line-height: 1.75; color: var(--ink-med); margin-bottom: 16px; }
+
+/* ── PROGRAM ── */
+.program { background: var(--bg-soft); }
+.prog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+.prog-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 20px 22px;
+  background: white;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.prog-item:hover { box-shadow: 0 4px 20px rgba(26,16,40,0.07); border-color: var(--rose-l); }
+.prog-ico {
+  width: 42px; height: 42px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; flex-shrink: 0;
+}
+.prog-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+.prog-desc  { font-size: 13px; color: var(--ink-dim); line-height: 1.55; }
+
+/* ── TOPICS ── */
+.topics { background: var(--violet-bg); }
+.topics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+.topic-card {
+  background: white;
+  border: 1px solid rgba(112,64,192,0.12);
+  border-radius: 12px;
+  padding: 24px 26px;
+  transition: box-shadow 0.2s;
+}
+.topic-card:hover { box-shadow: 0 4px 24px rgba(112,64,192,0.10); }
+.tc-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px; font-weight: 700;
+  color: var(--violet-l); line-height: 1; margin-bottom: 10px;
+}
+.tc-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 5px; line-height: 1.35; }
+.tc-sub   { font-size: 12px; color: var(--ink-dim); }
+
+/* ── INFO BAR ── */
+.info-bar { background: white; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 0 24px; }
+.info-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4,1fr);
+}
+.info-cell {
+  padding: 28px 20px;
+  border-right: 1px solid var(--rule);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.info-cell:last-child { border-right: none; }
+.ic-ico { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 10px; }
+.ic-lbl { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 5px; }
+.ic-val { font-size: 20px; font-weight: 500; color: var(--ink); line-height: 1.25; }
+
+/* ── TAGLINE ── */
+.tagline {
+  padding: 56px 24px; text-align: center;
+  background: var(--bg-mint);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.tagline-text {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(20px, 3vw, 30px);
+  color: var(--ink); line-height: 1.4; margin-bottom: 12px;
+}
+.tagline-sub { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--ink-dim); }
+
+/* ── FOOTER ── */
+footer { background: var(--bg-soft); padding: 44px 24px; text-align: center; border-top: 1px solid var(--rule); }
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; color: var(--ink); margin-bottom: 8px;
+}
+.footer-meta { font-size: 13px; color: var(--ink-dim); margin-bottom: 18px; line-height: 1.7; }
+.footer-url a { font-size: 14px; color: var(--violet); text-decoration: none; border-bottom: 1px solid var(--violet-l); }
+.footer-url a:hover { color: var(--rose); }
+.footer-rule { height: 1px; background: var(--rule); margin: 24px 0; }
+.footer-copy { font-size: 12px; color: var(--ink-dim); opacity: 0.6; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .id-grid, .film-grid, .prog-grid, .topics-grid { grid-template-columns: 1fr; }
+  .info-inner { grid-template-columns: 1fr 1fr; }
+  .info-cell:nth-child(2){ border-right: none; }
+  .nav-links { display: none; }
+  .id-visual { display: none; }
+  .event-pill { min-width: 90px; padding: 12px 16px; }
+}
+
+/* ── FADE IN ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+.hero > * { animation: fadeUp 0.65s ease both; }
+.hero-badge  { animation-delay:0.0s }
+.hero-label  { animation-delay:0.1s }
+.hero-title  { animation-delay:0.2s }
+.hero-sub    { animation-delay:0.3s }
+.event-row   { animation-delay:0.4s }
+</style>
+</head>
+<body>
+
+<div class="rainbow-bar"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-heart">♥</div>
+      ΛΟΑΤΚΙ & Friends
+    </a>
+    <ul class="nav-links">
+      <li><a href="#identity">Ταυτότητα</a></li>
+      <li><a href="#film">Ταινία</a></li>
+      <li><a href="#program">Πρόγραμμα</a></li>
+      <li><a href="#topics">Θέματα</a></li>
+      <li><a href="#info">Πληροφορίες</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="badge-dot"></span>1η Επίσημη Συνάντηση</div>
+  <div class="hero-label">Λέσχη ΛΟΑΤΚΙ & Friends · Aegean College Θεσσαλονίκης</div>
+  <h1 class="hero-title">Το Μυστήριο<br>της <em>Ανθρώπινης</em><br>Σεξουαλικότητας</h1>
+  <p class="hero-sub">Προβολή · Συζήτηση · Γνωριμία · Μελέτη</p>
+  <div class="event-row">
+    <div class="event-pill">
+      <div class="ep-lbl">Ημέρα</div>
+      <div class="ep-val">Τρίτη</div>
+    </div>
+    <div class="event-pill">
+      <div class="ep-lbl">Ημερομηνία</div>
+      <div class="ep-val">28 Απριλίου</div>
+    </div>
+    <div class="event-pill">
+      <div class="ep-lbl">Ώρα</div>
+      <div class="ep-val hi">19:00</div>
+    </div>
+    <div class="event-pill">
+      <div class="ep-lbl">Αίθουσα</div>
+      <div class="ep-val">412</div>
+    </div>
+    <div class="event-pill">
+      <div class="ep-lbl">Είσοδος</div>
+      <div class="ep-val hi2">Ελεύθερη</div>
+    </div>
+  </div>
+</section>
+
+<!-- IDENTITY -->
+<section class="identity" id="identity">
+  <div class="section-inner">
+    <div class="id-grid">
+      <div class="id-text">
+        <div class="sec-lbl">Ταυτότητα Λέσχης</div>
+        <h2 class="sec-title">Ένας ασφαλής<br>χώρος για όλους</h2>
+        <p>Η Λέσχη <strong>«ΛΟΑΤΚΙ & Friends»</strong> του Τμήματος Ψυχολογίας δημιουργήθηκε με σκοπό τη δημιουργία ενός <strong>ασφαλούς και συμπεριληπτικού χώρου</strong> επικοινωνίας και η μελέτη θεμάτων που αφορούν την ψυχολογία των ΛΟΑΤΚΙ ατόμων.</p>
+        <p>Με ακαδημαϊκό σύμβουλο τον <strong>κ. Νίκο Μανώλα</strong>, οι συναντήσεις μας συνδυάζουν επιστημονική γνώση, ανοιχτή συζήτηση και αίσθηση κοινότητας — για μέλη και μη μέλη της ΛΟΑΤΚΙ κοινότητας.</p>
+        <a href="https://aegeanstudent.gr/loatki.html" class="id-url">🌐 aegeanstudent.gr/loatki.html</a>
+      </div>
+      <div class="id-visual">
+        <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="rbow" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stop-color="#e83535"/>
+              <stop offset="20%"  stop-color="#f07820"/>
+              <stop offset="40%"  stop-color="#f5c200"/>
+              <stop offset="60%"  stop-color="#2db55d"/>
+              <stop offset="80%"  stop-color="#1a72d4"/>
+              <stop offset="100%" stop-color="#8038c8"/>
+            </linearGradient>
+            <filter id="gl"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <!-- outer decorative ring -->
+          <circle cx="110" cy="110" r="98" fill="none" stroke="url(#rbow)" stroke-width="2.5" opacity="0.25"/>
+          <circle cx="110" cy="110" r="88" fill="none" stroke="url(#rbow)" stroke-width="1" opacity="0.12"/>
+          <!-- heart -->
+          <path d="M110 158 C65 124 32 98 32 70 C32 51 46 36 63 36 C78 36 93 47 110 63 C127 47 142 36 157 36 C174 36 188 51 188 70 C188 98 155 124 110 158 Z"
+                fill="url(#rbow)" filter="url(#gl)" opacity="0.92"/>
+          <!-- white gloss -->
+          <ellipse cx="88" cy="68" rx="18" ry="12" fill="white" opacity="0.22" transform="rotate(-20 88 68)"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FILM -->
+<section class="film" id="film">
+  <div class="section-inner">
+    <div class="film-grid">
+      <div class="film-card">
+        <div class="film-clap">🎬 Προβολή ταινίας</div>
+        <div class="film-name"><em>Love,</em><br>Simon</div>
+        <div class="film-year">2018 · σκηνοθεσία: Greg Berlanti</div>
+        <div class="film-badge">Προβολή στην εκδήλωση</div>
+      </div>
+      <div class="film-body">
+        <div class="sec-lbl">Κινηματογράφος</div>
+        <h2 class="sec-title">Γιατί ξεκινάμε<br>με αυτή την ταινία</h2>
+        <p>Το <strong>Love, Simon</strong> ήταν η πρώτη ταινία μεγάλου κινηματογραφικού στούντιο που αφηγείται μια ρομαντική κομεντί με gay πρωταγωνιστή — σαν τις ταινίες εφηβείας που γνωρίζουμε, αλλά επιτέλους με διαφορετικό ήρωα.</p>
+        <p>Μιλά για σεξουαλική ταυτότητα, coming out, σχέσεις και αποδοχή — με τρόπο που αφορά εξίσου ΛΟΑΤΚΙ και μη ΛΟΑΤΚΙ άτομα. Μετά την προβολή θα ακολουθήσει συζήτηση και επιστημονική μελέτη των θεμάτων που η ταινία θίγει.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAM -->
+<section class="program" id="program">
+  <div class="section-inner">
+    <div class="sec-lbl">Τι θα κάνουμε</div>
+    <h2 class="sec-title">Πρόγραμμα Εκδήλωσης</h2>
+    <div class="prog-grid">
+      <div class="prog-item">
+        <div class="prog-ico" style="background:var(--rose-bg)">🎬</div>
+        <div>
+          <div class="prog-title">Προβολή ταινίας</div>
+          <div class="prog-desc">Love, Simon (2018) — η ταινία που άλλαξε το ΛΟΑΤΚΙ σινεμά.</div>
+        </div>
+      </div>
+      <div class="prog-item">
+        <div class="prog-ico" style="background:var(--violet-bg)">💬</div>
+        <div>
+          <div class="prog-title">Συζήτηση</div>
+          <div class="prog-desc">Ανοιχτή ανταλλαγή απόψεων πάνω στα θέματα της ταινίας.</div>
+        </div>
+      </div>
+      <div class="prog-item">
+        <div class="prog-ico" style="background:var(--teal-bg)">🤝</div>
+        <div>
+          <div class="prog-title">Γνωριμία</div>
+          <div class="prog-desc">Η 1η επίσημη συνάντηση — ευκαιρία να γνωριστούμε.</div>
+        </div>
+      </div>
+      <div class="prog-item">
+        <div class="prog-ico" style="background:var(--amber-bg)">📖</div>
+        <div>
+          <div class="prog-title">Μελέτη θεμάτων</div>
+          <div class="prog-desc">Σύντομη παρουσίαση βασικών εννοιών ψυχολογίας σεξουαλικότητας.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOPICS -->
+<section class="topics" id="topics">
+  <div class="section-inner">
+    <div class="sec-lbl">Ακαδημαϊκό Περιεχόμενο</div>
+    <h2 class="sec-title">Θέματα Μελέτης</h2>
+    <div class="topics-grid">
+      <div class="topic-card">
+        <div class="tc-num">01</div>
+        <div class="tc-title">Το φάσμα της σεξουαλικότητας</div>
+        <div class="tc-sub">Kinsey · Storms · Sexual Configurations Theory</div>
+      </div>
+      <div class="topic-card">
+        <div class="tc-num">02</div>
+        <div class="tc-title">Οι τρεις διαστάσεις</div>
+        <div class="tc-sub">Έλξη · Συμπεριφορά · Ταυτότητα</div>
+      </div>
+      <div class="topic-card">
+        <div class="tc-num">03</div>
+        <div class="tc-title">Τι συμβαίνει στον εγκέφαλο</div>
+        <div class="tc-sub">Νευροβιολογία της ερωτικής έλξης · Ντοπαμίνη · fMRI</div>
+      </div>
+      <div class="topic-card">
+        <div class="tc-num">04</div>
+        <div class="tc-title">Τα δύο αντίρροπα συστήματα</div>
+        <div class="tc-sub">Διέγερση & Αναστολή · Bancroft & Janssen</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO BAR -->
+<div class="info-bar" id="info">
+  <div class="info-inner">
+    <div class="info-cell">
+      <div class="ic-ico" style="background:var(--rose-bg)">📅</div>
+      <div class="ic-lbl">Ημέρα</div>
+      <div class="ic-val">Τρίτη<br>28 Απριλίου</div>
+    </div>
+    <div class="info-cell">
+      <div class="ic-ico" style="background:var(--violet-bg)">🕖</div>
+      <div class="ic-lbl">Ώρα</div>
+      <div class="ic-val" style="color:var(--rose);font-size:26px">19:00</div>
+    </div>
+    <div class="info-cell">
+      <div class="ic-ico" style="background:var(--amber-bg)">📍</div>
+      <div class="ic-lbl">Αίθουσα</div>
+      <div class="ic-val" style="font-size:26px">412</div>
+    </div>
+    <div class="info-cell">
+      <div class="ic-ico" style="background:var(--teal-bg)">🎟</div>
+      <div class="ic-lbl">Είσοδος</div>
+      <div class="ic-val" style="color:var(--teal)">Ελεύθερη</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAGLINE -->
+<div class="tagline">
+  <div class="tagline-text">«Ένας ασφαλής χώρος για όλες, όλους και όλα.»</div>
+  <div class="tagline-sub">Είμαστε εδώ. Είμαστε μαζί. ♡</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-name">Λέσχη «ΛΟΑΤΚΙ & Friends»</div>
+    <div class="footer-meta">Τμήμα Ψυχολογίας · Aegean College Θεσσαλονίκης<br>Ακαδημαϊκός Σύμβουλος: Νίκος Μανώλας</div>
+    <div class="footer-url"><a href="https://aegeanstudent.gr/loatki.html">aegeanstudent.gr/loatki.html</a></div>
+    <div class="footer-rule"></div>
+    <div class="footer-copy">© 2025 Λέσχη ΛΟΑΤΚΙ & Friends · Aegean College Θεσσαλονίκης</div>
+  </div>
+</footer>
+
+<div class="rainbow-bar"></div>
+
+</body>
+</html>
