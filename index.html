@@ -266,7 +266,27 @@
       padding: .3rem .8rem; border-radius: 50px;
       color: #fff; white-space: nowrap;
     }
-
+.event-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .4rem;
+}
+.event-meta-tag {
+  font-size: .75rem; font-weight: 800;
+  padding: .3rem .8rem; border-radius: 50px;
+  white-space: nowrap;
+}
+.event-location { background: var(--soft); color: var(--ink); border: 1.5px solid var(--border); }
+.event-time { background: var(--ink); color: #fff; }
+.event-club-label {
+  display: inline-block;
+  font-size: .72rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .05em;
+  color: #fff;
+  padding: .2rem .7rem; border-radius: 50px;
+  margin-bottom: .3rem;
+}
     /* ── FORM ── */
     #eggrafi { background: var(--soft); }
     .form-wrap {
@@ -523,54 +543,73 @@
     <div class="section-label reveal">Ημερολόγιο</div>
     <h2 class="reveal">Επόμενες Δράσεις</h2>
     <p class="section-intro reveal">Οι δράσεις είναι ανοιχτές για όλους τους φοιτητές. Σε περιμένουμε με πολλή χαρά!</p>
-    <div class="events-list">
-<div class="event-item reveal">
-  <div class="event-date" style="background:var(--lgbtq)">
-    <div class="day">28</div>
-    <div class="month">ΑΠΡ</div>
-  </div>
-  <div class="event-info">
-    <h3>Το Μυστήριο της Ανθρώπινης Σεξουαλικότητας</h3>
-    <p>Προβολή ταινίας <em>Love, Simon</em> · Συζήτηση · Γνωριμία · Αίθουσα 412 · 19:00</p>
-  </div>
-  <span class="event-club-tag" style="background:var(--lgbtq)">🏳️‍🌈 ΛΟΑΤΚΙ & Friends</span>
-</div>
-<div class="event-item reveal">
-  <div class="event-date" style="background:var(--walking)">
-    <div class="day">3</div>
-    <div class="month">ΜΑΪ</div>
-  </div>
-  <div class="event-info">
-    <h3>Πεζοπορία στο Σέιχ Σου</h3>
-    <p>Με οδηγό τον κ. Μάριο Μώρο · Κυριακή 3 Μαΐου · Τόπος συνάντησης TBA</p>
-  </div>
-  <span class="event-club-tag" style="background:var(--walking)">🥾 Πεζοπορία</span>
-</div>
+<div class="events-list">
 
-<div class="event-item reveal">
-  <div class="event-date" style="background:var(--books)">
-    <div class="day">4</div>
-    <div class="month">ΜΑΪ</div>
-  </div>
-  <div class="event-info">
-    <h3>Πρώτη Συνάντηση της Λέσχης Βιβλίου</h3>
-    <p>Με τη Δρ. Αναστασία Στεφανίδου · Δευτέρα 4 Μαΐου · Αίθουσα 802 · 19:00</p>
-  </div>
-  <span class="event-club-tag" style="background:var(--books)">📚 Βιβλίο</span>
-</div>
-
-<div class="event-item reveal">
-  <div class="event-date" style="background:var(--cinema)">
-    <div class="day">8</div>
-    <div class="month">ΜΑΪ</div>
-  </div>
-  <div class="event-info">
-    <h3>Προβολή & Συζήτηση: Fight Club</h3>
-    <p>Παρασκευή 8 Μαΐου · Αίθουσα 802 · 16:00</p>
-  </div>
-  <span class="event-club-tag" style="background:var(--cinema)">🎬 Film</span>
-</div>
+  <div class="event-item reveal">
+    <div class="event-date" style="background:var(--lgbtq)">
+      <div class="day">28</div>
+      <div class="month">ΑΠΡ</div>
     </div>
+    <div class="event-info">
+      <span class="event-club-label" style="background:var(--lgbtq)">🏳️‍🌈 ΛΟΑΤΚΙ & Friends</span>
+      <h3>Το Μυστήριο της Ανθρώπινης Σεξουαλικότητας</h3>
+      <p>Προβολή ταινίας <em>Love, Simon</em> · Συζήτηση · Γνωριμία · Θεωρίες Σεξουαλικότητας</p>
+    </div>
+    <div class="event-meta">
+      <span class="event-meta-tag event-location">📍 Αίθουσα 412</span>
+      <span class="event-meta-tag event-time">🕖 19:00</span>
+    </div>
+  </div>
+
+  <div class="event-item reveal">
+    <div class="event-date" style="background:var(--walking)">
+      <div class="day">3</div>
+      <div class="month">ΜΑΪ</div>
+    </div>
+    <div class="event-info">
+      <span class="event-club-label" style="background:var(--walking)">🥾 Πεζοπορία</span>
+      <h3>Πεζοπορία στο Σέιχ Σου</h3>
+      <p>Με οδηγό τον κ. Μάριο Μώρο · Κυριακή 3 Μαΐου</p>
+    </div>
+    <div class="event-meta">
+      <span class="event-meta-tag event-location">📍 Σέιχ Σου</span>
+      <span class="event-meta-tag event-time" style="background:#94A3B8">🕐 TBA</span>
+    </div>
+  </div>
+
+  <div class="event-item reveal">
+    <div class="event-date" style="background:var(--books)">
+      <div class="day">4</div>
+      <div class="month">ΜΑΪ</div>
+    </div>
+    <div class="event-info">
+      <span class="event-club-label" style="background:var(--books)">📚 Βιβλίο</span>
+      <h3>Πρώτη Συνάντηση της Λέσχης Βιβλίου</h3>
+      <p>Με τη Δρ. Αναστασία Στεφανίδου · Δευτέρα 4 Μαΐου</p>
+    </div>
+    <div class="event-meta">
+      <span class="event-meta-tag event-location">📍 Αίθουσα 802</span>
+      <span class="event-meta-tag event-time">🕖 19:00</span>
+    </div>
+  </div>
+
+  <div class="event-item reveal">
+    <div class="event-date" style="background:var(--cinema)">
+      <div class="day">8</div>
+      <div class="month">ΜΑΪ</div>
+    </div>
+    <div class="event-info">
+      <span class="event-club-label" style="background:var(--cinema)">🎬 Film</span>
+      <h3>Προβολή & Συζήτηση: Fight Club</h3>
+      <p>Παρασκευή 8 Μαΐου</p>
+    </div>
+    <div class="event-meta">
+      <span class="event-meta-tag event-location">📍 Αίθουσα 802</span>
+      <span class="event-meta-tag event-time">🕓 16:00</span>
+    </div>
+  </div>
+
+</div>
   </div>
 </section>
 
