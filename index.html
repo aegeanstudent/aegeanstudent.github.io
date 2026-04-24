@@ -266,27 +266,14 @@
       padding: .3rem .8rem; border-radius: 50px;
       color: #fff; white-space: nowrap;
     }
-.event-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: .4rem;
+
+.event-where {
+  display: inline-flex; align-items: center; gap: 1rem;
+  font-size: .82rem; font-weight: 700;
+  color: #888; margin-top: .3rem;
 }
-.event-meta-tag {
-  font-size: .75rem; font-weight: 800;
-  padding: .3rem .8rem; border-radius: 50px;
-  white-space: nowrap;
-}
-.event-location { background: var(--soft); color: var(--ink); border: 1.5px solid var(--border); }
-.event-time { background: var(--ink); color: #fff; }
-.event-club-label {
-  display: inline-block;
-  font-size: .72rem; font-weight: 800;
-  text-transform: uppercase; letter-spacing: .05em;
-  color: #fff;
-  padding: .2rem .7rem; border-radius: 50px;
-  margin-bottom: .3rem;
-}
+.event-where span { display: flex; align-items: center; gap: .3rem; }
+	  
     /* ── FORM ── */
     #eggrafi { background: var(--soft); }
     .form-wrap {
@@ -552,14 +539,14 @@
       <div class="month">ΑΠΡ</div>
     </div>
     <div class="event-info">
-      <span class="event-club-label" style="background:var(--lgbtq)">🏳️‍🌈 ΛΟΑΤΚΙ & Friends</span>
       <h3>Το Μυστήριο της Ανθρώπινης Σεξουαλικότητας</h3>
-      <p>Προβολή ταινίας <em>Love, Simon</em> · Συζήτηση · Γνωριμία · Θεωρίες Σεξουαλικότητας</p>
+      <p>Προβολή <em>Love, Simon</em> · Συζήτηση · Γνωριμία · Θεωρίες Σεξουαλικότητας</p>
+      <div class="event-where">
+        <span>📍 Αίθουσα 412</span>
+        <span>🕖 19:00</span>
+      </div>
     </div>
-    <div class="event-meta">
-      <span class="event-meta-tag event-location">📍 Αίθουσα 412</span>
-      <span class="event-meta-tag event-time">🕖 19:00</span>
-    </div>
+    <span class="event-club-tag" style="background:var(--lgbtq)">🏳️‍🌈 ΛΟΑΤΚΙ</span>
   </div>
 
   <div class="event-item reveal">
@@ -568,14 +555,14 @@
       <div class="month">ΜΑΪ</div>
     </div>
     <div class="event-info">
-      <span class="event-club-label" style="background:var(--walking)">🥾 Πεζοπορία</span>
       <h3>Πεζοπορία στο Σέιχ Σου</h3>
-      <p>Με οδηγό τον κ. Μάριο Μώρο · Κυριακή 3 Μαΐου</p>
+      <p>Με οδηγό τον κ. Μάριο Μώρο</p>
+      <div class="event-where">
+        <span>📍 Σέιχ Σου</span>
+        <span>🕐 Ώρα TBA</span>
+      </div>
     </div>
-    <div class="event-meta">
-      <span class="event-meta-tag event-location">📍 Σέιχ Σου</span>
-      <span class="event-meta-tag event-time" style="background:#94A3B8">🕐 TBA</span>
-    </div>
+    <span class="event-club-tag" style="background:var(--walking)">🥾 Πεζοπορία</span>
   </div>
 
   <div class="event-item reveal">
@@ -584,14 +571,14 @@
       <div class="month">ΜΑΪ</div>
     </div>
     <div class="event-info">
-      <span class="event-club-label" style="background:var(--books)">📚 Βιβλίο</span>
-      <h3>Πρώτη Συνάντηση της Λέσχης Βιβλίου</h3>
-      <p>Με τη Δρ. Αναστασία Στεφανίδου · Δευτέρα 4 Μαΐου</p>
+      <h3>Πρώτη Συνάντηση Λέσχης Βιβλίου</h3>
+      <p>Με τη Δρ. Αναστασία Στεφανίδου</p>
+      <div class="event-where">
+        <span>📍 Αίθουσα 802</span>
+        <span>🕖 19:00</span>
+      </div>
     </div>
-    <div class="event-meta">
-      <span class="event-meta-tag event-location">📍 Αίθουσα 802</span>
-      <span class="event-meta-tag event-time">🕖 19:00</span>
-    </div>
+    <span class="event-club-tag" style="background:var(--books)">📚 Βιβλίο</span>
   </div>
 
   <div class="event-item reveal">
@@ -600,14 +587,14 @@
       <div class="month">ΜΑΪ</div>
     </div>
     <div class="event-info">
-      <span class="event-club-label" style="background:var(--cinema)">🎬 Film</span>
       <h3>Προβολή & Συζήτηση: Fight Club</h3>
-      <p>Παρασκευή 8 Μαΐου</p>
+      <p>Λέσχη Κινηματογράφου</p>
+      <div class="event-where">
+        <span>📍 Αίθουσα 802</span>
+        <span>🕓 16:00</span>
+      </div>
     </div>
-    <div class="event-meta">
-      <span class="event-meta-tag event-location">📍 Αίθουσα 802</span>
-      <span class="event-meta-tag event-time">🕓 16:00</span>
-    </div>
+    <span class="event-club-tag" style="background:var(--cinema)">🎬 Film</span>
   </div>
 
 </div>
