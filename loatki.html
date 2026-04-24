@@ -6,7 +6,7 @@
 <meta name="description" content="Λέσχη ΛΟΑΤΚΙ & Friends — Aegean College Θεσσαλονίκης.">
 <title>Λέσχη ΛΟΑΤΚΙ & Friends — Aegean College</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800;900&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -14,10 +14,10 @@
   --ink:     #1a1028;
   --ink-med: #4a3f60;
   --ink-dim: #8a7fa0;
-  --bg:      #ffffff;
-  --bg-soft: #f8f5ff;
-  --bg-warm: #fff8f4;
-  --bg-mint: #f3fbf8;
+  --bg:      #FFFAF4;
+  --bg-soft: #F5F0E8;
+  --bg-warm: #FFF5EE;
+  --bg-mint: #F0FAF7;
   --rose:    #c94070;
   --rose-l:  #f0a0ba;
   --rose-bg: #fff0f5;
@@ -36,7 +36,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Nunito', sans-serif;
   background: var(--bg);
   color: var(--ink);
   font-size: 16px;
@@ -125,7 +125,8 @@ nav {
   color: var(--rose); margin-bottom: 14px; position: relative;
 }
 .hero-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Unbounded', sans-serif;
+  letter-spacing: -1px;
   font-size: clamp(34px, 5.5vw, 68px);
   font-weight: 900; line-height: 1.07;
   color: var(--ink); margin-bottom: 14px;
@@ -161,7 +162,8 @@ section { padding: 72px 24px; }
 .section-inner { max-width: 1100px; margin: 0 auto; }
 .sec-lbl { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: var(--rose); margin-bottom: 10px; }
 .sec-title {
-  font-family: 'Playfair Display', serif;
+  font-family: 'Unbounded', sans-serif;
+  letter-spacing: -1px;
   font-size: clamp(24px, 3.5vw, 38px);
   font-weight: 700; line-height: 1.18;
   color: var(--ink); margin-bottom: 24px;
@@ -328,16 +330,14 @@ footer { background: var(--bg-soft); padding: 44px 24px; text-align: center; bor
 
 <nav>
   <div class="nav-inner">
-    <a href="#" class="nav-logo">
-      <div class="nav-heart">♥</div>
-      ΛΟΑΤΚΙ & Friends
+    <a href="index.html" class="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Unbounded',sans-serif;font-size:.95rem;font-weight:800;color:var(--ink);">
+      <img src="images/favicon.png" alt="Aegean Student" style="height:28px;width:auto;" onerror="this.style.display='none'">
+      Aegean<span style="color:var(--rose)">Student</span>
     </a>
-    <ul class="nav-links">
-      <li><a href="#identity">Ταυτότητα</a></li>
-      <li><a href="#film">Ταινία</a></li>
-      <li><a href="#program">Πρόγραμμα</a></li>
-      <li><a href="#topics">Θέματα</a></li>
-      <li><a href="#info">Πληροφορίες</a></li>
+    <ul class="nav-links" style="list-style:none;display:flex;gap:24px;align-items:center;">
+      <li><a href="index.html#lesxes" style="font-size:.85rem;font-weight:700;color:#888;text-decoration:none;">Λέσχες</a></li>
+      <li><a href="index.html#events" style="font-size:.85rem;font-weight:700;color:#888;text-decoration:none;">Εκδηλώσεις</a></li>
+      <li><a href="index.html" style="font-size:.85rem;font-weight:800;background:var(--ink);color:#fff;padding:.4rem 1rem;border-radius:50px;text-decoration:none;">← Κεντρική</a></li>
     </ul>
   </div>
 </nav>
