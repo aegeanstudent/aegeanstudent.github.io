@@ -312,6 +312,15 @@ async function getNextNumber() {
   return (await getDoc(ref)).data().lastNumber;
 }
 
+
+async function checkCredit(uid) {
+  const [booksSnap, loansSnap] = await Promise.all([
+    getDocs(query(collection(db,'books'), where('addedBy','==',uid))),
+    getDocs(query(collection(db,'loans'), where('borrowerEmail','==',uid), where('returnedAt','==',null)))
+  ]);
+  return { booksAdded: booksSnap.size, activeBorrows: loansSnap.size };
+}
+
 async function loadBooks() {
   document.getElementById('book-list').innerHTML='<div class="loading"><span class="spinner"></span>Φόρτωση βιβλίων…</div>';
   try {
@@ -391,6 +400,18 @@ async function doBorrow() { /* unused */ }
 async function confirmBorrow(bookId) {
   const uid=currentUser.email; disableBtns();
   try {
+    // Credit check: count from live data
+    const stats = await checkCredit(uid);
+    if (stats.activeBorrows >= stats.booksAdded) {
+      closeModal();
+      openModal(
+        '<div class="modal-title">⚠️ Δεν μπορείς να δανειστείς</div>'+
+        '<div class="info-box">Έχεις δανειστεί <strong>'+stats.activeBorrows+'</strong> βιβλί'+
+        (stats.activeBorrows===1?'ο':'α')+' και έχεις προσθέσει <strong>'+stats.booksAdded+
+        '</strong>. Για να δανειστείς άλλο, πρέπει πρώτα να προσθέσεις ένα νέο βιβλίο ή να επιστρέψεις ένα από τα ήδη δανεισμένα.</div>'+
+        '<div class="modal-actions"><button class="btn btn-primary btn-full" onclick="closeModal()">Κατανοητό</button></div>');
+      return;
+    }
     await updateDoc(doc(db,'books',bookId),{available:false,borrowedBy:uid,borrowedAt:serverTimestamp()});
     await addDoc(collection(db,'loans'),{bookId,borrowerEmail:uid,borrowedAt:serverTimestamp(),returnedAt:null});
     await loadBooks(); openLeaveModal();
