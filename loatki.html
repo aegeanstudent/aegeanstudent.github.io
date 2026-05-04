@@ -67,23 +67,30 @@ nav {
   height: 58px;
 }
 .nav-logo {
-  display: flex; align-items: center; gap: 10px;
-  font-weight: 500; font-size: 15px; color: var(--ink);
+  display: flex; align-items: center; gap: 0;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.1rem; font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--ink);
   text-decoration: none;
 }
-.nav-heart {
-  width: 28px; height: 28px;
-  background: linear-gradient(135deg, var(--rose), var(--violet));
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; color: white;
+.nav-logo span { color: var(--rose); }
+.nav-logo-img {
+  height: 36px; width: auto;
+  vertical-align: middle;
+  margin-right: .5rem;
 }
-.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
 .nav-links a {
-  font-size: 13px; color: var(--ink-dim);
+  font-size: .85rem; font-weight: 700; color: var(--ink-dim);
   text-decoration: none; transition: color 0.2s;
 }
 .nav-links a:hover { color: var(--rose); }
+.nav-cta {
+  background: var(--ink); color: #fff !important;
+  padding: .4rem 1rem; border-radius: 50px;
+  font-weight: 800 !important;
+}
 
 /* ── HERO ── */
 .hero {
@@ -330,14 +337,13 @@ footer { background: var(--bg-soft); padding: 44px 24px; text-align: center; bor
 
 <nav>
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Unbounded',sans-serif;font-size:.95rem;font-weight:800;color:var(--ink);">
-      <img src="images/favicon.png" alt="Aegean Student" style="height:28px;width:auto;" onerror="this.style.display='none'">
-      Aegean<span style="color:var(--rose)">Student</span>
+    <a href="index.html" class="nav-logo">
+      <img src="images/favicon.png" alt="Aegean Student" class="nav-logo-img" onerror="this.style.display='none'" />Aegean<span>Student</span>
     </a>
-    <ul class="nav-links" style="list-style:none;display:flex;gap:24px;align-items:center;">
-      <li><a href="index.html#lesxes" style="font-size:.85rem;font-weight:700;color:#888;text-decoration:none;">Λέσχες</a></li>
-      <li><a href="index.html#events" style="font-size:.85rem;font-weight:700;color:#888;text-decoration:none;">Εκδηλώσεις</a></li>
-      <li><a href="index.html" style="font-size:.85rem;font-weight:800;background:var(--ink);color:#fff;padding:.4rem 1rem;border-radius:50px;text-decoration:none;">← Κεντρική</a></li>
+    <ul class="nav-links">
+      <li><a href="index.html#lesxes">Λέσχες</a></li>
+      <li><a href="index.html#events">Εκδηλώσεις</a></li>
+      <li><a href="index.html" class="nav-cta">← Κεντρική</a></li>
     </ul>
   </div>
 </nav>
