@@ -154,7 +154,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent2);box-shadow:0 0
     <div class="action-card" onclick="openBorrow()"><span class="ac-icon">📤</span><div class="ac-title">Δανεισμός</div><div class="ac-desc">Πάρε ένα βιβλίο</div></div>
     <div class="action-card" onclick="openReturn()"><span class="ac-icon">📥</span><div class="ac-title">Επιστροφή</div><div class="ac-desc">Επίστρεψε βιβλίο</div></div>
     <div class="action-card" onclick="openAdd()"><span class="ac-icon">➕</span><div class="ac-title">Νέο βιβλίο</div><div class="ac-desc">Πρόσθεσε στη συλλογή</div></div>
-    <div class="action-card" onclick="switchTab('mine')"><span class="ac-icon">📋</span><div class="ac-title">Δανεισμοί μου</div><div class="ac-desc">Τι έχω τώρα</div></div>
+    <div class="action-card" onclick="switchTab('mine')"><span class="ac-icon">📋</span><div class="ac-title">Έχω δανειστεί</div><div class="ac-desc">Τι έχω τώρα</div></div>
   </div>
   <div class="tabs">
     <button class="tab active" onclick="switchTab('all')">Όλα</button>
@@ -404,11 +404,15 @@ async function confirmBorrow(bookId) {
     const stats = await checkCredit(uid);
     if (stats.activeBorrows >= stats.booksAdded) {
       closeModal();
+      const creditMsg = stats.booksAdded === 0
+        ? 'Για να δανειστείς ένα βιβλίο, πρέπει πρώτα να αφήσεις στη βιβλιοθήκη ένα δικό σου.'
+        : 'Έχεις ήδη πάρει <strong>'+stats.activeBorrows+'</strong> βιβλί'+(stats.activeBorrows===1?'ο':'α')+
+          ', όσα και τα δικά σου βιβλία που άφησες στη βιβλιοθήκη. '+
+          'Για να πάρεις κι άλλο, πρέπει πρώτα να επιστρέψεις κάποιο που έχεις δανειστεί '+
+          'ή να προσθέσεις στη βιβλιοθήκη ένα νέο βιβλίο.';
       openModal(
         '<div class="modal-title">⚠️ Δεν μπορείς να δανειστείς</div>'+
-        '<div class="info-box">Έχεις δανειστεί <strong>'+stats.activeBorrows+'</strong> βιβλί'+
-        (stats.activeBorrows===1?'ο':'α')+' και έχεις προσθέσει <strong>'+stats.booksAdded+
-        '</strong>. Για να δανειστείς άλλο, πρέπει πρώτα να προσθέσεις ένα νέο βιβλίο ή να επιστρέψεις ένα από τα ήδη δανεισμένα.</div>'+
+        '<div class="info-box">'+creditMsg+'</div>'+
         '<div class="modal-actions"><button class="btn btn-primary btn-full" onclick="closeModal()">Κατανοητό</button></div>');
       return;
     }
